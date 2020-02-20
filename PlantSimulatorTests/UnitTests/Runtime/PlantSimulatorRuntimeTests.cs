@@ -6,18 +6,18 @@ using PlantSimulator.Logging;
 namespace PlantSimulatorTests.UnitTests.Runtime
 {
     [TestFixture]
-    public class PlantSimulatorTests
+    public class PlantSimulatorRuntimeTests
     {
-        private Mock<ILoggerAdapter<PlantSimulator.Runtime.PlantSimulator>> logger;
+        private Mock<ILoggerAdapter<PlantSimulator.Runtime.PlantSimulatorRuntime>> logger;
 
-        private PlantSimulator.Runtime.PlantSimulator simulator;
+        private PlantSimulator.Runtime.PlantSimulatorRuntime simulator;
 
 
         [SetUp]
         public void Setup()
         {
-            logger = new Mock<ILoggerAdapter<PlantSimulator.Runtime.PlantSimulator>>();
-            simulator = new PlantSimulator.Runtime.PlantSimulator(logger.Object);
+            logger = new Mock<ILoggerAdapter<PlantSimulator.Runtime.PlantSimulatorRuntime>>();
+            simulator = new PlantSimulator.Runtime.PlantSimulatorRuntime(logger.Object);
         }
 
         [Test]

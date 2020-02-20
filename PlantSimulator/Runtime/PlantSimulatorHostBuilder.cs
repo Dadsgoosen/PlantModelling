@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PlantSimulator.Logging;
 using PlantSimulator.Runtime.Parameters;
+using PlantSimulator.Simulation;
 using Serilog;
 using Serilog.Core;
 
@@ -13,28 +15,46 @@ namespace PlantSimulator.Runtime
 {
     public class PlantSimulatorHostBuilder
     {
-        public static IHostBuilder Build(string[] args)
-        {
-            IParameters parameters = new ParameterParser().Parse(args);
+        private IParameters Parameters { get; }
 
-            return Host.CreateDefaultBuilder(args)
-                .UseSerilog(ConfigureLogging(null))
-                .ConfigureServices((context, collection) => ConfigureServices(context, collection, parameters));
+        private IHostBuilder Host { get; set; }
+
+        private CancellationTokenSource TokenSource { get; }
+
+        public PlantSimulatorHostBuilder(string[] args)
+        {
+            TokenSource = new CancellationTokenSource();
+            Parameters = new ParameterParser().Parse(args);
         }
 
-        private static void ConfigureServices(HostBuilderContext context, IServiceCollection collection, IParameters parameters)
+        public PlantSimulatorHostBuilder Run()
         {
-            collection.AddSingleton(provider => parameters);
+            Host.RunConsoleAsync(TokenSource.Token);
+            return this;
+        }
+
+        public PlantSimulatorHostBuilder Build()
+        {
+            Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+                .UseSerilog(ConfigureLogging())
+                .ConfigureServices(ConfigureServices);
+            return this;
+        }
+
+        private void ConfigureServices(HostBuilderContext context, IServiceCollection collection)
+        {
+            collection.AddSingleton(provider => Parameters);
             collection.AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-            collection.AddScoped<IAsyncRuntime, PlantSimulator>();
+            collection.AddSingleton<ISimulator, Simulation.PlantSimulator>();
+            collection.AddScoped<IAsyncRuntime, PlantSimulatorRuntime>();
             collection.AddHostedService<PlantSimulatorHost>();
         }
 
-        private static Logger ConfigureLogging(IParameters settingsFile)
+        private Logger ConfigureLogging()
         {
             IConfiguration configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile(settingsFile.SettingsPath, false, true)
+               .AddJsonFile(Parameters.SettingsPath, false, true)
                .Build();
 
             return new LoggerConfiguration()
