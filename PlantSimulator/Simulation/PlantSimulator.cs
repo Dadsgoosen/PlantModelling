@@ -9,24 +9,25 @@ namespace PlantSimulator.Simulation
     {
         public ILoggerAdapter<PlantSimulator> Logger { get; }
 
-        public CancellationTokenSource Stopping { get; }
+        public CancellationTokenSource Stopping { get; private set; }
 
-        public ulong Ticker { get; private set; }
+        public ulong TickCount { get; private set; }
+
+        public Thread Thread;
 
         public PlantSimulator(ILoggerAdapter<PlantSimulator> logger)
         {
             Logger = logger;
-            Stopping = new CancellationTokenSource();
         }
 
-        public void Start()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             Logger.LogDebug("Starting Plant Simulator");
-            Thread start = new Thread(Action);
-            start.Start();
+            Stopping = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            await Task.Factory.StartNew(Action, cancellationToken, TaskCreationOptions.LongRunning);
         }
 
-        private void Action()
+        private void Action(object obj)
         {
             Logger.LogDebug("Action is started");
 
@@ -39,7 +40,7 @@ namespace PlantSimulator.Simulation
                 }
 
                 Tick();
-                Ticker++;
+                TickCount++;
             }
 
             Logger.LogDebug("Action has ended");
@@ -50,11 +51,15 @@ namespace PlantSimulator.Simulation
             Logger.LogInformation("Ticking");
         }
 
-        public void Stop()
+        public Task StopAsync()
         {
             Logger.LogDebug("Stopping the Plant Simulator");
+            
             Stopping.Cancel();
+            
             Dispose();
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

@@ -1,41 +1,38 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PlantSimulator.Logging;
 
 namespace PlantSimulator.Runtime
 {
     public class PlantSimulatorHost : IHostedService
     {
-        private readonly IAsyncRuntime runtime;
-
         private readonly ILoggerAdapter<PlantSimulatorHost> logger;
 
-        private readonly IHostApplicationLifetime applicationLifetime;
+        private readonly IRuntime runtime;
 
-        public PlantSimulatorHost(IAsyncRuntime runtime, ILoggerAdapter<PlantSimulatorHost> logger, IHostApplicationLifetime applicationLifetime)
+        private readonly IHostApplicationLifetime lifetime;
+
+        public PlantSimulatorHost(ILoggerAdapter<PlantSimulatorHost> logger, IRuntime runtime, IHostApplicationLifetime lifetime)
         {
-            this.runtime = runtime;
             this.logger = logger;
-            this.applicationLifetime = applicationLifetime;
+            this.runtime = runtime;
+            this.lifetime = lifetime;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.LogDebug("Hosting is starting");
+            logger.LogInformation("Host is starting");
 
-            applicationLifetime.ApplicationStarted.Register(runtime.OnStartedAsync);
-            applicationLifetime.ApplicationStopping.Register(runtime.OnStoppingAsync);
-            applicationLifetime.ApplicationStopped.Register(runtime.OnStoppedAsync);
+            lifetime.ApplicationStarted.Register(() => runtime.StartAsync(cancellationToken));
+            lifetime.ApplicationStopping.Register(() => runtime.StopAsync(cancellationToken));
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogDebug("Host is stopping");
+            logger.LogInformation("Host is stopping");
 
             return Task.CompletedTask;
         }

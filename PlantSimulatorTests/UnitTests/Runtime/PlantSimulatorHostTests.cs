@@ -12,7 +12,7 @@ namespace PlantSimulatorTests.UnitTests.Runtime
 {
     public class PlantSimulatorHostTests
     {
-        private Mock<IAsyncRuntime> runtime;
+        private Mock<IRuntime> runtime;
 
         private Mock<ILoggerAdapter<PlantSimulatorHost>> loggerAdapter;
 
@@ -23,10 +23,10 @@ namespace PlantSimulatorTests.UnitTests.Runtime
         [SetUp]
         public void Setup()
         {
-            runtime = new Mock<IAsyncRuntime>();
+            runtime = new Mock<IRuntime>();
             loggerAdapter = new Mock<ILoggerAdapter<PlantSimulatorHost>>();
             lifetime = new Mock<IHostApplicationLifetime>();
-            hostedService = new PlantSimulatorHost(runtime.Object, loggerAdapter.Object, lifetime.Object);
+            hostedService = new PlantSimulatorHost(loggerAdapter.Object, runtime.Object, lifetime.Object);
         }
 
         [Test]
@@ -35,7 +35,6 @@ namespace PlantSimulatorTests.UnitTests.Runtime
             await hostedService.StartAsync(CancellationToken.None);
 
             lifetime.VerifyGet(x => x.ApplicationStarted, Times.Once);
-            lifetime.VerifyGet(x => x.ApplicationStopped, Times.Once);
             lifetime.VerifyGet(x => x.ApplicationStopping, Times.Once);
         }
 

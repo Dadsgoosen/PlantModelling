@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlantSimulator.Simulation
 {
     public interface ISimulator : IDisposable
     {
-        void Start();
-        void Stop();
+        Task StartAsync(CancellationToken cancellationToken);
+        Task StopAsync();
     }
 }

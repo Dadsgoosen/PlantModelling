@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,32 +14,23 @@ using Serilog.Core;
 
 namespace PlantSimulator.Runtime
 {
-    public class PlantSimulatorHostBuilder
+    public class PlantSimulatorHostBuilder : IDisposable
     {
         private IParameters Parameters { get; }
 
-        private IHostBuilder Host { get; set; }
-
-        private CancellationTokenSource TokenSource { get; }
+        private IHostBuilder HostBuilder { get; set; }
 
         public PlantSimulatorHostBuilder(string[] args)
         {
-            TokenSource = new CancellationTokenSource();
             Parameters = new ParameterParser().Parse(args);
         }
 
-        public PlantSimulatorHostBuilder Run()
+        public async Task Run()
         {
-            Host.RunConsoleAsync(TokenSource.Token);
-            return this;
-        }
-
-        public PlantSimulatorHostBuilder Build()
-        {
-            Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+            await Host.CreateDefaultBuilder()
                 .UseSerilog(ConfigureLogging())
-                .ConfigureServices(ConfigureServices);
-            return this;
+                .ConfigureServices(ConfigureServices)
+                .RunConsoleAsync();
         }
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection collection)
@@ -46,7 +38,7 @@ namespace PlantSimulator.Runtime
             collection.AddSingleton(provider => Parameters);
             collection.AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             collection.AddSingleton<ISimulator, Simulation.PlantSimulator>();
-            collection.AddScoped<IAsyncRuntime, PlantSimulatorRuntime>();
+            collection.AddScoped<IRuntime, Runtime>();
             collection.AddHostedService<PlantSimulatorHost>();
         }
 
@@ -62,5 +54,8 @@ namespace PlantSimulator.Runtime
                 .CreateLogger();
         }
 
+        public void Dispose()
+        {
+        }
     }
 }
