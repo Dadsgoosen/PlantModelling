@@ -28,7 +28,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- script: dotnet test PlantSimulatorTests --logger trx
+- script: dotnet test PlantSimulatorTests -r="$(System.DefaultWorkingDirectory)/tests" --logger trx
+
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
