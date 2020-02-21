@@ -28,14 +28,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '$(solution)'
-    arguments: '-r="$(Agent.TempDirectory)\TestResults\"" -l trx'
-    testRunTitle: 'Run Tests'
-
+- script: dotnet test PlantSimulatorTests --logger trx
 - task: PublishTestResults@2
+  condition: succeededOrFailed()
   inputs:
-    testResultsFormat: 'NUnit'
-    testResultsFiles: '$(Agent.TempDirectory)\TestResults\*.trx'
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
