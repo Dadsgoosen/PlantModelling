@@ -36,4 +36,4 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
-    testResultsFiles: '$(Agent.TempDirectory)\TestResults'
+    testResultsFiles: '$(Agent.TempDirectory)\TestResults\*.trx'
