@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PlantSimulator.Logging;
 using PlantSimulator.Runtime.Parameters;
 using PlantSimulator.Simulation;
@@ -20,14 +18,26 @@ namespace PlantSimulator.Runtime
 
         private IHostBuilder HostBuilder { get; set; }
 
+        private IConfiguration Configuration { get; set; }
+
         public PlantSimulatorHostBuilder(string[] args)
         {
             Parameters = new ParameterParser().Parse(args);
+            ConfigureConfiguration();
+        }
+
+        private void ConfigureConfiguration()
+        {
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(Parameters.SettingsPath, false, true)
+                .Build();
         }
 
         public async Task Run()
         {
             await Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration(builder => builder.AddConfiguration(Configuration))
                 .UseSerilog(ConfigureLogging())
                 .ConfigureServices(ConfigureServices)
                 .RunConsoleAsync();
@@ -35,6 +45,7 @@ namespace PlantSimulator.Runtime
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection collection)
         {
+            collection.Configure<SimulationOptions>(Configuration.GetSection("Simulation"));
             collection.AddSingleton(provider => Parameters);
             collection.AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             collection.AddSingleton<ISimulator, Simulation.PlantSimulator>();
@@ -44,13 +55,8 @@ namespace PlantSimulator.Runtime
 
         private Logger ConfigureLogging()
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile(Parameters.SettingsPath, false, true)
-               .Build();
-
             return new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
+                .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
         }
 

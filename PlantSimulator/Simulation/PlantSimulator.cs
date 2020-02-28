@@ -1,70 +1,87 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using PlantSimulator.Logging;
 
 namespace PlantSimulator.Simulation
 {
     public class PlantSimulator : ISimulator
     {
-        public ILoggerAdapter<PlantSimulator> Logger { get; }
+        private readonly ILoggerAdapter<PlantSimulator> logger;
 
-        public CancellationTokenSource Stopping { get; private set; }
+        private readonly SimulationOptions options;
+
+        private CancellationTokenSource Stopping { get; set; }
 
         public ulong TickCount { get; private set; }
 
         public Thread Thread;
 
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger)
+        private DateTime lastExecutionTime;
+
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IOptions<SimulationOptions> options)
         {
-            Logger = logger;
+            this.logger = logger;
+            this.options = options.Value;
+            lastExecutionTime = DateTime.Now;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("Starting Plant Simulator");
+            logger.LogDebug("Starting Plant Simulator");
             Stopping = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             await Task.Factory.StartNew(Action, cancellationToken, TaskCreationOptions.LongRunning);
         }
 
         private void Action(object obj)
         {
-            Logger.LogDebug("Action is started");
+            logger.LogDebug("Action is started");
 
             while (true)
             {
                 if (Stopping.IsCancellationRequested)
                 {
-                    Logger.LogDebug("Plant Simulator was cancelled");
                     break;
+                }
+
+                if (ShouldSkip())
+                {
+                    continue;
                 }
 
                 Tick();
                 TickCount++;
+                lastExecutionTime = DateTime.Now;
             }
 
-            Logger.LogDebug("Action has ended");
+            logger.LogDebug("Action has ended");
         }
 
         private void Tick()
         {
-            Logger.LogInformation("Ticking");
+            logger.LogInformation("Ticking");
         }
 
         public Task StopAsync()
         {
-            Logger.LogDebug("Stopping the Plant Simulator");
-            
-            Stopping.Cancel();
+            logger.LogDebug("Stopping the Plant Simulator");
             
             Dispose();
 
             return Task.CompletedTask;
         }
 
+        private bool ShouldSkip()
+        {
+            if (options.TickTime <= 0) return false;
+            return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < options.TickTime;
+        }
+
         public void Dispose()
         {
-            Stopping?.Dispose();
+            Stopping?.Cancel();
         }
     }
 }

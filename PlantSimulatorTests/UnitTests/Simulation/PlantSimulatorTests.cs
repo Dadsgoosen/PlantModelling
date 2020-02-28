@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using PlantSimulator.Logging;
+using PlantSimulator.Simulation;
 using PlantSim = PlantSimulator.Simulation.PlantSimulator;
 
 namespace PlantSimulatorTests.UnitTests.Simulation
@@ -12,13 +14,16 @@ namespace PlantSimulatorTests.UnitTests.Simulation
     {
         private Mock<ILoggerAdapter<PlantSim>> logger;
 
+        private Mock<IOptions<SimulationOptions>> options;
+
         private PlantSim plantSimulator;
 
         [SetUp]
         public void Setup()
         {
             logger = new Mock<ILoggerAdapter<PlantSim>>();
-            plantSimulator = new PlantSim(logger.Object);
+            options = new Mock<IOptions<SimulationOptions>>();
+            plantSimulator = new PlantSim(logger.Object, options.Object);
         }
 
         [Test]
