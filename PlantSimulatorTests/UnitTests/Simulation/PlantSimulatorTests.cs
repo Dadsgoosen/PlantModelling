@@ -23,7 +23,9 @@ namespace PlantSimulatorTests.UnitTests.Simulation
         {
             logger = new Mock<ILoggerAdapter<PlantSim>>();
             options = new Mock<IOptions<SimulationOptions>>();
+            options.Setup(opt => opt.Value).Returns(new SimulationOptions());
             plantSimulator = new PlantSim(logger.Object, options.Object);
+
         }
 
         [Test]
