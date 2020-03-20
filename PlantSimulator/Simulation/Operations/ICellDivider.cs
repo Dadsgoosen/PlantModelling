@@ -4,6 +4,7 @@ namespace PlantSimulator.Simulation.Operations
 {
     public interface ICellDivider
     {
-        ICell[] Divide(ICell cell);
+        bool ShouldDivide(IPlantCell cell);
+        IPlantCell[] Divide(IPlantCell cell);
     }
 }
