@@ -2,6 +2,6 @@
 {
     public interface ICellWall
     {
-        public float Width { get; }
+        public float Rigidity { get; }
     }
 }
