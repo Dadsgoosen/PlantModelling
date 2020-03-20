@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-
-namespace PlantSimulator.Simulation.Geometry
+﻿namespace PlantSimulator.Simulation.Geometry
 {
     public interface ICellGeometry
     {
-        public IList<IVertex> Vertices { get; }
+        public IVertex TopCenter { get; }
 
-        public IVertex CellCenter { get; }
+        public IVertex BottomCenter { get; }
+
+        public IFace Face { get; }
+
+        public float Length { get; }
     }
 }
