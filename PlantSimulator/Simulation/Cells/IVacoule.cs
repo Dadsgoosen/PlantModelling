@@ -4,6 +4,6 @@ namespace PlantSimulator.Simulation.Cells
 {
     public interface IVacuole
     {
-        public float Filled { get; set; }
+        public float Volume { get; set; }
     }
 }

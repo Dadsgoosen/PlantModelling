@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option csharp_namespace = "PlantSimulatorClient.Simulations.Protos";
+
+package simulation_client;
+
+service SimulationClientService {
+	rpc TransmitState (.simulation_client.SimulationState) returns (.simulation_client.SimulationStateResponse);
+	rpc SayHello (.simulation_client.ServerHelloRequest) returns (.simulation_client.ServerHelloResponse);
+	rpc SayGoodBye (.simulation_client.ServerGoodByeRequest) returns (.simulation_client.ServerGoodByeResponse);
+}
+
+message ServerHelloRequest {
+	string ip = 1;
+}
+
+message ServerHelloResponse {
+	string id = 1;
+}
+
+message ServerGoodByeResponse {
+
+}
+
+message ServerGoodByeRequest {
+	string id = 1;
+}
+
+message SimulationState {
+	string id = 1;
+	uint64 simulation_time = 2;
+	PlantModelState plant = 3;
+}
+
+message PlantModelState {
+	repeated PlantNodeModelState shoot_system = 1;
+	repeated PlantNodeModelState root_system = 2;
+}
+
+message PlantNodeModelState {
+	int32 x = 1;
+	int32 y = 2;
+	int32 thickness = 3;
+}
+
+message SimulationStateResponse {	
+}
+
+

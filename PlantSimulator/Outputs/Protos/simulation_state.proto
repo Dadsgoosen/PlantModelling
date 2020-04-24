@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "PlantSimulator.Outputs.Protos";
+
+package simulation_state;
+
+service SimulationStateService {
+	rpc TransmitState (.simulation_state.SimulationState) returns (PlantStateTransmissionResponse);
+}
+
+message SimulationState {
+	string id = 1;
+	int64 simulation_time = 2;
+	.simulation_state.PlantModelState plant = 3;
+}
+
+message PlantModelState {
+	repeated .simulation_state.PlantNodeModelState shoot_system = 1;
+	repeated .simulation_state.PlantNodeModelState root_system = 2;
+}
+
+message PlantNodeModelState {
+	int32 x = 1;
+	int32 y = 2;
+	int32 thickness = 3;
+}
+
+message PlantStateTransmissionResponse {
+	bool success = 1;
+}

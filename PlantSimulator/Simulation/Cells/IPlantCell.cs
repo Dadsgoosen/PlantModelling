@@ -19,5 +19,7 @@ namespace PlantSimulator.Simulation.Cells
         public float TurgorPressure { get; }
 
         public bool IsDead { get; }
+
+        public void Kill();
     }
 }

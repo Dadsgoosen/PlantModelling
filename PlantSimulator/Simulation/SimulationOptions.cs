@@ -2,6 +2,7 @@
 {
     public class SimulationOptions
     {
-        public int TickTime { get; set; }
+        public string Id { get; set; }
+        public uint TickTime { get; set; }
     }
 }

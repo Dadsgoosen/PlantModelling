@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using PlantSimulator.Logging;
 
@@ -17,15 +17,19 @@ namespace PlantSimulator.Simulation
 
         public ulong TickCount { get; private set; }
 
-        public Thread Thread;
-
         private DateTime lastExecutionTime;
 
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IOptions<SimulationOptions> options)
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IOptionsMonitor<SimulationOptions> options)
         {
             this.logger = logger;
-            this.options = options.Value;
+            this.options = options.CurrentValue;
             lastExecutionTime = DateTime.Now;
+        }
+
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, SimulationOptions options)
+        {
+            this.logger = logger;
+            this.options = options;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -37,24 +41,20 @@ namespace PlantSimulator.Simulation
 
         private void Action(object obj)
         {
-            logger.LogDebug("Action is started");
+            logger.LogDebug("Action started");
 
             while (true)
             {
-                if (Stopping.IsCancellationRequested)
-                {
-                    break;
-                }
+                if (Stopping.IsCancellationRequested) break;
 
-                if (ShouldSkip())
-                {
-                    continue;
-                }
+                if (ShouldSkip()) continue;
 
                 Tick();
                 TickCount++;
                 lastExecutionTime = DateTime.Now;
             }
+
+            GetType().GetProperties(BindingFlags.CreateInstance | BindingFlags.DeclaredOnly);
 
             logger.LogDebug("Action has ended");
         }
@@ -67,7 +67,7 @@ namespace PlantSimulator.Simulation
         public Task StopAsync()
         {
             logger.LogDebug("Stopping the Plant Simulator");
-            
+
             Dispose();
 
             return Task.CompletedTask;
@@ -75,8 +75,9 @@ namespace PlantSimulator.Simulation
 
         private bool ShouldSkip()
         {
-            if (options.TickTime <= 0) return false;
-            return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < options.TickTime;
+            var tickTime = options.TickTime;
+            if (tickTime <= 0) return false;
+            return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < tickTime;
         }
 
         public void Dispose()

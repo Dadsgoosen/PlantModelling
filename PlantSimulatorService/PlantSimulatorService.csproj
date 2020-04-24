@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="16.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Simulations/Protos/simulation_client.proto" GrpcServices="Server" />
+    <Protobuf Include="Simulations/Protos/simulation_service.proto" GrpcServices="Client" />
+  </ItemGroup>
+
+</Project>

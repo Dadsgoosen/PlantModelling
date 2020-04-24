@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "PlantSimulatorService.Simulations.Protos";
+
+package simulation_service;
+
+service SimulationServerService {
+	rpc StartSimulation (.simulation_service.SimulationConfiguration) returns (.simulation_service.StartSimulationResponse);
+	rpc StopSimulation (.simulation_service.StopSimulationRequest) returns (.simulation_service.StopSimulationResponse);
+}
+
+message SimulationConfiguration {
+	string id = 1;
+	uint32 tick_time = 2;
+}
+
+message StopSimulationRequest {
+}
+
+message StopSimulationResponse {
+}
+
+message StartSimulationResponse {
+}
