@@ -20,4 +20,8 @@
     <ProjectReference Include="..\PlantSimulator\PlantSimulator.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTests\Simulation\Operations\" />
+  </ItemGroup>
+
 </Project>
