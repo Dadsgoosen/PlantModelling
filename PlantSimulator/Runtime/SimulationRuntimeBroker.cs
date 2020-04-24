@@ -1,15 +1,16 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PlantSimulator.Logging;
 using PlantSimulator.Simulation;
+using PlantSimulator = PlantSimulator.Simulation.PlantSimulator;
 
 namespace PlantSimulator.Runtime
 {
     public class SimulationRuntimeBroker : IRuntimeBroker
     {
-        private readonly ILoggerFactory loggerFactory;
-
         public RuntimeStatus Status => runningSimulation != null ? RuntimeStatus.Running : RuntimeStatus.Waiting;
 
         private Task runningSimulation;
@@ -18,10 +19,12 @@ namespace PlantSimulator.Runtime
 
         private readonly ILoggerAdapter<SimulationRuntimeBroker> logger;
 
-        public SimulationRuntimeBroker(ILoggerAdapter<SimulationRuntimeBroker> logger, ILoggerFactory loggerFactory)
+        private readonly IServiceProvider provider;
+
+        public SimulationRuntimeBroker(ILoggerAdapter<SimulationRuntimeBroker> logger, IServiceProvider provider)
         {
             this.logger = logger;
-            this.loggerFactory = loggerFactory;
+            this.provider = provider;
         }
 
         public Task StartSimulationAsync(SimulationOptions options, CancellationToken cancellationToken)
@@ -32,7 +35,14 @@ namespace PlantSimulator.Runtime
 
             var simulation = InstantiateSimulator(options);
 
-            runningSimulation = simulation.StartAsync(cancellationTokenSource.Token);
+            try
+            {
+                runningSimulation = simulation.StartAsync(cancellationTokenSource.Token);
+            }
+            catch (NullReferenceException e)
+            {
+                throw new NullReferenceException("The simulation could not be constructed by the service provider", e);
+            }
 
             return Task.CompletedTask;
         }
@@ -50,13 +60,41 @@ namespace PlantSimulator.Runtime
 
         private Simulation.PlantSimulator InstantiateSimulator(SimulationOptions options)
         {
-            return new Simulation.PlantSimulator(CreateLoggerAdapter<Simulation.PlantSimulator>(), options);
-        }
+            var type = typeof(Simulation.PlantSimulator);
 
-        private ILoggerAdapter<T> CreateLoggerAdapter<T>()
-        {
-            var logger = loggerFactory.CreateLogger<T>();
-            return new LoggerAdapter<T>(logger);
+            InvalidOperationException exception = null;
+
+            foreach (var constructor in type.GetConstructors())
+            {
+                try
+                {
+                    var parameters = constructor.GetParameters();
+
+                    object[] parameterValues = new object[parameters.Length];
+
+                    for (int i = 0; i < parameters.Length; i++)
+                    {
+                        var parameter = parameters[i];
+
+                        if (parameter.ParameterType == options.GetType())
+                        {
+                            parameterValues[i] = options;
+                        }
+                        else
+                        {
+                            parameterValues[i] = provider.GetRequiredService(parameter.ParameterType);
+                        }
+                    }
+                    return (Simulation.PlantSimulator) Activator.CreateInstance(type, parameterValues, null);
+                }
+                catch (InvalidOperationException e)
+                {
+                    exception = e;
+                }
+            }
+
+            if (exception != null) throw exception;
+            return null;
         }
     }
 }

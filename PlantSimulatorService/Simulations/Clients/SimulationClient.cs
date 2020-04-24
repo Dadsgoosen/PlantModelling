@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Grpc.Core;
 using Grpc.Net.Client;
 using PlantSimulatorService.Simulations.Model;
 using PlantSimulatorService.Simulations.Protos;
@@ -26,9 +27,15 @@ namespace PlantSimulatorService.Simulations.Clients
                 TickTime = options.TickTime
             };
 
-            Available = false;
-
-            await Client.StartSimulationAsync(conf);
+            try
+            {
+                await Client.StartSimulationAsync(conf);
+                Available = false;
+            }
+            catch (RpcException e)
+            {
+                Available = true;
+            }
         }
 
         public async Task StopAsync()

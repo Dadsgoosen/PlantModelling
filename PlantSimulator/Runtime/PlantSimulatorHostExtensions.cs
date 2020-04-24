@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlantSimulator.Logging;
 using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.PlantParts;
+using PlantSimulator.Simulation.PlantParts.Generic;
+using PlantSimulator.Simulation.Runner;
 using Serilog;
 
 namespace PlantSimulator.Runtime
@@ -12,8 +15,9 @@ namespace PlantSimulator.Runtime
         public static IServiceCollection AddPlantSimulator(this IServiceCollection service, IConfiguration configuration)
         {
             service.Configure<SimulationOptions>(configuration.GetSection("Simulation"));
-            service.AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-            service.AddSingleton<ISimulator, Simulation.PlantSimulator>();
+            service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
+            service.AddTransient<IPlant, GenericPlant>();
+            service.AddTransient<IPlantRunner, GenericPlantRunner>();
             service.AddSingleton<IRuntimeBroker, SimulationRuntimeBroker>();
             service.AddSingleton<IRuntime, Runtime>();
             return service;

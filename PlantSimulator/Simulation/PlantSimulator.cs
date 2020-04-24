@@ -4,12 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using PlantSimulator.Logging;
+using PlantSimulator.Simulation.Runner;
 
 namespace PlantSimulator.Simulation
 {
     public class PlantSimulator : ISimulator
     {
         private readonly ILoggerAdapter<PlantSimulator> logger;
+
+        private readonly IPlantRunner plantRunner;
 
         private readonly SimulationOptions options;
 
@@ -19,17 +22,13 @@ namespace PlantSimulator.Simulation
 
         private DateTime lastExecutionTime;
 
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IOptionsMonitor<SimulationOptions> options)
-        {
-            this.logger = logger;
-            this.options = options.CurrentValue;
-            lastExecutionTime = DateTime.Now;
-        }
-
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, SimulationOptions options)
+        public event EventHandler<PlantSimulatorTickEvent> OnTick; 
+        
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, SimulationOptions options, IPlantRunner plantRunner)
         {
             this.logger = logger;
             this.options = options;
+            this.plantRunner = plantRunner;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -54,14 +53,12 @@ namespace PlantSimulator.Simulation
                 lastExecutionTime = DateTime.Now;
             }
 
-            GetType().GetProperties(BindingFlags.CreateInstance | BindingFlags.DeclaredOnly);
-
             logger.LogDebug("Action has ended");
         }
 
         private void Tick()
         {
-            logger.LogInformation("Ticking");
+            plantRunner.Tick();
         }
 
         public Task StopAsync()
@@ -78,6 +75,13 @@ namespace PlantSimulator.Simulation
             var tickTime = options.TickTime;
             if (tickTime <= 0) return false;
             return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < tickTime;
+        }
+
+        private void InvokeTickEvent()
+        {
+            var handler = OnTick;
+
+            handler?.Invoke(this, new PlantSimulatorTickEvent(plantRunner.Plant));
         }
 
         public void Dispose()
