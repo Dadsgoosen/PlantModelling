@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {FrontpageComponent} from './pages/frontpage/frontpage.component';
 
 
 const routes: Routes = [
@@ -9,8 +8,12 @@ const routes: Routes = [
     loadChildren: () => import('src/app/pages/frontpage/frontpage.module').then(m => m.FrontpageModule)
   },
   {
-    path: 'simulation',
+    path: 'simulations',
     loadChildren: () => import('src/app/pages/simulation/simulation.module').then(m => m.SimulationModule)
+  },
+  {
+    path: 'clients',
+    loadChildren: () => import('src/app/pages/client/client.module').then(m => m.ClientModule)
   }
 ];
 

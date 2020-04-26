@@ -11,7 +11,12 @@ export const menuItems: MenuItem[] = [
     alt: 'Go to the front page'
   },
   {
-    link: '/simulation',
+    link: '/clients',
+    icon: 'computer',
+    alt: 'See a list of connected clients'
+  },
+  {
+    link: '/simulations',
     icon: 'control_point',
     alt: 'Create a new plant configuration'
   }

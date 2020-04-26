@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-page-title',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageTitleComponent implements OnInit {
 
-  constructor() { }
+  @Input()
+  public pageTitle: string;
+
+  constructor(private _title: Title) { }
+
+  private setTitle(): string {
+    if (this.pageTitle) { return this.pageTitle; }
+    return 'Plant Visualiser';
+  }
 
   ngOnInit(): void {
+    this._title.setTitle(this.setTitle());
   }
 
 }
