@@ -12,6 +12,8 @@ namespace PlantSimulatorService.Simulations.Clients
 
         public bool Available { get; private set; }
 
+        public string Host { get; set; }
+
         public SimulationServerService.SimulationServerServiceClient Client { get; set; }
 
         public SimulationClient()

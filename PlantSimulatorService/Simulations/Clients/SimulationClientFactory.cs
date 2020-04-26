@@ -13,6 +13,7 @@ namespace PlantSimulatorService.Simulations.Clients
             return new SimulationClient
             {
                 Id = Guid.NewGuid().ToString(),
+                Host = host,
                 Client = new SimulationServerService.SimulationServerServiceClient(GrpcChannel.ForAddress(host))
             };
         }

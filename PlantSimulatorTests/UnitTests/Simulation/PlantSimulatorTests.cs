@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using PlantSimulator.Logging;
 using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.Runner;
 using PlantSim = PlantSimulator.Simulation.PlantSimulator;
 
 namespace PlantSimulatorTests.UnitTests.Simulation
@@ -14,7 +15,9 @@ namespace PlantSimulatorTests.UnitTests.Simulation
     {
         private Mock<ILoggerAdapter<PlantSim>> logger;
 
-        private Mock<IOptions<SimulationOptions>> options;
+        private Mock<SimulationOptions> options;
+        
+        private Mock<IPlantRunner> runner;
 
         private PlantSim plantSimulator;
 
@@ -22,9 +25,9 @@ namespace PlantSimulatorTests.UnitTests.Simulation
         public void Setup()
         {
             logger = new Mock<ILoggerAdapter<PlantSim>>();
-            options = new Mock<IOptions<SimulationOptions>>();
-            options.Setup(opt => opt.Value).Returns(new SimulationOptions());
-            plantSimulator = new PlantSim(logger.Object, options.Object.Value);
+            options = new Mock<SimulationOptions>();
+            runner = new Mock<IPlantRunner>();
+            plantSimulator = new PlantSim(logger.Object, options.Object, runner.Object);
 
         }
 
