@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using PlantSimulator.Logging;
 using PlantSimulator.Runtime.Parameters;
 using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.Options;
 using Serilog;
 using Serilog.Core;
 

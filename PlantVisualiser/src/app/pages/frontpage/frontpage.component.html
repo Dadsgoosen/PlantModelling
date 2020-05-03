@@ -1,29 +1,14 @@
 <app-page-top>
   <app-page-title>Plant Visualiser</app-page-title>
-  <button mat-stroked-button>
+  <!--button mat-stroked-button>
     New Simulation
-  </button>
+  </button-->
 </app-page-top>
 <app-page-body>
-  <div class="col-12 mt-3">
+  <div class="col-12 my-3">
     <h2>Earlier Simulations</h2>
   </div>
   <div class="col-12">
-    <div class="row mb-3">
-      <div class="col-2">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Simulation</mat-card-title>
-            <mat-card-subtitle><time>Yesterday</time></mat-card-subtitle>
-          </mat-card-header>
-          <img mat-card-image
-               src="http://mrqawwasscience.weebly.com/uploads/1/0/8/5/10857298/9865698.gif?318"
-               alt="Simulation Result">
-          <mat-card-actions align="end">
-            <a routerLink="/simulation" mat-button>See More</a>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-    </div>
+    <app-simulation-overview></app-simulation-overview>
   </div>
 </app-page-body>

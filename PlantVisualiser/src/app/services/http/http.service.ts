@@ -15,8 +15,7 @@ export abstract class HttpService {
   }
 
   protected getRequest<T extends object>(url: string, params?: HttpParams, headers?): Observable<T> {
-    return this._http.get(HttpService.createUrl(url), {params, headers})
-      .pipe(catchError(this.handleError)) as Observable<T>;
+    return this._http.get(HttpService.createUrl(url), {params, headers}).pipe(catchError(this.handleError)) as Observable<T>;
   }
 
   protected postRequest<T extends object>(url: string, body?: any, params?: HttpParams, headers?): Observable<T> {

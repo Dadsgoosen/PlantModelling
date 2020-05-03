@@ -18,5 +18,6 @@ namespace PlantSimulator.Simulation.Geometry
             BottomCenter = bottomCenter;
             Face = faceGeometry;
         }
+
     }
 }

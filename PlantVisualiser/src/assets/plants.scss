@@ -1,0 +1,11 @@
+#linear {
+  --plant-stop: rgb(76, 104, 17);
+  --plant-start: rgb(143, 191, 47);
+}
+
+.shoot-system-stem {
+  fill: none;
+  stroke-width: 10px;
+  stroke: url(#linear);
+  stroke-linecap: round;
+}

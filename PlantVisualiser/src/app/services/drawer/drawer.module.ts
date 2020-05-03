@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {PlantDrawerDirective} from './plant-drawer.directive';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    PlantDrawerDirective
+  ],
+  exports: [
+    PlantDrawerDirective
+  ],
   imports: [
     CommonModule
   ]

@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using PlantSimulator.Logging;
-using PlantSimulator.Simulation.Runner;
+using PlantSimulator.Simulation.Operations;
+using PlantSimulator.Simulation.Options;
 
 namespace PlantSimulator.Simulation
 {
@@ -58,7 +59,7 @@ namespace PlantSimulator.Simulation
 
         private void Tick()
         {
-            plantRunner.Tick();
+            plantRunner.Tick(new SimulationStateSnapshot(TickCount));
         }
 
         public Task StopAsync()

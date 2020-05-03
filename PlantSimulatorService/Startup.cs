@@ -28,11 +28,11 @@ namespace PlantSimulatorService
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddSimulation(Configuration);
             services.AddTransient<IClientContext, ClientContext>();
             services.AddTransient<ISimulationContext, SimulationContext>();
             services.AddControllers();
-
             services.AddGrpc();
         }
 
@@ -47,6 +47,11 @@ namespace PlantSimulatorService
             {
                 app.UseHsts();
             }
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().Build();
+            });
 
             app.UseRouting();
 

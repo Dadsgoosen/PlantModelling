@@ -41,6 +41,7 @@ message PlantNodeModelState {
 	int32 x = 1;
 	int32 y = 2;
 	int32 thickness = 3;
+	repeated PlantNodeModelState connections = 4;
 }
 
 message SimulationStateResponse {	

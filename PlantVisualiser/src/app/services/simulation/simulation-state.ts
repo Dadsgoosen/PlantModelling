@@ -2,6 +2,7 @@ export interface PlantNodeModel {
   x: number;
   y: number;
   thickness: number;
+  connections: PlantNodeModel[][];
 }
 
 interface PlantModel {

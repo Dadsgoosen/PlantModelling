@@ -4,8 +4,8 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using PlantSimulator.Logging;
-using PlantSimulator.Simulation;
-using PlantSimulator.Simulation.Runner;
+using PlantSimulator.Simulation.Operations;
+using PlantSimulator.Simulation.Options;
 using PlantSim = PlantSimulator.Simulation.PlantSimulator;
 
 namespace PlantSimulatorTests.UnitTests.Simulation

@@ -2,7 +2,7 @@
 
 namespace PlantSimulator.Simulation.PlantParts
 {
-    public interface INode : IPlantPart
+    public interface INode
     {
         /// <summary>
         /// Get all the connected petioles

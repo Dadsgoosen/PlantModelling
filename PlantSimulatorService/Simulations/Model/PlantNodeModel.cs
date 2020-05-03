@@ -1,4 +1,6 @@
-﻿namespace PlantSimulatorService.Simulations.Model
+﻿using System.Collections.Generic;
+
+namespace PlantSimulatorService.Simulations.Model
 {
     /// <summary>
     /// Data Access Object for a 2D point to describe the plant.
@@ -19,5 +21,10 @@
         /// Thickness of the plant at the (<see cref="X"/>, <see cref="Y"/>)
         /// </summary>
         public int Thickness { get; set; }
+
+        /// <summary>
+        /// Branch connections to this node
+        /// </summary>
+        public IEnumerable<PlantNodeModel> Connections { get; set; }
     }
 }

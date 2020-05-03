@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.Options;
 
 namespace PlantSimulator.Runtime
 {

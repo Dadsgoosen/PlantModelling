@@ -27,7 +27,7 @@ namespace PlantSimulatorClient.Simulations
                 return kestrelIp;
             }
 
-            throw new NullReferenceException("You must either provide 'SimulationClient:Address' or 'Kestrel:EndPoints:Http:Url'");
+            throw new NullReferenceException("You must either provide 'SimulationClient:Address' or 'Kestrel:EndPoints:Http:Url' in the appsettings.json");
         }
     }
 }

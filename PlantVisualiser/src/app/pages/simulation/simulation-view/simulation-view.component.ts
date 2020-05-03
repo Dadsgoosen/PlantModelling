@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {SimulationState} from '../../../services/simulation/simulation-state';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-simulation-view',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SimulationViewComponent implements OnInit {
 
-  constructor() { }
+  public simulation: SimulationState;
+
+  constructor(private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this._route.data.subscribe(value => this.simulation = value.simulation);
+  }
+
+  public parseDateTime(date: string): string {
+    const d = new Date(date);
+    return `${d.getDate()}/${d.getMonth()} - ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
   }
 
 }

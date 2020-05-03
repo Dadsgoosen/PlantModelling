@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PlantSimulatorService.Simulations.Protos;
 
@@ -12,7 +13,8 @@ namespace PlantSimulatorService.Simulations.Model
             {
                 Id = state.Id,
                 SimulationTime = state.SimulationTime,
-                Plant = state.Plant.ToPlantModel()
+                Plant = state.Plant.ToPlantModel(),
+                Date = DateTime.Now
             };
         }
 
@@ -39,7 +41,8 @@ namespace PlantSimulatorService.Simulations.Model
                 {
                     Thickness = nodeState.Thickness,
                     X = nodeState.X,
-                    Y = nodeState.Y
+                    Y = nodeState.Y,
+                    Connections = nodeState.Connections.ToPlantNodeModels()
                 };
             }
 

@@ -25,45 +25,7 @@ namespace PlantSimulator.Outputs
 
         public async Task TransmitStateAsync(SimulationState state)
         {
-            await client.TransmitStateAsync(MapSimulationState(state));
-        }
-
-        private static GrpcSimulationState MapSimulationState(SimulationState state)
-        {
-            GrpcPlantModelState plantModelState = new GrpcPlantModelState
-            {
-                RootSystem = { MapNodeSystem(state.Plant.RootSystem) },
-                ShootSystem = { MapNodeSystem(state.Plant.ShootSystem) }
-            };
-
-            return new GrpcSimulationState
-            {
-                Id = state.Id,
-                SimulationTime = state.SimulationTime,
-                Plant = plantModelState
-            };
-        }
-
-        private static IEnumerable<GrpcPlantNodeModelState> MapNodeSystem(IEnumerable<PlantNodeModelState> nodes)
-        {
-            IList<GrpcPlantNodeModelState> grpcNodes = new List<GrpcPlantNodeModelState>(nodes.Count());
-
-            foreach (var node in nodes)
-            {
-                grpcNodes.Add(MapNodeState(node));
-            }
-
-            return grpcNodes;
-        }
-
-        private static GrpcPlantNodeModelState MapNodeState(PlantNodeModelState node)
-        {
-            return new GrpcPlantNodeModelState
-            {
-                X = node.X,
-                Y = node.Y,
-                Thickness = node.Thickness
-            };
+            await client.TransmitStateAsync(state.ToGrpcSimulationState());
         }
     }
 }

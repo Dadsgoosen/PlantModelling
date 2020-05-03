@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using PlantSimulator.Logging;
-using PlantSimulator.Simulation;
-using PlantSimulator = PlantSimulator.Simulation.PlantSimulator;
+using PlantSimulator.Runtime.Helpers;
+using PlantSimulator.Simulation.Options;
 
 namespace PlantSimulator.Runtime
 {
@@ -33,7 +31,7 @@ namespace PlantSimulator.Runtime
 
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            var simulation = InstantiateSimulator(options);
+            var simulation = provider.ResolvePlantSimulatorConstructor(options);
 
             try
             {
@@ -56,45 +54,6 @@ namespace PlantSimulator.Runtime
             await runningSimulation;
 
             runningSimulation = null;
-        }
-
-        private Simulation.PlantSimulator InstantiateSimulator(SimulationOptions options)
-        {
-            var type = typeof(Simulation.PlantSimulator);
-
-            InvalidOperationException exception = null;
-
-            foreach (var constructor in type.GetConstructors())
-            {
-                try
-                {
-                    var parameters = constructor.GetParameters();
-
-                    object[] parameterValues = new object[parameters.Length];
-
-                    for (int i = 0; i < parameters.Length; i++)
-                    {
-                        var parameter = parameters[i];
-
-                        if (parameter.ParameterType == options.GetType())
-                        {
-                            parameterValues[i] = options;
-                        }
-                        else
-                        {
-                            parameterValues[i] = provider.GetRequiredService(parameter.ParameterType);
-                        }
-                    }
-                    return (Simulation.PlantSimulator) Activator.CreateInstance(type, parameterValues, null);
-                }
-                catch (InvalidOperationException e)
-                {
-                    exception = e;
-                }
-            }
-
-            if (exception != null) throw exception;
-            return null;
         }
     }
 }

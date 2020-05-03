@@ -1,4 +1,5 @@
 ﻿using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.Options;
 using PlantSimulatorClient.Simulations.Protos;
 
 namespace PlantSimulatorClient.Simulations.Services

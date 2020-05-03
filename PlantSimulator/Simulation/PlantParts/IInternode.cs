@@ -1,6 +1,6 @@
 ﻿namespace PlantSimulator.Simulation.PlantParts
 {
-    public interface IInternode : IPlantPart
+    public interface IInternode 
     {
         public INode UpperNode { get; }
 

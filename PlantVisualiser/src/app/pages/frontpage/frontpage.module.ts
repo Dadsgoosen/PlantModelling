@@ -4,6 +4,8 @@ import { FrontpageComponent } from './frontpage.component';
 import {LayoutModule} from '../../shared/layout/layout.module';
 import {RouterModule, Routes} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
+import { SimulationOverviewComponent } from './components/simulation-overview/simulation-overview.component';
+import { SimulationCardComponent } from './components/simulation-card/simulation-card.component';
 
 const routes: Routes = [{
   path: '',
@@ -12,7 +14,9 @@ const routes: Routes = [{
 
 @NgModule({
   declarations: [
-    FrontpageComponent
+    FrontpageComponent,
+    SimulationOverviewComponent,
+    SimulationCardComponent
   ],
     imports: [
         CommonModule,

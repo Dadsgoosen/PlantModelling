@@ -2,7 +2,7 @@
 
 namespace PlantSimulator.Simulation.PlantParts
 {
-    public interface IRoot : IPlantPart
+    public interface IRoot
     {
         public IEnumerable<IRoot> ConnectedRoots { get; }
 

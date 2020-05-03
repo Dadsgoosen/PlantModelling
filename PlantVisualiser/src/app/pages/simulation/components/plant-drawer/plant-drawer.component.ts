@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {DrawerService} from '../../../../services/drawer/drawer.service';
+import {SimulationState} from '../../../../services/simulation/simulation-state';
+import {simulationStateTest} from '../../../../services/drawer/test-drawer-data';
 
 @Component({
   selector: 'app-plant-drawer',
@@ -7,9 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlantDrawerComponent implements OnInit {
 
-  constructor() { }
+  @Input()
+  public simulation: SimulationState;
+
+  constructor(private _drawer: DrawerService) { }
 
   ngOnInit(): void {
+    this.simulation = simulationStateTest;
   }
 
 }

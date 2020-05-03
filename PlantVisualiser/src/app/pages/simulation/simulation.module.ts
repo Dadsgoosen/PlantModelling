@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SimulationNewComponent } from './simulation-new/simulation-new.component';
 import {RouterModule, Routes} from '@angular/router';
 import {LayoutModule} from '../../shared/layout/layout.module';
+import { SimulationViewComponent } from './simulation-view/simulation-view.component';
+import {SimulationResolverService} from '../../services/simulation/simulation-resolver.service';
+import { PlantDrawerComponent } from './components/plant-drawer/plant-drawer.component';
+import {DrawerModule} from '../../services/drawer/drawer.module';
 
 const routes: Routes = [
   {
@@ -13,16 +17,22 @@ const routes: Routes = [
   {
     path: 'new',
     component: SimulationNewComponent
+  },
+  {
+    path: ':id',
+    component: SimulationViewComponent,
+    resolve: {simulation: SimulationResolverService}
   }
 ];
 
 
 @NgModule({
-  declarations: [SimulationNewComponent],
+  declarations: [SimulationNewComponent, SimulationViewComponent, PlantDrawerComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    LayoutModule
+    LayoutModule,
+    DrawerModule
   ]
 })
 export class SimulationModule { }

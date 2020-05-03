@@ -3,7 +3,7 @@
     /// <summary>
     /// Is a stem support 
     /// </summary>
-    public interface IPetiole : IPlantPart
+    public interface IPetiole
     {
         /// <summary>
         /// The angle between the shoot stem and the petiole, branch or bud

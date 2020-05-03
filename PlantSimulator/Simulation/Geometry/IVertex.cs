@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PlantSimulator.Simulation.Geometry
+﻿namespace PlantSimulator.Simulation.Geometry
 {
     /// <summary>
     /// Interface for representing a point in a 3-dimensional space.
@@ -27,6 +25,13 @@ namespace PlantSimulator.Simulation.Geometry
         /// Both the <see cref="X"/>, <see cref="Y"/> and <see cref="Z"/> will be overwritten by the new <see cref="location"/>.
         /// </summary>
         /// <param name="location">The new location.</param>
-        void MoveTo(IVertex location);
+        public void MoveTo(IVertex location)
+        {
+            X = location.X;
+            Y = location.Y;
+            Z = location.Z;
+        }
+
+        public bool Equals(IVertex vertex);
     }
 }

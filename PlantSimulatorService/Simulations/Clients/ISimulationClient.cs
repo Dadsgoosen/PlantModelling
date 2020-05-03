@@ -9,6 +9,8 @@ namespace PlantSimulatorService.Simulations.Clients
 
         public bool Available { get; }
 
+        public string Host { get; }
+
         public Task StartAsync(SimulationOptions options);
 
         public Task StopAsync();

@@ -17,5 +17,15 @@ namespace PlantSimulator.Simulation.Geometry
         {
             Points = (IVertex[]) vertices ?? vertices.ToArray();
         }
+
+        public bool Equals(IFace face)
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                if (!face.Points[i].Equals(Points[i])) return false;
+            }
+
+            return true;
+        }
     }
 }

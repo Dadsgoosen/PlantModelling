@@ -17,5 +17,20 @@ namespace PlantSimulator.Simulation.Geometry
             double z = Math.Pow(vertex.Z - to.Z, 2);
             return (float)Math.Sqrt(x + y + z);
         }
+
+        public static IVertex Add(this IVertex a, IVertex b)
+        {
+            a.X += b.X;
+            a.Y += b.Y;
+            a.Z += b.Z;
+            return a;
+        }
+        public static IVertex Subtract(this IVertex a, IVertex b)
+        {
+            a.X -= b.X;
+            a.Y -= b.Y;
+            a.Z -= b.Z;
+            return a;
+        }
     }
 }

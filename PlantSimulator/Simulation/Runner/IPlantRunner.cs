@@ -7,6 +7,6 @@ namespace PlantSimulator.Simulation.Runner
     {
         public IPlant Plant { get; }
 
-        public void Tick();
+        public void Tick(SimulationStateSnapshot state);
     }
 }
