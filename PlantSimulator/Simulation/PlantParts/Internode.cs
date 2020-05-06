@@ -1,10 +1,10 @@
 ﻿namespace PlantSimulator.Simulation.PlantParts
 {
-    public interface IInternode 
+    public abstract class Internode : PlantPart
     {
-        public INode UpperNode { get; }
+        public Node UpperNode { get; }
 
-        public INode LowerNode { get; }
+        public Node LowerNode { get; }
 
         public bool HasUpperNode()
         {

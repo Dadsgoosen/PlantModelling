@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,7 @@ namespace PlantSimulator.Simulation
 
         private readonly IPlantRunner plantRunner;
 
-        private readonly SimulationOptions options;
+        private readonly PlantSimulationOptions options;
 
         private CancellationTokenSource Stopping { get; set; }
 
@@ -25,7 +26,7 @@ namespace PlantSimulator.Simulation
 
         public event EventHandler<PlantSimulatorTickEvent> OnTick; 
         
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, SimulationOptions options, IPlantRunner plantRunner)
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, PlantSimulationOptions options, IPlantRunner plantRunner)
         {
             this.logger = logger;
             this.options = options;
@@ -50,15 +51,27 @@ namespace PlantSimulator.Simulation
                 if (ShouldSkip()) continue;
 
                 Tick();
+
+                if (ShouldSendInvokeTickEvent())
+                {
+                    InvokeTickEvent();
+                }
+                
                 TickCount++;
                 lastExecutionTime = DateTime.Now;
             }
+
+            logger.LogDebug("Action loop has ended and invoking the tick event");
+
+            InvokeTickEvent();
 
             logger.LogDebug("Action has ended");
         }
 
         private void Tick()
         {
+            logger.LogDebug("Ticking...");
+
             plantRunner.Tick(new SimulationStateSnapshot(TickCount));
         }
 
@@ -73,16 +86,23 @@ namespace PlantSimulator.Simulation
 
         private bool ShouldSkip()
         {
-            var tickTime = options.TickTime;
+            var tickTime = options.Simulation.TickTime;
             if (tickTime <= 0) return false;
             return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < tickTime;
         }
 
+        private bool ShouldSendInvokeTickEvent()
+        {
+            return TickCount % options.Simulation.TickEventTime == 0;
+        }
+
         private void InvokeTickEvent()
         {
+            logger.LogInformation("Invoking {OnTick} event", nameof(OnTick));
+
             var handler = OnTick;
 
-            handler?.Invoke(this, new PlantSimulatorTickEvent(plantRunner.Plant));
+            handler?.Invoke(this, new PlantSimulatorTickEvent(plantRunner.Plant, TickCount));
         }
 
         public void Dispose()

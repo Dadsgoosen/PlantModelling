@@ -15,7 +15,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation
     {
         private Mock<ILoggerAdapter<PlantSim>> logger;
 
-        private Mock<SimulationOptions> options;
+        private Mock<PlantSimulationOptions> options;
         
         private Mock<IPlantRunner> runner;
 
@@ -25,7 +25,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation
         public void Setup()
         {
             logger = new Mock<ILoggerAdapter<PlantSim>>();
-            options = new Mock<SimulationOptions>();
+            options = new Mock<PlantSimulationOptions>();
             runner = new Mock<IPlantRunner>();
             plantSimulator = new PlantSim(logger.Object, options.Object, runner.Object);
 

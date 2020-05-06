@@ -6,6 +6,6 @@ namespace PlantSimulator.Outputs
 {
     public interface ISimulationStateFactory
     {
-        public SimulationState Create(IPlant plant, SimulationStateData data);
+        public SimulationState Create(IPlant plant, SimulationStateSnapshot data);
     }
 }

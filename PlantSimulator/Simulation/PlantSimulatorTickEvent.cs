@@ -7,9 +7,12 @@ namespace PlantSimulator.Simulation
     {
         public IPlant Plant { get; }
 
-        public PlantSimulatorTickEvent(IPlant plant)
+        public ulong TickTimer { get; }
+
+        public PlantSimulatorTickEvent(IPlant plant, ulong tickTimer)
         {
             Plant = plant;
+            TickTimer = tickTimer;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace PlantSimulator.Runtime.Helpers
 {
     internal static class ServiceProviderExtensions
     {
-        public static Simulation.PlantSimulator ResolvePlantSimulatorConstructor(this IServiceProvider provider, SimulationOptions options)
+        public static Simulation.PlantSimulator ResolvePlantSimulatorConstructor(this IServiceProvider provider, PlantSimulationOptions options)
         {
             var type = typeof(Simulation.PlantSimulator);
 

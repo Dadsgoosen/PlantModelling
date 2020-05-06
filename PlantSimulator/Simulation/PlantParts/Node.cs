@@ -2,25 +2,25 @@
 
 namespace PlantSimulator.Simulation.PlantParts
 {
-    public interface INode
+    public abstract class Node
     {
         /// <summary>
         /// Get all the connected petioles
         /// </summary>
         /// <remarks>Can be null</remarks>
-        public IEnumerable<IPetiole> Petioles { get; }
+        public IEnumerable<Petiole> Petioles { get; }
 
         /// <summary>
         /// Get the upper connected internode
         /// </summary>
         /// <remarks>Can be null</remarks>
-        public IInternode UpperInternode { get; set; }
+        public Internode UpperInternode { get; set; }
 
         /// <summary>
         /// Get the lower connected internode
         /// </summary>
         /// <remarks>Can be null</remarks>
-        public IInternode LowerInternode { get; }
+        public Internode LowerInternode { get; }
 
         /// <summary>
         /// Checks whether the Node has a petiole connected

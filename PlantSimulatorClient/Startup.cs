@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +35,7 @@ namespace PlantSimulatorClient
             services.AddSingleton(provider => GrpcChannel.ForAddress(Configuration["SimulationServer:Address"]));
             services.AddTransient(provider =>
                 new SimulationClientService.SimulationClientServiceClient(provider.GetService<GrpcChannel>()));
+            services.AddTransient<ISimulatorEventHandler, GrpcSimulationEventHandler>();
             services.AddHostedService<SimulationServerHost>();
         }
 
@@ -54,11 +52,6 @@ namespace PlantSimulatorClient
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<SimulationServerService>();
-
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                });
             });
         }
     }

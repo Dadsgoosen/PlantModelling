@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using Google.Protobuf.Collections;
 using PlantSimulatorService.Simulations.Protos;
 
 namespace PlantSimulatorService.Simulations.Model
@@ -40,13 +42,27 @@ namespace PlantSimulatorService.Simulations.Model
                 models[i] = new PlantNodeModel
                 {
                     Thickness = nodeState.Thickness,
-                    X = nodeState.X,
-                    Y = nodeState.Y,
+                    Coordinates = ConvertToVectors(nodeState.Coordinates),
                     Connections = nodeState.Connections.ToPlantNodeModels()
                 };
             }
 
             return models;
+        }
+
+        private static Vector2[] ConvertToVectors(IReadOnlyCollection<Coordinate> coordinates)
+        {
+            var vectors = new Vector2[coordinates.Count];
+            
+            int i = 0;
+            
+            foreach (var vector in vectors)
+            {
+                vectors[i] = new Vector2(vector.X, vector.Y);
+                i++;
+            }
+
+            return vectors;
         }
     }
 }

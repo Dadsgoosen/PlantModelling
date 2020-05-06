@@ -6,9 +6,9 @@ namespace PlantSimulatorClient.Simulations.Services
 {
     internal static class SimulationServerRequestExtensions
     {
-        public static SimulationOptions ToSimulationOptions(this SimulationConfiguration configuration)
+        public static PlantSimulationOptions ToSimulationOptions(this SimulationConfiguration configuration)
         {
-            return new SimulationOptions
+            return new PlantSimulationOptions
             {
                 Id = configuration.Id,
                 TickTime = configuration.TickTime

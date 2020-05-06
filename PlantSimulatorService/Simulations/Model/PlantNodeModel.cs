@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
+using PlantSimulatorService.Simulations.Protos;
 
 namespace PlantSimulatorService.Simulations.Model
 {
@@ -8,14 +10,9 @@ namespace PlantSimulatorService.Simulations.Model
     public class PlantNodeModel
     {
         /// <summary>
-        /// X coordinate for the plant part
+        /// Coordinates that defines this <see cref="PlantModelState"/>
         /// </summary>
-        public int X { get; set; }
-
-        /// <summary>
-        /// Y coordinate for the plant part
-        /// </summary>
-        public int Y { get; set; }
+        public Vector2[] Coordinates { get; set; }
 
         /// <summary>
         /// Thickness of the plant at the (<see cref="X"/>, <see cref="Y"/>)

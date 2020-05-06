@@ -5,7 +5,6 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 import {MatRippleModule} from '@angular/material/core';
 import {MatListModule} from '@angular/material/list';
-import {HttpClientModule} from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 

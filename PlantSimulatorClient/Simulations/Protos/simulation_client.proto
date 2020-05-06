@@ -38,13 +38,15 @@ message PlantModelState {
 }
 
 message PlantNodeModelState {
-	int32 x = 1;
-	int32 y = 2;
-	int32 thickness = 3;
-	repeated PlantNodeModelState connections = 4;
+	repeated .simulation_client.Coordinate coordinates = 1;
+	int32 thickness = 2;
+	repeated PlantNodeModelState connections = 3;
 }
 
 message SimulationStateResponse {	
 }
 
-
+message Coordinate {
+	int32 X = 1;
+	int32 Y = 2;
+}

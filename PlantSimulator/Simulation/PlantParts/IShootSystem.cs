@@ -2,6 +2,6 @@
 {
     public interface IShootSystem
     {
-        public IStem Stem { get; }
+        public Stem Stem { get; }
     }
 }

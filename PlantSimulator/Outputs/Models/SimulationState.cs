@@ -13,7 +13,7 @@
         /// <summary>
         /// Tick timer for the simulation state
         /// </summary>
-        public long SimulationTime { get; set; }
+        public ulong SimulationTime { get; set; }
 
         /// <summary>
         /// Plant Model Description for the Shoot and Root System

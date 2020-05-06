@@ -3,22 +3,18 @@ using PlantSimulator.Simulation.Cells;
 
 namespace PlantSimulator.Simulation.PlantParts.Generic
 {
-    public class GenericStem : PlantPart, IStem
+    public class GenericStem : Stem
     {
-        public IInternode Internode { get; }
-
-        public GenericStem(IEnumerable<IPlantCell> cells)
+        public GenericStem(IEnumerable<IPlantCell> cells, int branchCount) : base(null, branchCount)
         {
             Cells = new List<IPlantCell>(cells);
             Connections = new List<IPlantPart>(1);
-            Internode = null;
         }
 
-        public GenericStem(IEnumerable<IPlantCell> cells, IInternode internode)
+        public GenericStem(IEnumerable<IPlantCell> cells, Internode internode, int branchCount) : base(internode, branchCount)
         {
             Cells = new List<IPlantCell>(cells);
-            Connections = new[] {(IPlantPart) internode};
-            Internode = internode;
+            Connections = new[] {internode};
         }
     }
 }

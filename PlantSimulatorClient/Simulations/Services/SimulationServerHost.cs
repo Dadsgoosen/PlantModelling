@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
@@ -35,9 +36,9 @@ namespace PlantSimulatorClient.Simulations.Services
         {
             logger.LogInformation("Sending Hello Message to Server");
 
-            ServerHelloResponse reply = await client.SayHelloAsync(new ServerHelloRequest {Ip = ipOptions.Ip});
+            var response = await SayHello();
 
-            Id = reply.Id;
+            Id = response.Id;
 
             logger.LogInformation("Received Id " + Id);
         }
@@ -47,6 +48,25 @@ namespace PlantSimulatorClient.Simulations.Services
             logger.LogInformation("Saying Goodbye");
 
             await client.SayGoodByeAsync(new ServerGoodByeRequest{Id = Id});
+        }
+
+        private async Task<ServerHelloResponse> SayHello()
+        {
+            ServerHelloResponse response = null;
+
+            do
+            {
+                try
+                {
+                    response = await client.SayHelloAsync(new ServerHelloRequest { Ip = ipOptions.Ip });
+                }
+                catch (RpcException e)
+                {
+                    logger.LogWarning(e, "Could not say hello to server, retrying...");
+                }
+            } while (response == null);
+
+            return response;
         }
     }
 }

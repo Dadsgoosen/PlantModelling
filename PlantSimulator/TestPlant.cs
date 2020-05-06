@@ -11,26 +11,34 @@ namespace PlantSimulator
     {
         public static IPlant CreatePlant()
         {
-            var stem = new GenericStem(CreateStemCells());
+            var stem = new GenericStem(CreateStemCells(), 0);
 
             IShootSystem shoot = new GenericShootSystem(stem);
-            IRootSystem root = new GenericRootSystem(new GenericRoot(new List<IPlantCell>(0), new List<IRoot>(0)));
+            IRootSystem root = new GenericRootSystem(new GenericRoot(new List<IPlantCell>(0), new List<Root>(0)));
 
             return new GenericPlant(shoot, root);
         }
 
         private static IEnumerable<IPlantCell> CreateStemCells()
         {
-            var cells = new List<IPlantCell>();
-
             const int radius = 60;
 
-            for (int i = 0; i < 6; i++)
-            {
-                cells.Add(CreateCell(radius, i * radius,0,0));
-            }
+            const float w = 2 * radius;
 
-            return cells;
+            float h = (float) Math.Sqrt(3) * radius;
+
+            const float horizontalSpacing = w * 0.75F;
+
+            return new[]
+            {
+                CreateCell(radius, 0, 0, 0),
+                CreateCell(radius, 0, 0, h),
+                CreateCell(radius, horizontalSpacing, 0, h * 0.5F),
+                CreateCell(radius, horizontalSpacing, 0, h * -0.5F),
+                CreateCell(radius, 0, 0, -h),
+                CreateCell(radius, -horizontalSpacing, 0, h * 0.5F),
+                CreateCell(radius, -horizontalSpacing, 0, h * -0.5F),
+            };
         }
 
         private static IPlantCell CreateCell(float radius, float x, float y, float z)

@@ -4,7 +4,7 @@
     {
         private readonly GenericStem genericStem;
 
-        public IStem Stem => genericStem;
+        public Stem Stem => genericStem;
 
         public GenericShootSystem(GenericStem stem)
         {

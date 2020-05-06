@@ -9,14 +9,10 @@ import {SvgDrawer} from './svg-drawer';
 })
 export class DrawerService {
 
-  private drawer: Drawer;
-
   constructor() {
   }
 
   public draw(svg: Svg, state: SimulationState): void {
-    if (!this.drawer) { this.drawer = new SvgDrawer(svg); }
-
-    this.drawer.draw(state);
+    new SvgDrawer(svg).draw(state);
   }
 }

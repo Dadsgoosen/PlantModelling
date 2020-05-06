@@ -2,9 +2,9 @@
 {
     public class GenericRootSystem : IRootSystem
     {
-        public IRoot PrimaryRoot { get; }
+        public Root PrimaryRoot { get; }
 
-        public GenericRootSystem(IRoot primaryRoot)
+        public GenericRootSystem(Root primaryRoot)
         {
             PrimaryRoot = primaryRoot;
         }

@@ -14,9 +14,11 @@ namespace PlantSimulator.Runtime
             this.logger = logger;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             logger.LogInformation("Runtime is starting");
+
+            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

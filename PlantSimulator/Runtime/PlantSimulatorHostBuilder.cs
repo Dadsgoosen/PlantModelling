@@ -46,7 +46,7 @@ namespace PlantSimulator.Runtime
 
         private void ConfigureServices(HostBuilderContext context, IServiceCollection collection)
         {
-            collection.Configure<SimulationOptions>(Configuration.GetSection("Simulation"));
+            collection.Configure<PlantSimulationOptions>(Configuration.GetSection("Simulation"));
             collection.AddSingleton(provider => Parameters);
             collection.AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             collection.AddSingleton<ISimulator, Simulation.PlantSimulator>();

@@ -2,9 +2,14 @@
 {
     public class SimulationOptions
     {
-        public string Id { get; set; }
         public uint TickTime { get; set; }
-        public SimulationPlantOptions Plant { get; set; }
-        public SimulationEnvironmentOptions Environment { get; set; }
+
+        private uint tickEventTime = 1;
+
+        public uint TickEventTime
+        {
+            get => tickEventTime;
+            set => tickEventTime = value <= 0 ? 1 : value;
+        }
     }
 }

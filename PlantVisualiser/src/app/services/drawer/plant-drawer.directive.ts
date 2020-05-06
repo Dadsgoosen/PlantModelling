@@ -1,4 +1,10 @@
-import {Directive, ElementRef, Input, OnInit, Renderer2, ViewContainerRef} from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2
+} from '@angular/core';
 import {DrawerService} from './drawer.service';
 import {SimulationState} from '../simulation/simulation-state';
 import {Svg, SVG} from '@svgdotjs/svg.js';

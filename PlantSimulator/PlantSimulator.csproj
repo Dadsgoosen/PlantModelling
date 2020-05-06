@@ -26,10 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Outputs/Protos/simulation_state.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

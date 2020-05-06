@@ -22,6 +22,11 @@ namespace PlantSimulator.Logging
             logger.LogInformation(message);
         }
 
+        public void LogInformation(string message, params object[] args)
+        {
+            logger.LogInformation(message, args);
+        }
+
         public void LogWarning(string message)
         {
             logger.LogWarning(message);

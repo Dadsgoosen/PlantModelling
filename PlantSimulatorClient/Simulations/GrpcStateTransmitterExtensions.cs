@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PlantSimulator.Outputs.Protos;
+using System.Numerics;
+using PlantSimulatorClient.Simulations.Protos;
+using GrpcSimulationState = PlantSimulatorClient.Simulations.Protos.SimulationState;
+using GrpcPlantModelState = PlantSimulatorClient.Simulations.Protos.PlantModelState;
+using GrpcPlantNodeModelState = PlantSimulatorClient.Simulations.Protos.PlantNodeModelState;
+using PlantModelState = PlantSimulator.Outputs.Models.PlantModelState;
+using PlantNodeModelState = PlantSimulator.Outputs.Models.PlantNodeModelState;
 using SimulationState = PlantSimulator.Outputs.Models.SimulationState;
-using GrpcSimulationState = PlantSimulator.Outputs.Protos.SimulationState;
 
-namespace PlantSimulator.Outputs
+namespace PlantSimulatorClient.Simulations
 {
     internal static class GrpcStateTransmitterExtensions
     {
@@ -16,7 +21,7 @@ namespace PlantSimulator.Outputs
 
         private static GrpcSimulationState MapSimulationState(SimulationState state)
         {
-            PlantModelState plantModelState = new PlantModelState
+            var plantModelState = new GrpcPlantModelState
             {
                 RootSystem = { MapNodeSystem(state.Plant.RootSystem) },
                 ShootSystem = { MapNodeSystem(state.Plant.ShootSystem) }
@@ -30,11 +35,11 @@ namespace PlantSimulator.Outputs
             };
         }
 
-        private static IEnumerable<PlantNodeModelState> MapNodeSystem(IEnumerable<Models.PlantNodeModelState> nodes)
+        private static IEnumerable<GrpcPlantNodeModelState> MapNodeSystem(IEnumerable<PlantNodeModelState> nodes)
         {
-            Models.PlantNodeModelState[] plantNodeModelStates = nodes as Models.PlantNodeModelState[] ?? nodes.ToArray();
+            PlantNodeModelState[] plantNodeModelStates = nodes as PlantNodeModelState[] ?? nodes.ToArray();
 
-            IList<PlantNodeModelState> grpcNodes = new List<PlantNodeModelState>(plantNodeModelStates.Length);
+            IList<GrpcPlantNodeModelState> grpcNodes = new List<GrpcPlantNodeModelState>(plantNodeModelStates.Length);
 
             foreach (var node in plantNodeModelStates)
             {
@@ -44,12 +49,11 @@ namespace PlantSimulator.Outputs
             return grpcNodes;
         }
 
-        private static PlantNodeModelState MapNodeState(Models.PlantNodeModelState node)
+        private static GrpcPlantNodeModelState MapNodeState(PlantNodeModelState node)
         {
-            return new PlantNodeModelState
+            return new GrpcPlantNodeModelState
             {
-                X = 0,
-                Y = 0,
+                Coordinates = { new []{new Coordinate {X = 0, Y = 0}}},
                 Thickness = node.Thickness,
                 Connections = { MapNodeSystem(node.Connections) }
             };

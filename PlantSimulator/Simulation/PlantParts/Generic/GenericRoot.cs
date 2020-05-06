@@ -4,33 +4,22 @@ using PlantSimulator.Simulation.Cells;
 
 namespace PlantSimulator.Simulation.PlantParts.Generic
 {
-    public class GenericRoot : PlantPart, IRoot
+    public class GenericRoot : Root
     {
-        private readonly IList<IRoot> _connectedRoots;
+        private readonly IList<Root> connectedRoots;
 
-        public IEnumerable<IRoot> ConnectedRoots => _connectedRoots;
-
-        public GenericRoot(IEnumerable<IPlantCell> cells, IEnumerable<IRoot> connections)
+        public new IEnumerable<Root> ConnectedRoots => connectedRoots;
+        
+        public GenericRoot(IEnumerable<IPlantCell> cells, IEnumerable<Root> connections)
         {
             Cells = new List<IPlantCell>(cells);
-            _connectedRoots = new List<IRoot>(connections);
-            Connections = MapToPlantPart(connections);
+            connectedRoots = new List<Root>(connections);
+            Connections = connectedRoots;
         }
 
-        public void ConnectRoot(IRoot root)
+        public override void ConnectRoot(Root root)
         {
-        }
-
-        private IEnumerable<IPlantPart> MapToPlantPart(IEnumerable<IRoot> roots)
-        {
-            IList<IPlantPart> parts = new List<IPlantPart>(roots.Count());
-
-            foreach (var root in roots)
-            {
-                parts.Add((IPlantPart) root);
-            }
-
-            return parts;
+            connectedRoots.Add(root);
         }
     }
 }

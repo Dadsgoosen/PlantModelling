@@ -7,6 +7,8 @@ namespace PlantSimulator.Logging
         void LogDebug(string message);
         
         void LogInformation(string message);
+
+        void LogInformation(string message, params object[] args);
         
         void LogWarning(string message);
         

@@ -12,7 +12,7 @@ namespace PlantSimulator.Outputs.Models
         /// <summary>
         /// Coordinates that defines this <see cref="PlantModelState"/>
         /// </summary>
-        public Vector3[] Coordinates { get; set; }
+        public Vector2[] Coordinates { get; set; }
         
         /// <summary>
         /// Thickness of the plant at the (<see cref="X"/>, <see cref="Y"/>)

@@ -15,7 +15,7 @@ namespace PlantSimulatorClient
     {
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", true, true)
             .AddEnvironmentVariables()
             .Build();
 

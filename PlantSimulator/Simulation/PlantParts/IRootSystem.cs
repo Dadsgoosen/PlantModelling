@@ -2,6 +2,6 @@
 {
     public interface IRootSystem
     {
-        public IRoot PrimaryRoot { get; }
+        public Root PrimaryRoot { get; }
     }
 }

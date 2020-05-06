@@ -1,28 +1,26 @@
-﻿
-using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using PlantSimulator.Outputs.Models;
-using PlantSimulator.Simulation.Geometry;
+using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.PlantParts;
 
 namespace PlantSimulator.Outputs
 {
     public class SimulationStateFactory : ISimulationStateFactory
     {
-        public SimulationState Create(IPlant plant, SimulationStateData data)
+        public SimulationState Create(IPlant plant, SimulationStateSnapshot data)
         {
             return new SimulationState
             {
-                Id = data.Id,
-                SimulationTime = data.SimulationTimer,
+                Id = Guid.NewGuid().ToString(),
+                SimulationTime = data.CurrentTime,
                 Plant = CreatePlantState(plant)
             };
         }
 
-        private PlantModelState CreatePlantState(IPlant plant)
+        private static PlantModelState CreatePlantState(IPlant plant)
         {
             return new PlantModelState
             {
@@ -31,17 +29,17 @@ namespace PlantSimulator.Outputs
             };
         }
 
-        private IEnumerable<PlantNodeModelState> CreateShootState(IShootSystem shootSystem)
+        private static IEnumerable<PlantNodeModelState> CreateShootState(IShootSystem shootSystem)
         {
             return IterateSystem((IPlantPart) shootSystem.Stem);
         }
 
-        private IEnumerable<PlantNodeModelState> CreateRootState(IRootSystem rootSystem)
+        private static IEnumerable<PlantNodeModelState> CreateRootState(IRootSystem rootSystem)
         {
             return IterateSystem((IPlantPart) rootSystem.PrimaryRoot);
         }
 
-        private IEnumerable<PlantNodeModelState> IterateSystem(IPlantPart startPart)
+        private static IEnumerable<PlantNodeModelState> IterateSystem(IPlantPart startPart)
         {
             IList<PlantNodeModelState> states = new List<PlantNodeModelState>();
 
@@ -62,57 +60,39 @@ namespace PlantSimulator.Outputs
             return states;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private PlantNodeModelState CreateStateFromPlantPart(IPlantPart part)
+        private static PlantNodeModelState CreateStateFromPlantPart(IPlantPart part)
         {
-            Vector3 partCenter = Vector3.Zero;
-
-            int cellCount = 0;
-
-            foreach (var cell in part.Cells)
-            {
-                var center = cell.Geometry.TopCenter;
-                partCenter += new Vector3(center.X, center.Y, center.Z);
-                cellCount++;
-            }
-
-            partCenter /= cellCount;
-
-            var furthestZ = 0F;
-            var furthestX = 0F;
-
-            Vector3 top = new Vector3(partCenter.X, 0, partCenter.Z);
-            Vector3 bottom = new Vector3(partCenter.X, 0, partCenter.Z);
+            var highest = Vector2.Zero;
+            var lowest = Vector2.Zero;
+            var widest = new[] {Vector2.Zero, Vector2.Zero};
 
             foreach (var cell in part.Cells)
             {
-                var geo = cell.Geometry.TopCenter;
-                
-                var distZ = (float) Math.Sqrt(Math.Pow(geo.Z - partCenter.Z, 2));
-                var distX = (float) Math.Sqrt(Math.Pow(geo.X - partCenter.X, 2));
+                var top = cell.Geometry.TopCenter;
+                var bottom = cell.Geometry.BottomCenter;
 
-                if (distZ > furthestZ)
+                if (top.Y > highest.Y)
                 {
-                    furthestZ = distZ;
+                    highest = new Vector2(top.X, top.Y);
                 }
 
-                if (distX > furthestX)
+                if (bottom.Y < lowest.Y)
                 {
-                    furthestX = distX;
+                    lowest = new Vector2(bottom.X, bottom.Y);
                 }
 
-                if (geo.Y > top.Y)
+                if (top.X > widest[1].X)
                 {
-                    top.X = geo.Y;
+                    widest[1] = new Vector2(top.X, top.Y);
                 }
 
-                if (geo.Y < bottom.Y)
+                if (bottom.X < widest[0].X)
                 {
-                    bottom.Y = geo.Y;
+                    widest[0] = new Vector2(bottom.X, bottom.Y);
                 }
             }
 
-            var connections = new List<PlantNodeModelState>();
+            IList<PlantNodeModelState> connections = new List<PlantNodeModelState>(part.Connections.Count());
 
             foreach (var connection in part.Connections)
             {
@@ -121,9 +101,9 @@ namespace PlantSimulator.Outputs
 
             return new PlantNodeModelState
             {
-                Coordinates = new [] {bottom, top},
-                Thickness = (int) ((furthestZ + furthestX) / 2),
-                Connections = new PlantNodeModelState[0]
+                Thickness = (int) Vector2.Distance(widest[0], widest[1]),
+                Connections = connections,
+                Coordinates = new[] {lowest, highest}
             };
         }
     }
