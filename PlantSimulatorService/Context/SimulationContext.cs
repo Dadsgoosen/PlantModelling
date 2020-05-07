@@ -14,6 +14,8 @@ namespace PlantSimulatorService.Context
 
         private readonly ISimulationStorage storage;
 
+        private int i = 0;
+
         public SimulationContext(IClientHandler clientHandler, ISimulationStorage storage)
         {
             this.clientHandler = clientHandler;
@@ -22,6 +24,20 @@ namespace PlantSimulatorService.Context
 
         public async Task<IActionResult> GetSimulations()
         {
+            await storage.StoreSimulationAsync(new SimulationState
+            {
+                Id = i.ToString(),
+                Date = DateTime.Now,
+                SimulationTime = 0,
+                Plant = new PlantModel
+                {
+                    RootSystem = new PlantNodeModel[0],
+                    ShootSystem = new PlantNodeModel[0]
+                }
+            });
+
+            i++;
+
             return new OkObjectResult(await storage.GetSimulationStates());
         }
 
@@ -31,7 +47,7 @@ namespace PlantSimulatorService.Context
             {
                 return new OkObjectResult(await storage.GetSimulationState(id));
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 return new NotFoundObjectResult($"No simulation with id {id} was found");
             }

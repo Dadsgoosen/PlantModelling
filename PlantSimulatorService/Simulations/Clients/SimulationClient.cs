@@ -34,7 +34,7 @@ namespace PlantSimulatorService.Simulations.Clients
                 await Client.StartSimulationAsync(conf);
                 Available = false;
             }
-            catch (RpcException e)
+            catch (RpcException)
             {
                 Available = true;
             }

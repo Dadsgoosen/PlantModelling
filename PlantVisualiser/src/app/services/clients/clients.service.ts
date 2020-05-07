@@ -1,40 +1,38 @@
 import { Injectable } from '@angular/core';
 import {ConnectedClient} from './connected-client';
-import {Observable, of} from 'rxjs';
-
-const connectedClients: ConnectedClient[] = [
-  {
-    id: 'fe2ac4fe-450f-4224-b07c-62213254ebba',
-    available: true,
-    host: 'https://localhost:5001'
-  },
-  {
-    id: 'fe2ac4fe-450f-4225-b07c-62213254ebba',
-    available: true,
-    host: 'https://localhost:5002'
-  },
-  {
-    id: 'fe2ac4de-450f-4225-b07c-62213256ebba',
-    available: false,
-    host: 'https://localhost:5003'
-  }
-];
-
+import {Observable, of, Subject, Subscription, timer} from 'rxjs';
+import {HttpService} from "../http/http.service";
+import {HttpClient} from "@angular/common/http";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientsService {
+export class ClientsService extends HttpService {
 
-  constructor() { }
+  private running: Subscription;
+
+  private $clients: Subject<ConnectedClient[]> = new Subject<ConnectedClient[]>();
+
+  constructor(http: HttpClient, snackbar : MatSnackBar) {
+    super(http, snackbar);
+  }
 
   public connectedClients(): Observable<ConnectedClient[]> {
-    return of(connectedClients);
+    this.running = timer(0, 5000).subscribe(v => {
+      this.getRequest<ConnectedClient[]>('/client').subscribe(clients => this.$clients.next(clients));
+    });
+    return this.$clients.asObservable();
   }
 
   public stopSimulation(id: string): Observable<null> {
     console.log('Stopping simulation for id ' + id);
     return of(null);
+  }
+
+  public dipose() {
+    this.running.unsubscribe();
+    this.running = undefined;
   }
 
 }

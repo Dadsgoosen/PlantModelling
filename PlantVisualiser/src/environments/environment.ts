@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiServer: 'https://localhost:5001/api'
+  apiServer: 'https://localhost:5001/api',
+  plantPlayTime: 10000
 };
 
 /*

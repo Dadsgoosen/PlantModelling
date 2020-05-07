@@ -18,7 +18,7 @@ namespace PlantSimulatorClient.Simulations
             this.stateFactory = stateFactory;
         }
 
-        public void OnSimulationTick(object? sender, PlantSimulatorTickEvent tickEvent)
+        public void OnSimulationTick(object sender, PlantSimulatorTickEvent tickEvent)
         {
             var state = stateFactory.Create(tickEvent.Plant, new SimulationStateSnapshot(tickEvent.TickTimer));
 

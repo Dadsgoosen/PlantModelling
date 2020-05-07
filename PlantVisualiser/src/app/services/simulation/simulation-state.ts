@@ -10,6 +10,10 @@ interface PlantModel {
   rootSystem: PlantNodeModel[];
 }
 
+export interface SimulationReplay {
+  [key: string]: SimulationState
+}
+
 export interface SimulationState {
   id: string;
   simulationTime: number;

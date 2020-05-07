@@ -1,0 +1,21 @@
+<div class="row justify-content-center align-items-center">
+  <div class="col-12 text-center">
+    <app-plant-drawer [simulation]="current"></app-plant-drawer>
+  </div>
+  <div class="col-12">
+    <mat-slider class="w-100"
+                color="primary"
+                thumbLabel
+                [tickInterval]="1"
+                [step]="meta.interval"
+                [min]="meta.first"
+                [max]="meta.last"></mat-slider>
+  </div>
+  <div class="col-12 col-lg-4 text-center">
+    <button type="button"
+            (click)="toggleStartStop()"
+            mat-icon-button>
+      <mat-icon>{{playing ? 'pause' : 'play_arrow'}}</mat-icon>
+    </button>
+  </div>
+</div>

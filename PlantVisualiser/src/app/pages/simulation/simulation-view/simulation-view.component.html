@@ -1,29 +1,27 @@
 <app-page-body>
   <app-page-top>
-    <app-page-title pageTitle="Simulation {{simulation.id}}">Simulation {{simulation.id}}</app-page-title>
+    <app-page-title pageTitle="Simulation {{id}}">Simulation {{id}}</app-page-title>
   </app-page-top>
-    <div class="row">
+  <div class="col-12 col-lg-6" *ngIf="current">
+    <table class="table w-100 table-borderless table-view">
+      <tr>
+        <td>Id</td>
+        <td>{{current.id}}</td>
+      </tr>
+      <tr>
+        <td>Date</td>
+        <td>{{parseDateTime(current.date)}}</td>
+      </tr>
+      <tr>
+        <td>Simulation Time</td>
+        <td>{{current.simulationTime}}</td>
+      </tr>
+    </table>
+  </div>
 
-      <div class="col-12">
-        <table class="table table-borderless">
-          <tr>
-            <td>Id: </td>
-            <td>{{simulation.id}}</td>
-          </tr>
-          <tr>
-            <td>Simulation Time: </td>
-            <td>{{simulation.simulationTime}}</td>
-          </tr>
-          <tr>
-            <td>Date: </td>
-            <td>{{parseDateTime(simulation.date)}}</td>
-          </tr>
-        </table>
-      </div>
+  <div class="col-12">
+    <app-plant-drawer-player (simulationChange)="onSimulationChange($event)"
+                             [simulation]="replay"></app-plant-drawer-player>
+  </div>
 
-      <div class="col-12">
-        <app-plant-drawer></app-plant-drawer>
-      </div>
-
-    </div>
 </app-page-body>

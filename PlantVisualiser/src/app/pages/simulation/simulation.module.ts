@@ -7,6 +7,7 @@ import { SimulationViewComponent } from './simulation-view/simulation-view.compo
 import {SimulationResolverService} from '../../services/simulation/simulation-resolver.service';
 import { PlantDrawerComponent } from './components/plant-drawer/plant-drawer.component';
 import {DrawerModule} from '../../services/drawer/drawer.module';
+import { PlantDrawerPlayerComponent } from './components/plant-drawer-player/plant-drawer-player.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,7 @@ const routes: Routes = [
 
 
 @NgModule({
-  declarations: [SimulationNewComponent, SimulationViewComponent, PlantDrawerComponent],
+  declarations: [SimulationNewComponent, SimulationViewComponent, PlantDrawerComponent, PlantDrawerPlayerComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ConnectedClientsDataSource} from '../../../../services/clients/connected-clients-data-source';
 import {ClientsService} from '../../../../services/clients/clients.service';
 import {ConnectedClient} from '../../../../services/clients/connected-client';
@@ -9,7 +9,7 @@ import {ConfirmDialogService} from '../../../../services/confirm-dialog/confirm-
   templateUrl: './client-table.component.html',
   styleUrls: ['./client-table.component.scss']
 })
-export class ClientTableComponent implements OnInit {
+export class ClientTableComponent implements OnInit, OnDestroy {
 
   public dataSource: ConnectedClientsDataSource;
 
@@ -26,6 +26,10 @@ export class ClientTableComponent implements OnInit {
     this._confirm.show().subscribe(shouldStop => {
       if (shouldStop) { this._clients.stopSimulation(client.id); }
     });
+  }
+
+  ngOnDestroy(): void {
+    this._clients.dipose();
   }
 
 }

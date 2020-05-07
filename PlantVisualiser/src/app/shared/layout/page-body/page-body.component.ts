@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-page-body',
@@ -6,6 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./page-body.component.scss']
 })
 export class PageBodyComponent implements OnInit {
+
+  @Input()
+  public justify: string = 'center';
+
+  @Input()
+  public align: string = 'center';
 
   constructor() { }
 

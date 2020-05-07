@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpService} from '../http/http.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {SimulationState} from './simulation-state';
+import {SimulationReplay, SimulationState} from './simulation-state';
 import {catchError} from 'rxjs/operators';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -19,7 +19,7 @@ export class SimulationService extends HttpService {
     return this.getRequest('/simulation');
   }
 
-  public getSimulation(id: string): Observable<SimulationState> {
+  public getSimulation(id: string): Observable<SimulationReplay> {
     return this.getRequest('/simulation/' + id);
   }
 

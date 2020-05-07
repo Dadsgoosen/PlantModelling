@@ -45,7 +45,7 @@ namespace PlantSimulatorService.Simulations
             {
                 File.Delete(path);
             }
-            catch (DriveNotFoundException e)
+            catch (DriveNotFoundException)
             {
                 return false;
             }

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PlantSimulatorService.Simulations.Model;
 
@@ -13,44 +16,75 @@ namespace PlantSimulatorService.Simulations
     {
         private readonly IOptionsMonitor<FileStorageOptions> options;
 
+        private readonly ILogger<SimulationFileStorage> logger;
+
         private readonly IFileHandler<SimulationState> fileHandler;
 
-        public SimulationFileStorage(IOptionsMonitor<FileStorageOptions> options, IFileHandler<SimulationState> fileHandler)
+        public SimulationFileStorage(
+            IOptionsMonitor<FileStorageOptions> options, 
+            ILogger<SimulationFileStorage> logger,
+            IFileHandler<SimulationState> fileHandler)
         {
             this.options = options;
+            this.logger = logger;
             this.fileHandler = fileHandler;
         }
 
         public async Task StoreSimulationAsync(SimulationState state, CancellationToken cancellationToken = default)
         {
-            string path = CreatePath(state.Id);
+            string path = CreatePath(state.Id + "_" + state.SimulationTime);
 
             await fileHandler.WriteFile(path, state, cancellationToken);
         }
 
-        public async Task<SimulationState> GetSimulationState(string id, CancellationToken cancellationToken = default)
+        public async Task<IDictionary<string, SimulationState>> GetSimulationState(string id, CancellationToken cancellationToken = default)
         {
-            string path = CreatePath(id);
+            var states = new Dictionary<string, SimulationState>();
 
-            using var stream = ReadFile(path, cancellationToken);
+            var fileNames = fileHandler.GetFilesInDirectory(options.CurrentValue.Path);
 
-            return await DeSerializeState(await stream, cancellationToken);
+            foreach (var fileName in fileNames)
+            {
+                if (!fileName.Contains(id)) continue;
+                
+                var name = Path.GetFileNameWithoutExtension(fileName);
+
+                var split = name.Split('_');
+
+                var fileTime = split[^1];
+
+                var added = states.TryAdd(fileTime,
+                    await DeSerializeState(await ReadFile(fileName, cancellationToken), cancellationToken));
+
+                if (!added)
+                {
+                    logger.LogWarning("Simulation {SimulationId} at {SimulationTime} was already added.", split[0], fileTime);
+                }
+            }
+
+            return states;
         }
 
         public async Task<SimulationState[]> GetSimulationStates(CancellationToken cancellationToken = default)
         {
             string[] files = fileHandler.GetFilesInDirectory(options.CurrentValue.Path);
 
-            SimulationState[] states = new SimulationState[files.Length];
+            IDictionary<string, SimulationState> states = new Dictionary<string, SimulationState>();
 
-            for (int i = 0; i < files.Length; i++)
+            foreach (var fileName in files)
             {
-                using var stream = ReadFile(files[i], cancellationToken);
+                var id = Path.GetFileNameWithoutExtension(fileName).Split('_')[0];
 
-                states[i] = await DeSerializeState(await stream, cancellationToken);
+                if (states.ContainsKey(id)) continue;
+
+                using var stream = ReadFile(fileName, cancellationToken);
+
+                var state = await DeSerializeState(await stream, cancellationToken);
+
+                states.Add(state.Id, state);
             }
 
-            return states;
+            return states.Values.ToArray();
         }
 
         public bool DeleteSimulationState(string id)

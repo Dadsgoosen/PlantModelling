@@ -42,8 +42,8 @@ namespace PlantSimulator.Simulation
 
         private void Action(object obj)
         {
-            logger.LogDebug("Action started");
-
+            logger.LogDebug("Action started and transmitting start state");
+            
             while (true)
             {
                 if (Stopping.IsCancellationRequested) break;

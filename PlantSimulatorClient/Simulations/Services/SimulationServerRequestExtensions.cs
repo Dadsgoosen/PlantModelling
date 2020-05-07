@@ -1,4 +1,5 @@
-﻿using PlantSimulator.Simulation;
+﻿using PlantSimulator.Helpers;
+using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.Options;
 using PlantSimulatorClient.Simulations.Protos;
 
@@ -11,7 +12,10 @@ namespace PlantSimulatorClient.Simulations.Services
             return new PlantSimulationOptions
             {
                 Id = configuration.Id,
-                TickTime = configuration.TickTime
+                Simulation = new SimulationOptions
+                {
+                    TickTime = configuration.TickTime
+                }
             };
         }
     }
