@@ -2,26 +2,26 @@
 
 namespace PlantSimulator.Simulation.Options
 {
-    public class SimulationPlantOptions : ISimulationPlantOptions
+    public interface ISimulationPlantOptions
     {
         /// <summary>
         /// How many branches can a stem create
         /// </summary>
-        public Range<int> Branches { get; set; }
+        public Range<int> Branches { get; }
 
         /// <summary>
         /// How many times can the main stem branch out
         /// </summary>
-        public Range<int> SubBranches { get; set; }
+        public Range<int> SubBranches { get; }
 
         /// <summary>
         /// A range defining the length that each internode can be
         /// </summary>
-        public Range<int> InternodeLength { get; set; }
+        public Range<int> InternodeLength { get; }
 
         /// <summary>
         /// The angle between a stem and the petiole
         /// </summary>
-        public int Axil { get; set; }
+        public int Axil { get; }
     }
 }

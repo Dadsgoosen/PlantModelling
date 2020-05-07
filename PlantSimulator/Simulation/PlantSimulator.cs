@@ -16,7 +16,7 @@ namespace PlantSimulator.Simulation
 
         private readonly IPlantRunner plantRunner;
 
-        private readonly PlantSimulationOptions options;
+        private readonly IPlantSimulatorOptions options;
 
         private CancellationTokenSource Stopping { get; set; }
 
@@ -26,7 +26,7 @@ namespace PlantSimulator.Simulation
 
         public event EventHandler<PlantSimulatorTickEvent> OnTick; 
         
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, PlantSimulationOptions options, IPlantRunner plantRunner)
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IPlantSimulatorOptions options, IPlantRunner plantRunner)
         {
             this.logger = logger;
             this.options = options;

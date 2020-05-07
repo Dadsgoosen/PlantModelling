@@ -2,7 +2,7 @@
 
 namespace PlantSimulator.Simulation.Options
 {
-    public class SimulationEnvironmentOptions : ISimulationEnvironmentOptions
+    public interface ISimulationEnvironmentOptions
     {
         public float Temperature { get; set; }
 

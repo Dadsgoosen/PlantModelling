@@ -1,6 +1,6 @@
 ﻿namespace PlantSimulator.Simulation.Options
 {
-    public class SimulationOptions
+    public class SimulationOptions : ISimulationOptions
     {
         public uint TickTime { get; set; }
 
