@@ -20,6 +20,11 @@ namespace PlantSimulator.Simulation.Options
         public Range<int> InternodeLength { get; set; }
 
         /// <summary>
+        /// A range defining the length of each petiole
+        /// </summary>
+        public Range<int> PetioleLength { get; set; }
+
+        /// <summary>
         /// The angle between a stem and the petiole
         /// </summary>
         public int Axil { get; set; }

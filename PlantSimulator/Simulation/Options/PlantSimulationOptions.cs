@@ -6,8 +6,8 @@
         
         public ISimulationOptions Simulation { get; set; }
 
-        public SimulationPlantOptions Plant { get; set; }
+        public ISimulationPlantOptions Plant { get; set; }
 
-        public SimulationEnvironmentOptions Environment { get; set; }
+        public ISimulationEnvironmentOptions Environment { get; set; }
     }
 }
