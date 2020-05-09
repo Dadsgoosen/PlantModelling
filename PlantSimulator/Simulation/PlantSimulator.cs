@@ -102,7 +102,7 @@ namespace PlantSimulator.Simulation
 
             var handler = OnTick;
 
-            handler?.Invoke(this, new PlantSimulatorTickEvent(plantRunner.Plant, TickCount));
+            handler?.Invoke(this, new PlantSimulatorTickEvent(options.Id, plantRunner.Plant, TickCount));
         }
 
         public void Dispose()

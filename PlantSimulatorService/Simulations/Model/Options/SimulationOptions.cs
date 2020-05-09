@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PlantSimulator.Simulation.Options
+namespace PlantSimulatorService.Simulations.Model.Options
 {
     public class SimulationOptions : ISimulationOptions
     {

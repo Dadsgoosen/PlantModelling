@@ -4,14 +4,11 @@ option csharp_namespace = "PlantSimulatorClient.Simulations.Protos";
 
 package simulation_service;
 
-service SimulationServerService {
-	rpc StartSimulation (.simulation_service.SimulationConfiguration) returns (.simulation_service.StartSimulationResponse);
-	rpc StopSimulation (.simulation_service.StopSimulationRequest) returns (.simulation_service.StopSimulationResponse);
-}
+import "Simulations/Protos/simulation_configuration.proto";
 
-message SimulationConfiguration {
-	string id = 1;
-	uint32 tick_time = 2;
+service SimulationServerService {
+	rpc StartSimulation (.simulation_configuration.SimulationConfiguration) returns (.simulation_service.StartSimulationResponse);
+	rpc StopSimulation (.simulation_service.StopSimulationRequest) returns (.simulation_service.StopSimulationResponse);
 }
 
 message StopSimulationRequest {

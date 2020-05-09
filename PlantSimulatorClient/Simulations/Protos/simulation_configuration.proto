@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option csharp_namespace = "PlantSimulatorClient.Simulations.Protos";
+
+package simulation_configuration;
+
+message SimulationConfiguration {
+	string id = 1;
+	SimulationOptions simulation = 2;
+	SimulationPlantOptions plant = 3;
+	SimulationEnvironmentOptions environment = 4;
+}
+
+message SimulationOptions {
+	uint32 tick_time = 1;
+	uint32 tick_event_time = 2;
+	int32 random_seed = 3;
+}
+
+message SimulationPlantOptions {
+	IntRange branches = 1;
+	IntRange sub_branches = 2;
+	IntRange internode_length = 3;
+	IntRange petiole_length = 4;
+	int32 Axil = 5;
+}
+
+message SimulationEnvironmentOptions {
+	float temperature = 1;
+	Coordinate light_source = 2;
+}
+
+message Coordinate {
+	float x = 1;
+	float y = 2;
+}
+
+message IntRange {
+	int32 min = 1;
+	int32 max = 2;
+}

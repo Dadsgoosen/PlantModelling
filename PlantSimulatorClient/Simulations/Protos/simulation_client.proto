@@ -4,6 +4,8 @@ option csharp_namespace = "PlantSimulatorClient.Simulations.Protos";
 
 package simulation_client;
 
+import "Simulations/Protos/simulation_configuration.proto";
+
 service SimulationClientService {
 	rpc TransmitState (.simulation_client.SimulationState) returns (.simulation_client.SimulationStateResponse);
 	rpc SayHello (.simulation_client.ServerHelloRequest) returns (.simulation_client.ServerHelloResponse);
@@ -38,15 +40,10 @@ message PlantModelState {
 }
 
 message PlantNodeModelState {
-	repeated .simulation_client.Coordinate coordinates = 1;
+	repeated .simulation_configuration.Coordinate coordinates = 1;
 	int32 thickness = 2;
 	repeated PlantNodeModelState connections = 3;
 }
 
 message SimulationStateResponse {	
-}
-
-message Coordinate {
-	int32 X = 1;
-	int32 Y = 2;
 }

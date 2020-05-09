@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using PlantSimulator.Helpers;
 using PlantSimulator.Logging;
 using PlantSimulator.Runtime.Helpers;
 using PlantSimulator.Simulation.Options;
@@ -32,6 +33,8 @@ namespace PlantSimulator.Runtime
         public Task StartSimulationAsync(PlantSimulationOptions options, CancellationToken cancellationToken)
         {
             logger.LogInformation("Starting simulator from runtime broker");
+
+            RangeExtensions.Random = new Random(options.Simulation.RandomSeed);
 
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {SimulationReplay, SimulationState} from '../../../services/simulation/simulation-state';
 import {ActivatedRoute} from '@angular/router';
 import {map} from "rxjs/operators";
+import {SimulationStateService} from "../../../services/simulation/simulation-state.service";
 
 @Component({
   selector: 'app-simulation-view',
@@ -14,14 +15,16 @@ export class SimulationViewComponent implements OnInit {
 
   public id: string;
 
-  current: SimulationState;
+  public current: SimulationState;
 
-  constructor(private _route: ActivatedRoute) {
+  constructor(private _route: ActivatedRoute, private _simulationState: SimulationStateService) {
     this.setData = this.setData.bind(this);
+    this.onSimulationChange = this.onSimulationChange.bind(this);
   }
 
   ngOnInit(): void {
     this._route.data.pipe(map(v => v.simulation)).subscribe(this.setData);
+    this._simulationState.stateChange.subscribe(this.onSimulationChange);
   }
 
   private setData(replay: SimulationReplay): void {

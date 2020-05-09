@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using PlantSimulatorService.Simulations.Model;
+using PlantSimulatorService.Simulations.Model.Options;
 
 namespace PlantSimulatorService.Simulations.Clients
 {
@@ -9,6 +10,6 @@ namespace PlantSimulatorService.Simulations.Clients
         /// Start a simulation with an available client
         /// </summary>
         /// <param name="options">The simulation options that the simulation will run with</param>
-        public Task StartAvailableClientAsync(SimulationOptions options);
+        public Task StartAvailableClientAsync(PlantSimulationOptions options);
     }
 }

@@ -10,11 +10,11 @@ namespace PlantSimulator.Outputs
 {
     public class SimulationStateFactory : ISimulationStateFactory
     {
-        public SimulationState Create(IPlant plant, SimulationStateSnapshot data)
+        public SimulationState Create(string id, IPlant plant, SimulationStateSnapshot data)
         {
             return new SimulationState
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = id,
                 SimulationTime = data.CurrentTime,
                 Plant = CreatePlantState(plant)
             };

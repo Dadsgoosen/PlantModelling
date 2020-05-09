@@ -53,10 +53,22 @@ namespace PlantSimulatorClient.Simulations
         {
             return new GrpcPlantNodeModelState
             {
-                Coordinates = { new []{new Coordinate {X = 0, Y = 0}}},
+                Coordinates = { ConvertVectorToCoordinates(node.Coordinates) },
                 Thickness = node.Thickness,
                 Connections = { MapNodeSystem(node.Connections) }
             };
+        }
+
+        private static IEnumerable<Coordinate> ConvertVectorToCoordinates(Vector2[] vectors)
+        {
+            IList<Coordinate> coordinates = new List<Coordinate>(vectors.Length);
+
+            for (int i = 0; i < vectors.Length; i++)
+            {
+                coordinates.Add(new Coordinate {X = vectors[i].X, Y = vectors[i].Y});
+            }
+
+            return coordinates;
         }
     }
 }

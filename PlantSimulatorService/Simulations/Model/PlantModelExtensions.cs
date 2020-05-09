@@ -56,7 +56,7 @@ namespace PlantSimulatorService.Simulations.Model
             
             int i = 0;
             
-            foreach (var vector in vectors)
+            foreach (var vector in coordinates)
             {
                 vectors[i] = new Vector2(vector.X, vector.Y);
                 i++;

@@ -1,17 +1,16 @@
 export interface PlantNodeModel {
-  x: number;
-  y: number;
+  coordinates: [number, number][];
   thickness: number;
-  connections: PlantNodeModel[][];
+  connections: PlantNodeModel[];
 }
 
-interface PlantModel {
+export interface PlantModel {
   shootSystem: PlantNodeModel[];
   rootSystem: PlantNodeModel[];
 }
 
 export interface SimulationReplay {
-  [key: string]: SimulationState
+  [key: number]: SimulationState
 }
 
 export interface SimulationState {

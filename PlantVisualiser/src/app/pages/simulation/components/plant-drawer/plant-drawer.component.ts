@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {DrawerService} from '../../../../services/drawer/drawer.service';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {SimulationState} from '../../../../services/simulation/simulation-state';
-import {simulationStateTest} from '../../../../services/drawer/test-drawer-data';
+import {PlantDrawerDirective} from "../../../../services/drawer/plant-drawer.directive";
+import {SimulationStateService} from "../../../../services/simulation/simulation-state.service";
 
 @Component({
   selector: 'app-plant-drawer',
@@ -13,10 +13,19 @@ export class PlantDrawerComponent implements OnInit {
   @Input()
   public simulation: SimulationState;
 
-  constructor(private _drawer: DrawerService) { }
+  @ViewChild(PlantDrawerDirective)
+  plantDrawer: PlantDrawerDirective;
+
+  constructor(private _simulationState: SimulationStateService) {
+    this.draw = this.draw.bind(this);
+  }
 
   ngOnInit(): void {
-    this.simulation = simulationStateTest;
+    this._simulationState.stateChange.subscribe(this.draw);
+  }
+
+  public draw(simulation: SimulationState) {
+    this.plantDrawer.draw(simulation);
   }
 
 }

@@ -20,9 +20,11 @@ namespace PlantSimulatorClient.Simulations
 
         public void OnSimulationTick(object sender, PlantSimulatorTickEvent tickEvent)
         {
-            var state = stateFactory.Create(tickEvent.Plant, new SimulationStateSnapshot(tickEvent.TickTimer));
+            var state = stateFactory.Create(tickEvent.Id, tickEvent.Plant, new SimulationStateSnapshot(tickEvent.TickTimer));
 
-            client.TransmitState(state.ToGrpcSimulationState());
+            var grpc = state.ToGrpcSimulationState();
+
+            client.TransmitState(grpc);
         }
     }
 }

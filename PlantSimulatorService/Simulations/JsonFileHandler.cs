@@ -3,16 +3,26 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using PlantSimulatorService.Converters;
 
 namespace PlantSimulatorService.Simulations
 {
     public class JsonFileHandler<T> : IFileHandler<T>
     {
+        private readonly JsonOptions options;
+
+        public JsonFileHandler(IOptions<JsonOptions> options)
+        {
+            this.options = options.Value;
+        }
+
         public async Task WriteFile(string path, T body, CancellationToken token)
         {
             await using (StreamWriter writer = File.CreateText(path))
             {
-                await JsonSerializer.SerializeAsync(writer.BaseStream, body, cancellationToken: token);
+                await JsonSerializer.SerializeAsync<T>(writer.BaseStream, body, options.JsonSerializerOptions, token);
             }
         }
 

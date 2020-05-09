@@ -6,6 +6,8 @@ namespace PlantSimulator.Runtime.Helpers
 {
     internal static class ServiceProviderExtensions
     {
+        private static readonly Type _optionsType = typeof(IPlantSimulatorOptions);
+
         public static Simulation.PlantSimulator ResolvePlantSimulatorConstructor(this IServiceProvider provider, PlantSimulationOptions options)
         {
             var type = typeof(Simulation.PlantSimulator);
@@ -24,7 +26,7 @@ namespace PlantSimulator.Runtime.Helpers
                     {
                         var parameter = parameters[i];
 
-                        if (parameter.ParameterType == options.GetType())
+                        if (_optionsType.IsAssignableFrom(parameter.ParameterType))
                         {
                             parameterValues[i] = options;
                         }

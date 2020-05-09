@@ -5,12 +5,15 @@ namespace PlantSimulator.Simulation
 {
     public class PlantSimulatorTickEvent : EventArgs
     {
+        public string Id { get; }
+        
         public IPlant Plant { get; }
 
         public ulong TickTimer { get; }
 
-        public PlantSimulatorTickEvent(IPlant plant, ulong tickTimer)
+        public PlantSimulatorTickEvent(string id, IPlant plant, ulong tickTimer)
         {
+            Id = id;
             Plant = plant;
             TickTimer = tickTimer;
         }

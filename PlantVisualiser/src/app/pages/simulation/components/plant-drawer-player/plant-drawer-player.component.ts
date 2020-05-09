@@ -2,7 +2,8 @@ import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild
 import {SimulationReplay, SimulationState} from "../../../../services/simulation/simulation-state";
 import {Subscription, timer} from "rxjs";
 import {MatSlider, MatSliderChange} from "@angular/material/slider";
-import {environment} from "../../../../../environments/environment";
+import {PlantDrawerComponent} from "../plant-drawer/plant-drawer.component";
+import {SimulationStateService} from "../../../../services/simulation/simulation-state.service";
 
 type PlayerMeta = {count: number, first: number, last: number, interval: number, current: number};
 
@@ -20,11 +21,11 @@ export class PlantDrawerPlayerComponent implements OnInit, AfterViewInit {
   @Input()
   public simulation: SimulationReplay;
 
-  @Output()
-  public simulationChange: EventEmitter<SimulationState> = new EventEmitter<SimulationState>();
-
   @ViewChild(MatSlider)
   public slider: MatSlider;
+
+  @ViewChild(PlantDrawerComponent)
+  public plantDrawer: PlantDrawerComponent;
 
   public meta: PlayerMeta = {
     count: 0,
@@ -40,13 +41,14 @@ export class PlantDrawerPlayerComponent implements OnInit, AfterViewInit {
 
   private obs: Subscription;
 
-  constructor() {
+  constructor(private _simulationState: SimulationStateService) {
     this.tick = this.tick.bind(this);
     this.onSliderChange = this.onSliderChange.bind(this);
   }
 
   ngOnInit(): void {
     this.computeMetaData();
+    this.current = this.simulation[Object.keys(this.simulation)[0]];
   }
 
   public ngAfterViewInit(): void {
@@ -107,14 +109,14 @@ export class PlantDrawerPlayerComponent implements OnInit, AfterViewInit {
       this.stop();
     }
 
-    this.changeToCurrent()
+    this.changeToCurrent();
   }
 
   private reset(): void {
     this.current = this.simulation[this.meta.first];
     this.meta.current = this.meta.first;
     this.slider.value = this.meta.current;
-    this.simulationChange.emit(this.current);
+    this._simulationState.changeState(this.current);
   }
 
   private onSliderChange(valueChange: MatSliderChange): void {
@@ -124,12 +126,9 @@ export class PlantDrawerPlayerComponent implements OnInit, AfterViewInit {
 
   private changeToCurrent(): void {
     this.current = this.simulation[this.meta.current];
-
     if(this.current === undefined) return;
-
     this.slider.value = this.current.simulationTime;
-
-    this.simulationChange.emit(this.current);
+    this._simulationState.changeState(this.current);
   }
 
 }

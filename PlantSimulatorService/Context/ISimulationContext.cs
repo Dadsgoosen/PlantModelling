@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlantSimulatorService.Simulations.Model;
+using PlantSimulatorService.Simulations.Model.Options;
 
 namespace PlantSimulatorService.Context
 {
@@ -12,6 +13,6 @@ namespace PlantSimulatorService.Context
 
         public IActionResult DeleteSimulation(string id);
 
-        public Task<IActionResult> StartSimulation(SimulationOptions options);
+        public Task<IActionResult> StartSimulation(PlantSimulationOptions options);
     }
 }

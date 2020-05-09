@@ -4,8 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PlantSimulatorService.Context;
-using PlantSimulatorService.Simulations;
-using PlantSimulatorService.Simulations.Model;
+using PlantSimulatorService.Simulations.Model.Options;
 
 namespace PlantSimulatorService.Controllers
 {
@@ -21,13 +20,13 @@ namespace PlantSimulatorService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRunSimulations(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRunSimulations()
         {
             return await context.GetSimulations();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRunSimulation([FromRoute] string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRunSimulation([FromRoute] string id)
         {
             return await context.GetSimulation(id);
         }
@@ -39,7 +38,7 @@ namespace PlantSimulatorService.Controllers
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> StartSimulation([FromBody] SimulationOptions options)
+        public async Task<IActionResult> StartSimulation([FromBody] PlantSimulationOptions options)
         {
             return await context.StartSimulation(options);
         }

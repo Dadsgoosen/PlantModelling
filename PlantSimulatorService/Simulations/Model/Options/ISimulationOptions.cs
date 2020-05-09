@@ -1,4 +1,4 @@
-﻿namespace PlantSimulator.Simulation.Options
+﻿namespace PlantSimulatorService.Simulations.Model.Options
 {
     public interface ISimulationOptions
     {

@@ -30,7 +30,11 @@ export class PlantDrawerDirective implements OnInit {
 
   ngOnInit(): void {
     this.checkIfSvgElement();
-    this._drawer.draw(this.svg, this.simulation);
+    this.draw(this.simulation);
+  }
+
+  public draw(simulation: SimulationState): void {
+    this._drawer.draw(this.svg, simulation);
   }
 
   private checkIfSvgElement() {

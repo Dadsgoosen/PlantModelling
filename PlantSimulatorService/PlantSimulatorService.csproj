@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Simulations/Protos/simulation_configuration.proto" />
     <Protobuf Include="Simulations/Protos/simulation_client.proto" GrpcServices="Server" />
     <Protobuf Include="Simulations/Protos/simulation_service.proto" GrpcServices="Client" />
   </ItemGroup>

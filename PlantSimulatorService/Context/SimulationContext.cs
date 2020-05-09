@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlantSimulatorService.Simulations;
 using PlantSimulatorService.Simulations.Clients;
 using PlantSimulatorService.Simulations.Model;
+using PlantSimulatorService.Simulations.Model.Options;
 
 namespace PlantSimulatorService.Context
 {
@@ -62,7 +63,7 @@ namespace PlantSimulatorService.Context
             return new NotFoundResult();
         }
 
-        public async Task<IActionResult> StartSimulation(SimulationOptions options)
+        public async Task<IActionResult> StartSimulation(PlantSimulationOptions options)
         {
             try
             {

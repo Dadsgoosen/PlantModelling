@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PlantSimulatorService.Simulations.Model;
@@ -16,16 +17,20 @@ namespace PlantSimulatorService.Simulations
     {
         private readonly IOptionsMonitor<FileStorageOptions> options;
 
+        private readonly JsonOptions jsonOptions;
+
         private readonly ILogger<SimulationFileStorage> logger;
 
         private readonly IFileHandler<SimulationState> fileHandler;
 
         public SimulationFileStorage(
             IOptionsMonitor<FileStorageOptions> options, 
+            IOptions<JsonOptions> jsonOptions, 
             ILogger<SimulationFileStorage> logger,
             IFileHandler<SimulationState> fileHandler)
         {
             this.options = options;
+            this.jsonOptions = jsonOptions.Value;
             this.logger = logger;
             this.fileHandler = fileHandler;
         }
@@ -101,7 +106,7 @@ namespace PlantSimulatorService.Simulations
 
         private async Task<SimulationState> DeSerializeState(Stream stream, CancellationToken cancellationToken)
         {
-            return await JsonSerializer.DeserializeAsync<SimulationState>(stream, cancellationToken: cancellationToken);
+            return await JsonSerializer.DeserializeAsync<SimulationState>(stream, jsonOptions.JsonSerializerOptions, cancellationToken);
         }
 
         private string CreatePath(string id)

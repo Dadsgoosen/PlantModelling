@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using PlantSimulatorService.Simulations.Model;
+using PlantSimulatorService.Simulations.Model.Options;
 
 namespace PlantSimulatorService.Simulations.Clients
 {
@@ -17,7 +17,7 @@ namespace PlantSimulatorService.Simulations.Clients
         /// </summary>
         /// <param name="options">Simulation options to start the simulation with</param>
         /// <exception cref="NoAvailableClientsException">Thrown if there is no client available to take the task</exception>
-        public async Task StartAvailableClientAsync(SimulationOptions options)
+        public async Task StartAvailableClientAsync(PlantSimulationOptions options)
         {
             foreach (ISimulationClient client in clients)
             {

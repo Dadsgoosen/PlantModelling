@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using PlantSimulatorService.Context;
+using PlantSimulatorService.Converters;
 using PlantSimulatorService.Simulations;
 using PlantSimulatorService.Simulations.Services;
 
@@ -32,7 +33,12 @@ namespace PlantSimulatorService
             services.AddSimulation(Configuration);
             services.AddTransient<IClientContext, ClientContext>();
             services.AddTransient<ISimulationContext, SimulationContext>();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                var converters = options.JsonSerializerOptions.Converters;
+                converters.Add(new RangeJsonConverter());
+                converters.Add(new VectorJsonConverter());
+            });
             services.AddGrpc();
         }
 
@@ -48,10 +54,7 @@ namespace PlantSimulatorService
                 app.UseHsts();
             }
 
-            app.UseCors(builder =>
-            {
-                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().Build();
-            });
+            app.UseCors(builder => { builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().Build(); });
 
             app.UseRouting();
 
