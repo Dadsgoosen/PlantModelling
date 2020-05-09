@@ -11,6 +11,7 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
     [TestFixture]
     public class SimulationStateFactoryIntegrationTests
     {
+        private string id;
 
         private ISimulationStateFactory stateFactory;
 
@@ -21,6 +22,7 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
         [SetUp]
         public void Setup()
         {
+            id = Guid.NewGuid().ToString();
             stateFactory = new SimulationStateFactory();
             plant = TestPlant.CreatePlant();
             stateData = new SimulationStateSnapshot(100);
@@ -29,8 +31,9 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
         [Test]
         public void Create_WhenGivenTestPlant_ShouldCreateState()
         {
-            var state = stateFactory.Create(plant, stateData);
+            var state = stateFactory.Create(id, plant, stateData);
             Assert.NotNull(state);
+            Assert.AreEqual(state.Id, id);
             Assert.AreEqual(state.Plant.ShootSystem.Count(), 1);
             Assert.AreEqual(state.Plant.RootSystem.Count(), 1);
         }
