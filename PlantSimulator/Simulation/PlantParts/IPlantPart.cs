@@ -11,6 +11,7 @@ namespace PlantSimulator.Simulation.PlantParts
     /// </summary>
     public interface IPlantPart
     {
+        public object Synchronizer { get; }
         /// <summary>
         /// Get all the plant cells
         /// </summary>
@@ -20,10 +21,5 @@ namespace PlantSimulator.Simulation.PlantParts
         /// Get the <see cref="IPlantPart"/> that this <see cref="IPlantPart"/> is connected to
         /// </summary>
         public IEnumerable<IPlantPart> Connections { get; }
-
-        /// <summary>
-        /// Let this plant part grow
-        /// </summary>
-        public void Grow();
     }
 }

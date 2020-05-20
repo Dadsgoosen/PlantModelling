@@ -3,7 +3,7 @@
     /// <summary>
     /// Is a stem support 
     /// </summary>
-    public abstract class Petiole
+    public abstract class Petiole : PlantPart
     {
         /// <summary>
         /// The angle between the shoot stem and the petiole, branch or bud

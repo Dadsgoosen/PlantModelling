@@ -33,11 +33,11 @@ namespace PlantSimulator.Simulation
             this.plantRunner = plantRunner;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             logger.LogDebug("Starting Plant Simulator");
             Stopping = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            await Task.Factory.StartNew(Action, cancellationToken, TaskCreationOptions.LongRunning);
+            return Task.Factory.StartNew(Action, cancellationToken, TaskCreationOptions.LongRunning);
         }
 
         private void Action(object obj)

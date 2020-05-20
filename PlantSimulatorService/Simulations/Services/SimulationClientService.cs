@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Grpc.Core;
+using PlantSimulatorService.Context;
 using PlantSimulatorService.Simulations.Clients;
 using PlantSimulatorService.Simulations.Model;
 using PlantSimulatorService.Simulations.Protos;
@@ -9,38 +10,28 @@ namespace PlantSimulatorService.Simulations.Services
 {
     public class SimulationClientService : Protos.SimulationClientService.SimulationClientServiceBase
     {
-        private readonly IClientCollection clients;
+        private readonly ISimulationClientContext simulationContext;
 
-        private readonly IClientFactory clientFactory;
-
-        private readonly ISimulationStorage simulationStorage;
-
-        public SimulationClientService(IClientCollection clients, IClientFactory clientFactory, ISimulationStorage simulationStorage)
+        public SimulationClientService(ISimulationClientContext simulationContext)
         {
-            this.clients = clients;
-            this.clientFactory = clientFactory;
-            this.simulationStorage = simulationStorage;
+            this.simulationContext = simulationContext;
         }
-
 
         public override Task<ServerHelloResponse> SayHello(ServerHelloRequest request, ServerCallContext context)
         {
-            var client = clientFactory.CreateClient(request, context);
-
-            clients.AddClient(client);
-
+            var client = simulationContext.SayHello(request.Ip);
             return Task.FromResult(new ServerHelloResponse {Id = client.Id});
         }
 
         public override Task<ServerGoodByeResponse> SayGoodBye(ServerGoodByeRequest request, ServerCallContext context)
         {
-            clients.DeleteClient(request.Id);
+            simulationContext.SayGoodbye(request.Id);
             return Task.FromResult(new ServerGoodByeResponse());
         }
 
         public override async Task<SimulationStateResponse> TransmitState(SimulationState request, ServerCallContext context)
         {
-            await simulationStorage.StoreSimulationAsync(request.ToPlantModel(), context.CancellationToken);
+            await simulationContext.TransmitState(request.ToPlantModel(), context.CancellationToken);
             return new SimulationStateResponse();
         }
     }

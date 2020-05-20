@@ -10,9 +10,10 @@ namespace PlantSimulator.Runtime
 {
     public class SimulationRuntimeBroker : IRuntimeBroker<Simulation.PlantSimulator>
     {
-        public RuntimeStatus Status => runningSimulation != null ? RuntimeStatus.Running : RuntimeStatus.Waiting;
+        public RuntimeStatus Status => runningSimulation != null && !runningSimulation.IsCompleted ? RuntimeStatus.Running : RuntimeStatus.Waiting;
 
         private Task runningSimulation;
+
         public Simulation.PlantSimulator Simulation { get; private set; }
 
         private CancellationTokenSource cancellationTokenSource;

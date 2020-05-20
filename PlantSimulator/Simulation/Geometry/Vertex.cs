@@ -19,7 +19,7 @@ namespace PlantSimulator.Simulation.Geometry
 
         public bool Equals(IVertex obj)
         {
-            var tolerance = 0.0001F;
+            const float tolerance = 0.0001F;
             return Math.Abs(X - obj.X) < tolerance && Math.Abs(Y - obj.Y) < tolerance && Math.Abs(Z - obj.Z) < tolerance;
         }
 

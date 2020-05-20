@@ -7,9 +7,9 @@ namespace PlantSimulatorService.Simulations.Clients
 {
     public class SimulationClientFactory : IClientFactory
     {
-        public ISimulationClient CreateClient(ServerHelloRequest request, ServerCallContext context)
+        public ISimulationClient CreateClient(string ip)
         {
-            string host = "https://" + request.Ip;
+            var host = "https://" + ip;
             return new SimulationClient
             {
                 Id = Guid.NewGuid().ToString(),

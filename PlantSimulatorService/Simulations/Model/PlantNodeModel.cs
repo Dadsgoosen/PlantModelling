@@ -5,7 +5,7 @@ using PlantSimulatorService.Simulations.Protos;
 namespace PlantSimulatorService.Simulations.Model
 {
     /// <summary>
-    /// Data Access Object for a 2D point to describe the plant.
+    /// Data Access Object for a plant part.
     /// </summary>
     public class PlantNodeModel
     {
