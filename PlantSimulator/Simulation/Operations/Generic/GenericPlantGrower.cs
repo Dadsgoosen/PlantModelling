@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.PlantParts;
 
@@ -29,12 +27,12 @@ namespace PlantSimulator.Simulation.Operations
 
         private void IterateRootSystem(IRootSystem rootSystem)
         {
-            IteratePlantParts((IPlantPart)rootSystem.PrimaryRoot, false);
+            IteratePlantParts(rootSystem.PrimaryRoot, false);
         }
 
         private void IterateShootSystem(IShootSystem shootSystem)
         {
-            IteratePlantParts((IPlantPart)shootSystem.Stem, true);
+            IteratePlantParts(shootSystem.Stem, true);
         }
 
         private void IteratePlantParts(IPlantPart start, bool isShoot)

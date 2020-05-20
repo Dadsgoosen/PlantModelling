@@ -10,12 +10,15 @@ namespace PlantSimulator.Simulation.Operations
 
         private readonly SimulationEnvironment environment;
 
+        private readonly ICellBodySystemSolver systemSolver;
+
         private static float PercentTowardsLight = 0.001F;
 
-        public GenericCellGrower(IPlant plant, SimulationEnvironment environment)
+        public GenericCellGrower(IPlant plant, SimulationEnvironment environment, ICellBodySystemSolver systemSolver)
         {
             this.plant = plant;
             this.environment = environment;
+            this.systemSolver = systemSolver;
         }
 
         public void GrowShootCell(IPlantCell cell, IPlantPart part, SimulationStateSnapshot state)

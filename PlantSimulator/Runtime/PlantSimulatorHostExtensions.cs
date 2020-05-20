@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using PlantSimulator.Logging;
 using PlantSimulator.Outputs;
 using PlantSimulator.Simulation;
+using PlantSimulator.Simulation.Cells;
+using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
@@ -20,6 +22,8 @@ namespace PlantSimulator.Runtime
             service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             service.AddTransient<IPlant>(s => TestPlant.CreatePlant());
             service.AddSingleton<SimulationEnvironment>();
+            service.AddTransient<ICollisionDetection<IPlantCell>, CellCollisionDetection>();
+            service.AddTransient<ICellBodySystemSolver, GenericCellBodySystemSolver>();
             service.AddTransient<IPlantRunner, GenericPlantRunner>();
             service.AddTransient<IPlantGrower, GenericPlantGrower>();
             service.AddTransient<ICellGrower, GenericCellGrower>();
