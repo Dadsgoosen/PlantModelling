@@ -6,7 +6,7 @@ using PlantSimulator.Simulation.Cells;
 
 namespace PlantSimulator.Simulation.Geometry
 {
-    public class CellCollisionDetection : ICollisionDetection<IPlantCell>
+    public class CellCollisionDetection : ICellCollisionDetection
     {
         private const float Tolerance = 0.001F;
 
@@ -25,13 +25,18 @@ namespace PlantSimulator.Simulation.Geometry
             return false;
         }
 
+        public bool IsHeightColliding(IPlantCell a, IPlantCell b)
+        {
+            return IsWithinYOfCell(a, b);
+        }
+
         public IList<IPlantCell> GetNeighbors(IPlantCell a, IPlantCell[] entities)
         {
             var neighbors = new List<IPlantCell>();
 
             for (int i = 0; i < entities.Length; i++)
             {
-                if (IsNeighbors(a, entities[i]))
+                if (AreNeighbors(a, entities[i]))
                 {
                     neighbors.Add(entities[i]);
                 }
@@ -40,16 +45,23 @@ namespace PlantSimulator.Simulation.Geometry
             return neighbors;
         }
 
-        public bool IsNeighbors(IPlantCell a, IPlantCell b)
+        public bool AreNeighbors(IPlantCell a, IPlantCell b)
         {
+            return IsColliding(a, b);
+            // Neighbor check has been reduced to check if they colliding,
+            // since this also gives the true if they are on the line as well.
+
+            /*
             if (!IsWithinYOfCell(a, b)) return false;
 
-            IVertex[,] pairs = GetFacePairs(b.Geometry.Face.Points);
+            IVertex[][] pairs = GetFacePairs(b.Geometry.Face.Points);
+
+            
 
             for (int i = 0; i < pairs.GetLength(0); i++)
             {
-                IVertex one = pairs[i, 0];
-                IVertex two = pairs[i, 1];
+                IVertex one = pairs[i][0];
+                IVertex two = pairs[i][1];
 
                 foreach (var point in a.Geometry.Face.Points)
                 {
@@ -69,6 +81,61 @@ namespace PlantSimulator.Simulation.Geometry
             }
 
             return false;
+            */
+        }
+
+        public Vector2 GetClosestPoint(Vector2 p, Vector2[] polygon)
+        {
+            Vector2 point = new Vector2(p.X, p.Y);
+
+            float lowestDistance = float.MaxValue;
+
+            Vector2 closest = new Vector2(p.X, p.Y);
+
+            Vector2[][] pairs = GetFacePairs(polygon);
+
+            for (int i = 0; i < pairs.GetLength(0); i++)
+            {
+                Vector2 nearestPoint = NearestPointOnLine(p, pairs[i]);
+
+                float distance = Vector2.Distance(point, nearestPoint);
+
+                if (distance < lowestDistance) 
+                {
+                    lowestDistance = distance;
+
+                    closest = nearestPoint;
+                }
+            }
+
+            return new Vector2(closest.X, closest.Y);
+        }
+
+        private Vector2 NearestPointOnLine(Vector2 p, Vector2[] line)
+        {
+            float apx = p.X - line[0].X;
+            float apz = p.Y - line[0].Y;
+            float abx = line[1].X - line[0].X;
+            float abz = line[1].Y - line[0].Y;
+
+            float ab2 = abx * abx + abz * abz;
+            float apAb = apx * abx + apz * abz;
+
+            float t = apAb / ab2;
+
+            if (t < 0)
+            {
+                t = 0;
+            }
+            else if (t > 1)
+            {
+                t = 1;
+            }
+
+            float vx = line[0].X + abx * t;
+            float vz = line[0].Y + abz * t;
+
+            return new Vector2(vx, vz);
         }
 
         /// <summary>
@@ -89,29 +156,29 @@ namespace PlantSimulator.Simulation.Geometry
         /// <param name="polygon">The polygon to test the point <see cref="p"/> against</param>
         /// <remarks>http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html</remarks>
         /// <returns>True if point <see cref="p"/> is inside <see cref="polygon"/>, false if not</returns>
-        private bool IsPointInPolygon(IVertex p, IVertex[] polygon)
+        public bool IsPointInPolygon(Vector2 p, Vector2[] polygon)
         {
             // Get the max X and Z
             float minX = polygon[0].X;
             float maxX = polygon[0].X;
-            float minZ = polygon[0].Z;
-            float maxZ = polygon[0].Z;
+            float minZ = polygon[0].Y;
+            float maxZ = polygon[0].Y;
 
             for (int i = 1; i < polygon.Length; i++)
             {
-                IVertex q = polygon[i];
+                Vector2 q = polygon[i];
                 minX = Math.Min(q.X, minX);
                 maxX = Math.Max(q.X, maxX);
-                minZ = Math.Min(q.Z, minZ);
-                maxZ = Math.Max(q.Z, maxZ);
+                minZ = Math.Min(q.Y, minZ);
+                maxZ = Math.Max(q.Y, maxZ);
             }
             
             bool inside = false;
 
             for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
             {
-                if ((polygon[i].Z > p.Z) != (polygon[j].Z > p.Z) &&
-                    p.X < (polygon[j].X - polygon[i].X) * (p.Z - polygon[i].Z) / (polygon[j].Z - polygon[i].Z) + polygon[i].X)
+                if ((polygon[i].Y > p.Y) != (polygon[j].Y > p.Y) &&
+                    p.X < (polygon[j].X - polygon[i].X) * (p.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X)
                 {
                     inside = !inside;
                 }
@@ -120,9 +187,9 @@ namespace PlantSimulator.Simulation.Geometry
             return inside;
         }
 
-        private IVertex[,] GetFacePairs(IVertex[] polygon)
+        private Vector2[][] GetFacePairs(Vector2[] polygon)
         {
-            IVertex[,] pairs = new IVertex[polygon.Length, 2];
+            Vector2[][] pairs = new Vector2[polygon.Length][];
 
             int length = polygon.Length;
 
@@ -130,13 +197,11 @@ namespace PlantSimulator.Simulation.Geometry
             {
                 if (i != length - 1)
                 {
-                    pairs[i, 0] = polygon[i];
-                    pairs[i, 1] = polygon[i + 1];
+                    pairs[i] = new [] {polygon[i], polygon[i + 1]};
                 }
                 else
                 {
-                    pairs[i, 0] = polygon[i];
-                    pairs[i, 1] = polygon[0];
+                    pairs[i] = new [] {polygon[i], polygon[0]};
                 }
             }
             return pairs;

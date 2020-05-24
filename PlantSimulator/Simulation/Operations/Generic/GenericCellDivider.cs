@@ -1,4 +1,5 @@
-﻿using PlantSimulator.Simulation.Cells;
+﻿using System.Numerics;
+using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Cells.Factories;
 using PlantSimulator.Simulation.Geometry;
 
@@ -22,7 +23,7 @@ namespace PlantSimulator.Simulation.Operations
         {
             ICellGeometry geo = cell.Geometry;
 
-            IVertex halfPoint = GetCellHalfWay(geo);
+            Vector3 halfPoint = GetCellHalfWay(geo);
 
             ICellGeometry topCellGeometry = new CellGeometry(geo.TopCenter, halfPoint, geo.Face);
             ICellGeometry bottomCellGeometry = new CellGeometry(halfPoint, geo.BottomCenter, geo.Face);
@@ -43,12 +44,12 @@ namespace PlantSimulator.Simulation.Operations
             return cellFactory.CreateCell(type, geometry, vacuole, cellWall, neighbors);
         }
 
-        private static IVertex GetCellHalfWay(ICellGeometry geometry)
+        private static Vector3 GetCellHalfWay(ICellGeometry geometry)
         {
             var top = geometry.TopCenter;
             var bottom = geometry.BottomCenter;
 
-            return new Vertex
+            return new Vector3
             {
                 X = (top.X + bottom.X) / 2,
                 Y = (top.Y + bottom.Y) / 2,

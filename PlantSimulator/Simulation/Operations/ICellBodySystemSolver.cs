@@ -5,6 +5,6 @@ namespace PlantSimulator.Simulation.Operations
 {
     public interface ICellBodySystemSolver
     {
-        public void Solve(IPlantCell cell, IPlantPart part);
+        public void Solve(IPlantPart part);
     }
 }

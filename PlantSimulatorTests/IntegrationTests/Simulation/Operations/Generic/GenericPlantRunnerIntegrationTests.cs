@@ -19,6 +19,10 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private ICellFactory cellFactory;
 
+        private ICellCollisionDetection cellCollisionDetection;
+
+        private ICellBodySystemSolver bodySystemSolver;
+
         private ICellDivider divider;
 
         private ICellGrower cellGrower;
@@ -34,7 +38,9 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             plant = TestPlant.CreatePlant();
             cellFactory = new GenericCellFactory();
             divider = new GenericCellDivider(cellFactory);
-            cellGrower = new GenericCellGrower(plant, environment);
+            cellCollisionDetection = new CellCollisionDetection();
+            bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection);
+            cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver);
             plantGrower = new GenericPlantGrower(cellGrower, environment);
             runner = new GenericPlantRunner(plant, environment, plantGrower);
         }

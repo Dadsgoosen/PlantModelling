@@ -1,4 +1,5 @@
-﻿using PlantSimulator.Simulation.Cells;
+﻿using System.Numerics;
+using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.PlantParts;
 
@@ -33,21 +34,21 @@ namespace PlantSimulator.Simulation.Operations
 
         private static void MoveTopPointUpwards(ICellGeometry geometry)
         {
-            geometry.TopCenter.Y += 1;
+            geometry.TopCenter += Vector3.UnitY;
         }
 
         private static void MoveBottomPointDownwards(ICellGeometry geometry)
         {
-            geometry.BottomCenter.Y += 1;
+            geometry.BottomCenter -= Vector3.UnitY;
         }
 
         private void MovePointTowardsLight(ICellGeometry geometry)
         {
             var lightSource = environment.LightPosition;
 
-            var towards = new Vertex(lightSource.X * PercentTowardsLight, lightSource.Y * PercentTowardsLight, lightSource.Z * PercentTowardsLight);
+            var towards = new Vector3(lightSource.X * PercentTowardsLight, lightSource.Y * PercentTowardsLight, lightSource.Z * PercentTowardsLight);
 
-            geometry.TopCenter.Add(towards);
+            geometry.TopCenter += towards;
         }
     }
 }

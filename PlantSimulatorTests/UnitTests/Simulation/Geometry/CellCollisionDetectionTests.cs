@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using NUnit.Framework;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
@@ -9,7 +10,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Geometry
     public class CellCollisionDetectionTests
     {
 
-        private ICollisionDetection<IPlantCell> cellCollisionDetection;
+        private ICellCollisionDetection cellCollisionDetection;
 
         [SetUp]
         public void SetUp()
@@ -49,7 +50,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Geometry
         {
             var a = CreateCell(10, 0, 0, 0, true);
             var b = CreateCell(10, 10, 0, 0, true);
-            Assert.True(cellCollisionDetection.IsNeighbors(a, b));
+            Assert.True(cellCollisionDetection.AreNeighbors(a, b));
         }
 
         [Test]
@@ -57,7 +58,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Geometry
         {
             var a = CreateCell(10, 0, 0, 0, true);
             var b = CreateCell(10, 30, 0, 20, true);
-            Assert.False(cellCollisionDetection.IsNeighbors(a, b));
+            Assert.False(cellCollisionDetection.AreNeighbors(a, b));
         }
 
         [Test]
@@ -82,43 +83,56 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Geometry
             Assert.IsEmpty(cellCollisionDetection.GetNeighbors(a, new[] {b}));
         }
 
+        [Test]
+        public void GetClosestPoint_WhenGivenAPointInsideFace_FindTheNearestPointOutside()
+        {
+            var cell = CreateCell(10, 0, 0, 0, true);
+            var face = cell.Geometry.Face;
+            
+            var point = new Vector2(2.5F, 0);
+            var nearest = cellCollisionDetection.GetClosestPoint(point, face.Points);
+
+            Assert.AreEqual(5, nearest.X, 0.0001);
+            Assert.AreEqual(point.Y, nearest.Y, 0.0001);
+            Assert.AreEqual(0, nearest.Y, 0.0001);
+        }
+
 
         private static IPlantCell CreateCell(float radius, float x, float y, float z, bool square = false)
         {
-            var top = new Vertex(x, y + 10, z);
-            var bottom = new Vertex(x, y, z);
+            var top = new Vector3(x, y + 10, z);
+            var bottom = new Vector3(x, y, z);
             var face = square ? CreateSquare(top, radius) : CreateFace(top, radius);
 
             return new XylemCell(new CellGeometry(top, bottom, face), new IPlantCell[0], new Vacuole(), new CellWall());
         }
 
-        private static IFace CreateFace(IVertex center, float radius)
+        private static IFace CreateFace(Vector3 center, float radius)
         {
-            IVertex[] vertices = new IVertex[6];
+            Vector2[] vertices = new Vector2[6];
 
             const int sides = 6;
             const int degrees = 360 / 6;
 
             for (int i = 0; i < sides; i++)
             {
-                vertices[i] = new Vertex
+                vertices[i] = new Vector2
                 {
                     X = center.X + radius * (float)Math.Cos(i * degrees * Math.PI / 180f),
-                    Y = center.Y,
-                    Z = center.Z + radius * (float)Math.Sin(i * degrees * Math.PI / 180f),
+                    Y = center.Z + radius * (float)Math.Sin(i * degrees * Math.PI / 180f)
                 };
             }
 
             return new Face(vertices);
         }
 
-        private static IFace CreateSquare(IVertex center, float size)
+        private static IFace CreateSquare(Vector3 center, float size)
         {
-            IVertex[] vertices = {
-                new Vertex(center.X + (size / 2), 0, (-size / 2) + center.Z),
-                new Vertex(center.X + (-size / 2), 0, (-size / 2) + center.Z),
-                new Vertex(center.X + (-size / 2), 0, (size / 2) + center.Z),
-                new Vertex(center.X + (size / 2), 0, (size / 2) + center.Z)
+            Vector2[] vertices = {
+                new Vector2(center.X + (size / 2), (-size / 2) + center.Z),
+                new Vector2(center.X + (-size / 2), (-size / 2) + center.Z),
+                new Vector2(center.X + (-size / 2), (size / 2) + center.Z),
+                new Vector2(center.X + (size / 2), (size / 2) + center.Z)
             };
 
             return new Face(vertices);

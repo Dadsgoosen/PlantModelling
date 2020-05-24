@@ -1,21 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace PlantSimulator.Simulation.Geometry
 {
     public class Face : IFace
     {
-        public IVertex[] Points { get; }
+        public Vector2[] Points { get; }
 
-        public Face(IVertex[] vertices)
+        public Face(Vector2[] vertices)
         {
             Points = vertices;
         }
 
-        public Face(IEnumerable<IVertex> vertices)
+        public Face(IEnumerable<Vector2> vertices)
         {
-            Points = (IVertex[]) vertices ?? vertices.ToArray();
+            Points = (Vector2[]) vertices ?? vertices.ToArray();
         }
 
         public bool Equals(IFace face)

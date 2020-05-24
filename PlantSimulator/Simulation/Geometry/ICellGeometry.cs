@@ -1,13 +1,14 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Hosting;
 
 namespace PlantSimulator.Simulation.Geometry
 {
     public interface ICellGeometry
     {
-        public IVertex TopCenter { get; }
+        public Vector3 TopCenter { get; set; }
 
-        public IVertex BottomCenter { get; }
+        public Vector3 BottomCenter { get; set; }
 
         public IFace Face { get; }
 

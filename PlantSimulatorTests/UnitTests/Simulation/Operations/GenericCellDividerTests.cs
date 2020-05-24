@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Numerics;
+using Moq;
 using NUnit.Framework;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Cells.Factories;
@@ -65,14 +66,14 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
 
         private (ICellGeometry original, ICellGeometry first, ICellGeometry second) CreateGeometries()
         {
-            var face = new Face(new IVertex[]
+            var face = new Face(new[]
             {
-                new Vertex(), new Vertex()
+                new Vector2(0), new Vector2(0)
             });
 
-            var top = new Vertex { X = 23F, Y = 30F, Z = 10F};
-            var bottom = new Vertex { X = 10F, Y = 12F, Z = 2F };
-            var half = new Vertex { X = 16.5F, Y = 21, Z = 6 };
+            var top = new Vector3 { X = 23F, Y = 30F, Z = 10F};
+            var bottom = new Vector3 { X = 10F, Y = 12F, Z = 2F };
+            var half = new Vector3 { X = 16.5F, Y = 21, Z = 6 };
             ICellGeometry original = new CellGeometry(top, bottom, face);
             ICellGeometry first = new CellGeometry(top, half, face);
             ICellGeometry second = new CellGeometry(half, bottom, face);
