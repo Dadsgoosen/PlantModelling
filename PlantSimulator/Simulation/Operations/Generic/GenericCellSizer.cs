@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Numerics;
-using System.Text.Json;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 
@@ -8,58 +7,68 @@ namespace PlantSimulator.Simulation.Operations
 {
     public class GenericCellSizer : ICellSizer
     {
-        private readonly ICellCollisionDetection collisionDetection;
+        private readonly IGeometryHelper geometryHelper;
 
-        public GenericCellSizer(ICellCollisionDetection collisionDetection)
+        public GenericCellSizer(IGeometryHelper geometryHelper)
         {
-            this.collisionDetection = collisionDetection;
+            this.geometryHelper = geometryHelper;
         }
 
         public void Resize(IPlantCell a, IPlantCell b)
         {
-            float squishiness = CalculateSquishiness(a);
+            ResizeHeight(a.Geometry, b.Geometry);
+            ResizeFace(a.Geometry, b.Geometry);
+        }
 
-            Vector2[] aFace = a.Geometry.Face.Points;
-            Vector2[] bFace = b.Geometry.Face.Points;
-
-            foreach (var aPoint in aFace)
+        private static void ResizeHeight(ICellGeometry a, ICellGeometry b)
+        {
+            if (a.TopCenter.Y < b.TopCenter.Y)
             {
-                if (collisionDetection.IsPointInPolygon(aPoint, bFace))
-                {
-                    HandlePolygonCollision(aPoint, a.Geometry, b.Geometry, squishiness);
-                }
+                a.TopCenter = new Vector3(a.TopCenter.X, b.TopCenter.Y, a.TopCenter.Z);
+            }
+
+            if (a.BottomCenter.Y > b.BottomCenter.Y)
+            {
+                a.BottomCenter = new Vector3(a.BottomCenter.X, b.BottomCenter.Y, a.BottomCenter.Z);
             }
         }
 
-        private void HandlePolygonCollision(Vector2 point, ICellGeometry face, ICellGeometry collidingFace, float squishiness)
+        private void ResizeFace(ICellGeometry a, ICellGeometry b)
         {
-            Vector2 pointOnLine = collisionDetection.GetClosestPoint(point, collidingFace.Face.Points);
+            Vector2 aCenter = new Vector2(a.TopCenter.X, a.TopCenter.Z);
+            Vector2 bCenter = new Vector2(b.TopCenter.X, b.TopCenter.Z);
 
-            Vector2 direction = (new Vector2(point.X, point.Y) - new Vector2(pointOnLine.X, pointOnLine.Y)) * squishiness;
+            Vector2 direction = Vector2.Normalize(bCenter - aCenter);
         }
 
-        private void MoveCenterPoint(Vector3 center, Vector2 direction)
+        private Vector2 ComputeDirectionVector(Vector2[] face, Vector2[] bFace)
         {
-            MovePointFromDirectionVector(center, direction);
-        }
+            var collidingPoints = GetCollidingPoints(face, bFace);
 
-        private void MoveFacePoints(Vector3[] face, Vector2 direction)
-        {
-            for (int i = 0; i < face.Length; i++)
+            var mean = Vector2.Zero;
+
+            foreach (var point in collidingPoints)
             {
-                MovePointFromDirectionVector(face[i], direction);
+                mean += point;
             }
+
+            mean /= collidingPoints.Count;
+
+            return Vector2.Zero;
         }
 
-        private static void MovePointFromDirectionVector(Vector3 point, Vector2 direction)
+        private IList<Vector2> GetCollidingPoints(Vector2[] face, Vector2[] collidedFace)
         {
-            point.X += direction.X;
-            point.Z += direction.Y;
-        }
+            IList<Vector2> colliding = new List<Vector2>(face.Length);
 
-        private static float CalculateSquishiness(IPlantCell cell)
-        {
-            return 1;
+            foreach (var point in face)
+            {
+                if (!geometryHelper.IsInsidePolygon(point, collidedFace)) continue;
+
+                colliding.Add(point);
+            }
+
+            return colliding;
         }
     }
 }

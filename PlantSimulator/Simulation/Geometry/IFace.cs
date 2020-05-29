@@ -7,7 +7,7 @@ namespace PlantSimulator.Simulation.Geometry
 {
     public interface IFace
     {
-        public Vector2[] Points { get; }
+        public Vector2[] Points { get; set; }
 
         public float Area
         {

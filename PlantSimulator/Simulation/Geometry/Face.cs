@@ -7,7 +7,7 @@ namespace PlantSimulator.Simulation.Geometry
 {
     public class Face : IFace
     {
-        public Vector2[] Points { get; }
+        public Vector2[] Points { get; set; }
 
         public Face(Vector2[] vertices)
         {

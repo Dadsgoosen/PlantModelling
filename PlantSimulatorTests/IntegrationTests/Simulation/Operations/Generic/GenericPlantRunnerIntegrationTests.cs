@@ -31,6 +31,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private IPlantRunner runner;
 
+        private IGeometryHelper helper;
+
         [SetUp]
         public void Setup()
         {
@@ -38,7 +40,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             plant = TestPlant.CreatePlant();
             cellFactory = new GenericCellFactory();
             divider = new GenericCellDivider(cellFactory);
-            cellCollisionDetection = new CellCollisionDetection();
+            helper = new GeometryHelper();
+            cellCollisionDetection = new CellCollisionDetection(helper);
             bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection);
             cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver);
             plantGrower = new GenericPlantGrower(cellGrower, environment);

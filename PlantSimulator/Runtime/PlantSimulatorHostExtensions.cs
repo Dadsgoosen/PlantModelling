@@ -22,6 +22,7 @@ namespace PlantSimulator.Runtime
             service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             service.AddTransient<IPlant>(s => TestPlant.CreatePlant());
             service.AddSingleton<SimulationEnvironment>();
+            service.AddTransient<IGeometryHelper, GeometryHelper>();
             service.AddTransient<ICellCollisionDetection, CellCollisionDetection>();
             service.AddTransient<ICellBodySystemSolver, GenericCellBodySystemSolver>();
             service.AddTransient<IPlantRunner, GenericPlantRunner>();

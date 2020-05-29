@@ -29,14 +29,7 @@ namespace PlantSimulator.Simulation.Operations
 
         private void SolveCell(IPlantCell cell, IPlantCell[] cells)
         {
-            var neighbors = collisionDetection.GetNeighbors(cell, cells);
-
-            if (neighbors.Count == 0) return;
-
-            for (int i = 0; i < neighbors.Count; i++)
-            {
-                ResizeCell(cell, neighbors[i]);
-            }
+            
         }
 
         private void ResizeCell(IPlantCell main, IPlantCell colliding)
@@ -47,11 +40,9 @@ namespace PlantSimulator.Simulation.Operations
 
             for (int i = 0; i < mainFace.Length; i++)
             {
-                if (!collisionDetection.IsPointInPolygon(mainFace[i], collidingFace)) continue;
+                // if (!collisionDetection.(mainFace[i], collidingFace)) continue;
                 
-                Vector2 noneCollidingPoint = collisionDetection.GetClosestPoint(mainFace[i], collidingFace);
 
-                mainFace[i] = new Vector2(noneCollidingPoint.X, noneCollidingPoint.Y);
             }
         }
 

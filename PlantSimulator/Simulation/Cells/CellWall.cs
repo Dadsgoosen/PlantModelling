@@ -4,5 +4,6 @@
     {
         public bool Primary { get; set; }
         public float Thickness { get; set; }
+        public float Rigidness { get; } = 1;
     }
 }

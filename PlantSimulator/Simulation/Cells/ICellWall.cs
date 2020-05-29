@@ -5,5 +5,7 @@
         public bool Primary { get; }
 
         public float Thickness { get; }
+
+        public float Rigidness { get; }
     }
 }
