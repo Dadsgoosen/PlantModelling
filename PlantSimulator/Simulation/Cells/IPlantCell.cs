@@ -6,6 +6,8 @@ namespace PlantSimulator.Simulation.Cells
 {
     public interface IPlantCell
     {
+        public object Synchronizer { get; }
+
         public PlantCellType CellType { get; }
 
         public ICellGeometry Geometry { get; }
@@ -16,7 +18,7 @@ namespace PlantSimulator.Simulation.Cells
 
         public IVacuole Vacuole { get; }
 
-        public float TurgorPressure { get; }
+        public float Turgidity { get; }
 
         public bool IsDead { get; }
 

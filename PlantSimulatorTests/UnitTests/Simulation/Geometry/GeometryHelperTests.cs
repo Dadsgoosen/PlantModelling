@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Numerics;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -149,10 +150,55 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Geometry
             }
         }
 
+        [TestCaseSource(typeof(LineIntersectionTestData))]
+        public bool LinesIntersect_GivenTwoIntersectingLines_ReturnAppropriateIntersection(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+        {
+            return helper.LinesIntersect(a, b, c, d);
+        }
+
         [TestCaseSource(typeof(HeightTestData))]
         public bool IsWithinHeight_WhenGivenPoint_ShouldReturnAppropriateBoolean(Vector3 point, Vector3 top, Vector3 bottom, bool onLine)
         {
             return helper.IsWithinHeight(point, top, bottom, onLine);
+        }
+
+        [TestCaseSource(typeof(IntersectingPointTestData))]
+        public Vector2 IntersectingPoint_WhenGivenIntersectingLines_ReturnIntersectingPoint(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+        {
+            return helper.IntersectingPoint(a, b, c, d);
+        }
+
+        [Test]
+        public void IntersectingPoint_WhenGivenNoneIntersectingPoints_ThrowError()
+        {
+            var a = new Vector2(-2.5f, -2.5f);
+            var b = new Vector2(2.5f, 2.5f);
+            var c = new Vector2(-2.5f, 0);
+            var d = new Vector2(-2, 5);
+
+            Vector2? point = null;
+
+            Assert.Throws<ArgumentException>(() => point = helper.IntersectingPoint(a, b, c, d));
+
+            Assert.Null(point);
+        }
+    }
+
+    internal class LineIntersectionTestData : IEnumerable
+    {
+        public IEnumerator GetEnumerator()
+        {
+            yield return new TestCaseData(new Vector2(-2.5f, -2.5f), new Vector2(2.5f, 2.5f), new Vector2(-2.5f, 2.5f), new Vector2(2.5f, -2.5f)).Returns(true);
+            yield return new TestCaseData(new Vector2(-2.5f, -2.5f), new Vector2(2.5f, 2.5f), new Vector2(-5, -5), new Vector2(5, 5)).Returns(true);
+            yield return new TestCaseData(new Vector2(-2.5f, -2.5f), new Vector2(2.5f, 2.5f), new Vector2(-2.5f, 0), new Vector2(-2, 5)).Returns(false);
+        }
+    }
+
+    internal class IntersectingPointTestData : IEnumerable
+    {
+        public IEnumerator GetEnumerator()
+        {
+            yield return new TestCaseData(new Vector2(-2.5f, -2.5f), new Vector2(2.5f, 2.5f), new Vector2(-2.5f, 2.5f), new Vector2(2.5f, -2.5f)).Returns(new Vector2(0, 0));
         }
     }
 

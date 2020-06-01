@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using PlantSimulator.Logging;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
+using PlantSimulator.Simulation.PlantParts;
 
 namespace PlantSimulator.Simulation.Operations
 {
@@ -9,66 +11,102 @@ namespace PlantSimulator.Simulation.Operations
     {
         private readonly IGeometryHelper geometryHelper;
 
-        public GenericCellSizer(IGeometryHelper geometryHelper)
+        private readonly ILoggerAdapter<GenericCellSizer> logger;
+
+        public GenericCellSizer(IGeometryHelper geometryHelper, ILoggerAdapter<GenericCellSizer> logger)
         {
             this.geometryHelper = geometryHelper;
+            this.logger = logger;
         }
 
-        public void Resize(IPlantCell a, IPlantCell b)
+        public void ResizeWidth(IPlantCell a, IPlantCell b)
+        {
+            ResizeFace(a, b);
+        }
+
+        public void ResizeHeight(IPlantCell a, IPlantCell b)
         {
             ResizeHeight(a.Geometry, b.Geometry);
-            ResizeFace(a.Geometry, b.Geometry);
         }
 
         private static void ResizeHeight(ICellGeometry a, ICellGeometry b)
         {
-            if (a.TopCenter.Y < b.TopCenter.Y)
+            // If the top of cell a sticks through to bottom of cell b above
+            if (a.TopCenter.Y > b.BottomCenter.Y)
             {
-                a.TopCenter = new Vector3(a.TopCenter.X, b.TopCenter.Y, a.TopCenter.Z);
+                float difference = a.TopCenter.Y - b.BottomCenter.Y;
+
+                a.TopCenter = new Vector3(a.TopCenter.X, b.BottomCenter.Y, a.TopCenter.Z);
+
+                a.BottomCenter = new Vector3(a.BottomCenter.X, a.BottomCenter.Y - difference, a.BottomCenter.Z);
             }
 
-            if (a.BottomCenter.Y > b.BottomCenter.Y)
+            // If the bottom of cell a sticks through the top of cell b below
+            if (a.BottomCenter.Y < b.TopCenter.Y)
             {
-                a.BottomCenter = new Vector3(a.BottomCenter.X, b.BottomCenter.Y, a.BottomCenter.Z);
+                float difference = b.TopCenter.Y - a.BottomCenter.Y;
+
+                a.BottomCenter = new Vector3(a.BottomCenter.X, b.TopCenter.Y, a.BottomCenter.Z);
+
+                a.TopCenter = new Vector3(a.TopCenter.X, a.TopCenter.Y + difference, a.TopCenter.Z);
             }
         }
 
-        private void ResizeFace(ICellGeometry a, ICellGeometry b)
+        private void ResizeFace(IPlantCell aCell, IPlantCell bCell)
         {
-            Vector2 aCenter = new Vector2(a.TopCenter.X, a.TopCenter.Z);
-            Vector2 bCenter = new Vector2(b.TopCenter.X, b.TopCenter.Z);
+            var aGeo = aCell.Geometry;
 
-            Vector2 direction = Vector2.Normalize(bCenter - aCenter);
-        }
+            var bGeo = bCell.Geometry;
 
-        private Vector2 ComputeDirectionVector(Vector2[] face, Vector2[] bFace)
-        {
-            var collidingPoints = GetCollidingPoints(face, bFace);
+            var a = new Vector2(aGeo.TopCenter.X, aGeo.TopCenter.Z);
 
-            var mean = Vector2.Zero;
+            var b = new Vector2(bGeo.TopCenter.X, bGeo.TopCenter.Z);
 
-            foreach (var point in collidingPoints)
+            var aPairs = geometryHelper.CreateFacePairs(aGeo.Face.Points);
+
+            var bPairs = geometryHelper.CreateFacePairs(bGeo.Face.Points);
+
+            Vector2[] aIntersecting = null;
+
+            Vector2[] bIntersecting = null;
+
+            for (int i = 0; i < aPairs.Length; i++)
             {
-                mean += point;
+                if (aIntersecting != null && bIntersecting != null) break;
+
+                if (geometryHelper.LinesIntersect(aPairs[i][0], aPairs[i][1], b, a))
+                {
+                    aIntersecting = aPairs[i];
+                }
+
+                if (geometryHelper.LinesIntersect(bPairs[i][0], bPairs[i][1], b, a))
+                {
+                    bIntersecting = bPairs[i];
+                }
             }
 
-            mean /= collidingPoints.Count;
-
-            return Vector2.Zero;
-        }
-
-        private IList<Vector2> GetCollidingPoints(Vector2[] face, Vector2[] collidedFace)
-        {
-            IList<Vector2> colliding = new List<Vector2>(face.Length);
-
-            foreach (var point in face)
+            if (aIntersecting == null || bIntersecting == null)
             {
-                if (!geometryHelper.IsInsidePolygon(point, collidedFace)) continue;
-
-                colliding.Add(point);
+                logger.LogWarning("Faces are colliding but could not find two line pairs that collide with ab vector.");
+                return;
             }
 
-            return colliding;
+            Vector2 aIntersectingPoint = geometryHelper.IntersectingPoint(a, b, aIntersecting[0], aIntersecting[1]);
+
+            Vector2 bIntersectingPoint = geometryHelper.IntersectingPoint(a, b, bIntersecting[0], bIntersecting[1]);
+
+            float turgidity = aCell.Turgidity;
+
+            Vector2 direction = (bIntersectingPoint - aIntersectingPoint) * turgidity;
+
+            for (int i = 0; i < aGeo.Face.Points.Length; i++)
+            {
+                aGeo.Face.Points[i] += direction;
+            }
+
+            aGeo.TopCenter = new Vector3(aGeo.TopCenter.X + direction.X, aGeo.TopCenter.Y, aGeo.TopCenter.Z + direction.Y);
+
+            aGeo.BottomCenter = new Vector3(bGeo.BottomCenter.X + direction.X, bGeo.BottomCenter.Y, bGeo.BottomCenter.Z + direction.Y);
         }
     }
 }

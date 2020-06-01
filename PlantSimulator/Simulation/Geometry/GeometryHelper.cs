@@ -116,7 +116,7 @@ namespace PlantSimulator.Simulation.Geometry
 
             if (float.IsInfinity(t1))
             {
-                throw new ArgumentException("The lines does not intersect and therefore does not exist a point where the lines intersect.");
+                throw new ArgumentException("The lines does not intersect and there does not exist a point where the lines intersect.");
             }
 
             float t2 =

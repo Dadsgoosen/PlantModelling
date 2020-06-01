@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Numerics;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using PlantSimulator.Logging;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
@@ -12,6 +15,8 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
     {
         private ICellCollisionDetection collisionDetection;
 
+        private ILoggerAdapter<GenericCellSizer> logger;
+
         private ICellSizer cellSizer;
 
         private IGeometryHelper helper;
@@ -20,7 +25,22 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
         public void SetUp()
         {
             helper = new GeometryHelper();
-            cellSizer = new GenericCellSizer(helper);
+            collisionDetection = new CellCollisionDetection(helper);
+            logger = new LoggerAdapter<GenericCellSizer>(new Logger<GenericCellSizer>(new NullLoggerFactory()));
+            cellSizer = new GenericCellSizer(helper, logger);
+        }
+
+        [Test]
+        public void Resize_WhenGivenWidthCollidingCells_ShouldNotCollideAfterResize()
+        {
+            var a = CreateCell(10, 2.5f, 0, 2.5f);
+            var b = CreateCell(10, 0, 0, 0);
+            
+            Assert.True(collisionDetection.Colliding(a, b, true), "Cells does not collide from the start");
+
+            cellSizer.ResizeWidth(a, b);
+
+            Assert.False(collisionDetection.Colliding(a, b, true), "Cells still collide after resizing");
         }
 
         private static IPlantCell CreateCell(float radius, float x, float y, float z, bool square = false)
