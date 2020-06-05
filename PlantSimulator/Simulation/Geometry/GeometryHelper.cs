@@ -6,14 +6,14 @@ namespace PlantSimulator.Simulation.Geometry
 {
     public class GeometryHelper : IGeometryHelper
     {
-        private const float Tolerance = 0.0001F;
+        private const float Tolerance = 1e-10f;
 
         public bool IsOnLine(Vector2 point, Vector2[] line)
         {
             float a = Vector2.Distance(line[0], point);
             float b = Vector2.Distance(point, line[1]);
             float c = Vector2.Distance(line[0], line[1]);
-            return a + b - c < 0.0001;
+            return a + b - c < Tolerance;
         }
 
         public Vector2 NearestPointOnLine(Vector2 p, Vector2[] line)
@@ -74,10 +74,23 @@ namespace PlantSimulator.Simulation.Geometry
             return inside;
         }
 
-        public bool LinesIntersect(Vector2[] a, Vector2[] b)
+        /*public bool LinesIntersect(Vector2[] a, Vector2[] b)
         {
+            
+             * float denominator = (b.X - a.X) * (d.Y - c.Y) - (b.Y - a.Y) * (d.X - c.X);
+               float numerator1 = (a.Y - c.Y) * (d.X - c.X) - (a.X - c.X) * (d.Y - c.Y);
+               float numerator2 = (a.Y - c.Y) * (b.X - a.X) - (a.X - c.X) * (b.Y - a.Y);
+               
+               // Detect coincident lines
+               if (Math.Abs(denominator) < Tolerance) return Math.Abs(numerator1) < Tolerance && Math.Abs(numerator2) < Tolerance;
+               
+               float r = numerator1 / denominator;
+               float s = numerator2 / denominator;
+               
+               return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
+             
             return LinesIntersect(a[0], a[1], b[0], b[1]);
-        }
+        }*/
 
         public bool LinesIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
         {
@@ -91,7 +104,7 @@ namespace PlantSimulator.Simulation.Geometry
             float r = numerator1 / denominator;
             float s = numerator2 / denominator;
 
-            return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
+            return r >= 0 && r <= 1 && s >= 0 && s <= 1;
         }
 
         public Vector2 IntersectingPoint(Vector2[] a, Vector2[] b)

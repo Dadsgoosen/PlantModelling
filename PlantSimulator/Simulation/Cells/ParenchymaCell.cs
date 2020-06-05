@@ -10,10 +10,9 @@ namespace PlantSimulator.Simulation.Cells
         {
         }
 
-        public ParenchymaCell(ICellGeometry geometry, IPlantCell[] neighboringCells, IVacuole vacuole, ICellWall cellWall)
+        public ParenchymaCell(ICellGeometry geometry, IVacuole vacuole, ICellWall cellWall)
         {
             Geometry = geometry;
-            Neighbors = neighboringCells;
             Vacuole = vacuole;
             CellWall = cellWall;
         }

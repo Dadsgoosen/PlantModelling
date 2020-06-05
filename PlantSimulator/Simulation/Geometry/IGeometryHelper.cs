@@ -19,7 +19,6 @@ namespace PlantSimulator.Simulation.Geometry
         /// <returns>True if point <see cref="p"/> is inside <see cref="polygon"/>, false if not</returns>
         public bool IsInsidePolygon(Vector2 p, Vector2[] polygon);
 
-        public bool LinesIntersect(Vector2[] a, Vector2[] b);
         public bool LinesIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d);
         public Vector2 IntersectingPoint(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4);
         public Vector2 IntersectingPoint(Vector2[] a, Vector2[] b);

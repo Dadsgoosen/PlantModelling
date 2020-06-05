@@ -8,8 +8,6 @@ namespace PlantSimulator.Simulation.Geometry
 {
     public class CellCollisionDetection : ICellCollisionDetection
     {
-        private const float Tolerance = 0.001F;
-
         private readonly IGeometryHelper helper;
 
         public CellCollisionDetection(IGeometryHelper helper)

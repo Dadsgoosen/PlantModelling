@@ -10,10 +10,9 @@ namespace PlantSimulator.Simulation.Cells
         {
         }
 
-        public XylemCell(ICellGeometry geometry, IPlantCell[] neighboringCells, IVacuole vacuole, ICellWall cellWall)
+        public XylemCell(ICellGeometry geometry, IVacuole vacuole, ICellWall cellWall)
         {
             Geometry = geometry;
-            Neighbors = neighboringCells;
             Vacuole = vacuole;
             CellWall = cellWall;
             Kill();

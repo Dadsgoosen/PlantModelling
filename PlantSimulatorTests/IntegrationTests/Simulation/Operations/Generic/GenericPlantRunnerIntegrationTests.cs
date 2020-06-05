@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using PlantSimulator;
+using PlantSimulator.Logging;
 using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.Cells.Factories;
 using PlantSimulator.Simulation.Geometry;
@@ -33,6 +35,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private IGeometryHelper helper;
 
+        private ICellSizer cellSizer;
+
         [SetUp]
         public void Setup()
         {
@@ -41,8 +45,9 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             cellFactory = new GenericCellFactory();
             divider = new GenericCellDivider(cellFactory);
             helper = new GeometryHelper();
+            cellSizer = new GenericCellSizer(helper, new LoggerAdapter<GenericCellSizer>(new NullLogger<GenericCellSizer>()));
             cellCollisionDetection = new CellCollisionDetection(helper);
-            bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection);
+            bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection, cellSizer);
             cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver);
             plantGrower = new GenericPlantGrower(cellGrower, environment);
             runner = new GenericPlantRunner(plant, environment, plantGrower);

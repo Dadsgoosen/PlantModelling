@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Net;
 using System.Numerics;
 using PlantSimulator.Logging;
 using PlantSimulator.Simulation.Cells;
@@ -31,6 +33,13 @@ namespace PlantSimulator.Simulation.Operations
 
         private static void ResizeHeight(ICellGeometry a, ICellGeometry b)
         {
+            // First we need to check whether either a top or a bottom is between b top or b bottom.
+            bool between = a.TopCenter.Y < b.TopCenter.Y && a.TopCenter.Y > b.BottomCenter.Y ||
+                           a.BottomCenter.Y > b.BottomCenter.Y && a.BottomCenter.Y < b.TopCenter.Y;
+
+            // If it is not between, then we don't need to do anything
+            if (!between) return;
+            
             // If the top of cell a sticks through to bottom of cell b above
             if (a.TopCenter.Y > b.BottomCenter.Y)
             {
@@ -55,58 +64,61 @@ namespace PlantSimulator.Simulation.Operations
         private void ResizeFace(IPlantCell aCell, IPlantCell bCell)
         {
             var aGeo = aCell.Geometry;
+            var aFace = aGeo.Face.Points;
 
             var bGeo = bCell.Geometry;
+            var bFace = bGeo.Face.Points;
 
-            var a = new Vector2(aGeo.TopCenter.X, aGeo.TopCenter.Z);
+            var pairs = geometryHelper.CreateFacePairs(bFace);
 
-            var b = new Vector2(bGeo.TopCenter.X, bGeo.TopCenter.Z);
-
-            var aPairs = geometryHelper.CreateFacePairs(aGeo.Face.Points);
-
-            var bPairs = geometryHelper.CreateFacePairs(bGeo.Face.Points);
-
-            Vector2[] aIntersecting = null;
-
-            Vector2[] bIntersecting = null;
-
-            for (int i = 0; i < aPairs.Length; i++)
+            for (int i = 0; i < aFace.Length; i++)
             {
-                if (aIntersecting != null && bIntersecting != null) break;
+                if (!geometryHelper.IsInsidePolygon(aFace[i], bFace)) continue;
 
-                if (geometryHelper.LinesIntersect(aPairs[i][0], aPairs[i][1], b, a))
+                Vector2 nearest = FindNearestPoint(aFace[i], pairs);
+
+                Vector2 direction = (aFace[i] - nearest) * aCell.Turgidity;
+                
+                aFace[i] = nearest;
+
+                ChangeFace(aGeo, aFace[i], direction);
+            }
+        }
+
+        private Vector2 FindNearestPoint(Vector2 point, Vector2[][] pairs)
+        {
+            float distance = float.MaxValue;
+
+            Vector2 nearest = Vector2.Zero;
+
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                Vector2 n = geometryHelper.NearestPointOnLine(point, pairs[i]);
+
+                float distToNearestPoint = Vector2.Distance(point, n);
+
+                if (distToNearestPoint < distance)
                 {
-                    aIntersecting = aPairs[i];
-                }
+                    distance = distToNearestPoint;
 
-                if (geometryHelper.LinesIntersect(bPairs[i][0], bPairs[i][1], b, a))
-                {
-                    bIntersecting = bPairs[i];
+                    nearest = n;
                 }
             }
 
-            if (aIntersecting == null || bIntersecting == null)
+            return nearest;
+        }
+
+        private static void ChangeFace(ICellGeometry geo, Vector2 changedPoint, Vector2 direction)
+        {
+            geo.TopCenter += new Vector3(direction.X, 0, direction.Y);
+            
+            geo.BottomCenter += new Vector3(direction.X, 0, direction.Y);
+
+            for (int i = 0; i < geo.Face.Points.Length; i++)
             {
-                logger.LogWarning("Faces are colliding but could not find two line pairs that collide with ab vector.");
-                return;
+                if (geo.Face.Points[i] == changedPoint) continue;
+                geo.Face.Points[i] += direction;
             }
-
-            Vector2 aIntersectingPoint = geometryHelper.IntersectingPoint(a, b, aIntersecting[0], aIntersecting[1]);
-
-            Vector2 bIntersectingPoint = geometryHelper.IntersectingPoint(a, b, bIntersecting[0], bIntersecting[1]);
-
-            float turgidity = aCell.Turgidity;
-
-            Vector2 direction = (bIntersectingPoint - aIntersectingPoint) * turgidity;
-
-            for (int i = 0; i < aGeo.Face.Points.Length; i++)
-            {
-                aGeo.Face.Points[i] += direction;
-            }
-
-            aGeo.TopCenter = new Vector3(aGeo.TopCenter.X + direction.X, aGeo.TopCenter.Y, aGeo.TopCenter.Z + direction.Y);
-
-            aGeo.BottomCenter = new Vector3(bGeo.BottomCenter.X + direction.X, bGeo.BottomCenter.Y, bGeo.BottomCenter.Z + direction.Y);
         }
     }
 }

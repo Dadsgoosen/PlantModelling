@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace PlantSimulator.Simulation.Geometry
 {
@@ -31,6 +32,11 @@ namespace PlantSimulator.Simulation.Geometry
             a.Y -= b.Y;
             a.Z -= b.Z;
             return a;
+        }
+
+        public static float CrossProduct(this Vector2 a, Vector2 b)
+        {
+            return a.X * b.Y - a.Y * b.X;
         }
     }
 }

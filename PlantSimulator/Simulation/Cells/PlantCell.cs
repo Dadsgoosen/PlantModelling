@@ -10,8 +10,6 @@ namespace PlantSimulator.Simulation.Cells
         
         public ICellGeometry Geometry { get; protected set; }
         
-        public IPlantCell[] Neighbors { get; protected set; }
-        
         public ICellWall CellWall { get; protected set; }
         
         public IVacuole Vacuole { get; protected set; }

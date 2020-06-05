@@ -12,41 +12,55 @@ namespace PlantSimulator.Simulation.Operations
     {
         private readonly ICellCollisionDetection collisionDetection;
 
-        public GenericCellBodySystemSolver(ICellCollisionDetection collisionDetection)
+        private readonly ICellSizer cellSizer;
+
+        public GenericCellBodySystemSolver(ICellCollisionDetection collisionDetection, ICellSizer cellSizer)
         {
             this.collisionDetection = collisionDetection;
+            this.cellSizer = cellSizer;
         }
 
         public void Solve(IPlantPart part)
         {
-            var cellArray = part.Cells.ToArray();
+            var cells = part.Cells.ToArray();
 
-            for (int i = 0; i < cellArray.Length; i++)
+            do
             {
-                SolveCell(cellArray[i], cellArray);
-            }
+                for (int i = 0; i < cells.Length; i++)
+                {
+                    for (int j = 0; j < cells.Length; j++)
+                    {
+                        if (cells[i].Equals(cells[j]) || !collisionDetection.Colliding(cells[i], cells[j], false))
+                        {
+                            continue;
+                        }
+
+                        SolveCell(cells[i], cells[j]);
+                    }
+                }
+            } while (DoesAnyCollide(cells));
         }
 
-        private void SolveCell(IPlantCell cell, IPlantCell[] cells)
+        private void SolveCell(IPlantCell a, IPlantCell b)
         {
-            
+            cellSizer.ResizeHeight(a, b);
+
+            cellSizer.ResizeWidth(a, b);
         }
 
-        private void ResizeCell(IPlantCell main, IPlantCell colliding)
+        private bool DoesAnyCollide(IPlantCell[] cells)
         {
-            Vector2[] mainFace = main.Geometry.Face.Points;
-
-            Vector2[] collidingFace = colliding.Geometry.Face.Points;
-
-            for (int i = 0; i < mainFace.Length; i++)
+            for (int i = 0; i < cells.Length; i++)
             {
-                // if (!collisionDetection.(mainFace[i], collidingFace)) continue;
-                
-
+                for (int j = 0; j < cells.Length; j++)
+                {
+                    if (cells[i].Equals(cells[j])) continue;
+                    if (collisionDetection.Colliding(cells[i], cells[j], false)) return true;
+                }
             }
+
+            return false;
         }
-
-
     }
 
 }

@@ -12,8 +12,6 @@ namespace PlantSimulator.Simulation.Cells
 
         public ICellGeometry Geometry { get; }
 
-        public IPlantCell[] Neighbors { get; }
-
         public ICellWall CellWall { get; }
 
         public IVacuole Vacuole { get; }

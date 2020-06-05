@@ -10,10 +10,9 @@ namespace PlantSimulator.Simulation.Cells
         {
         }
 
-        public PhloemCell(ICellGeometry geometry, IPlantCell[] neighboringCells, IVacuole vacuole, ICellWall cellWall)
+        public PhloemCell(ICellGeometry geometry, IVacuole vacuole, ICellWall cellWall)
         {
             Geometry = geometry;
-            Neighbors = neighboringCells;
             Vacuole = vacuole;
             CellWall = cellWall;
         }
