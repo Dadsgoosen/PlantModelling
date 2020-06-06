@@ -30,8 +30,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
                     It.Is<PlantCellType>(type => type == PlantCellType.Xylem),
                     It.Is<ICellGeometry>(geo => geo.TopCenter.Equals(first.Geometry.TopCenter)),
                     It.IsAny<IVacuole>(),
-                    It.IsAny<ICellWall>(),
-                    It.IsAny<IPlantCell[]>()
+                    It.IsAny<ICellWall>()
                 )).Returns(first);
 
             cellFactoryMock
@@ -39,8 +38,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
                     It.Is<PlantCellType>(type => type == PlantCellType.Xylem),
                     It.Is<ICellGeometry>(geo => geo.TopCenter.Equals(second.Geometry.TopCenter)),
                     It.IsAny<IVacuole>(),
-                    It.IsAny<ICellWall>(),
-                    It.IsAny<IPlantCell[]>()
+                    It.IsAny<ICellWall>()
                 )).Returns(second);
 
 
@@ -57,9 +55,9 @@ namespace PlantSimulatorTests.UnitTests.Simulation.Operations
         {
             var (originalGeo, firstGeo, secondGeo) = CreateGeometries();
             
-            IPlantCell original = new XylemCell(originalGeo, new IPlantCell[0], null, null);
-            IPlantCell first = new XylemCell(firstGeo, new IPlantCell[0], null, null);
-            IPlantCell second = new XylemCell(secondGeo, new IPlantCell[0], null, null);
+            IPlantCell original = new XylemCell(originalGeo, null, null);
+            IPlantCell first = new XylemCell(firstGeo, null, null);
+            IPlantCell second = new XylemCell(secondGeo, null, null);
 
             return (original, first, second);
         }

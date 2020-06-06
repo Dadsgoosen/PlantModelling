@@ -19,10 +19,9 @@ namespace PlantSimulator.Simulation.Cells.Factories
         /// <param name="wall">The cell wall</param>
         /// <param name="neighbors">The neighboring plant cells</param>
         /// <returns>New cell of type <see cref="type"/> with provided parameters</returns>
-        public IPlantCell CreateCell(PlantCellType type, ICellGeometry geometry, IVacuole vacuole, ICellWall wall,
-            IPlantCell[] neighbors)
+        public IPlantCell CreateCell(PlantCellType type, ICellGeometry geometry, IVacuole vacuole, ICellWall wall)
         {
-            return InstantiateCell(type, geometry, vacuole, wall, neighbors);
+            return InstantiateCell(type, geometry, vacuole, wall);
         }
 
         /// <summary>
@@ -34,21 +33,20 @@ namespace PlantSimulator.Simulation.Cells.Factories
         /// <param name="wall">The cell wall</param>
         /// <param name="neighbors">The neighboring plant cells</param>
         /// <returns>New cell of type <see cref="type"/> with provided parameters</returns>
-        private IPlantCell InstantiateCell(PlantCellType type, ICellGeometry geometry, IVacuole vacuole, ICellWall wall,
-            IPlantCell[] neighbors)
+        private IPlantCell InstantiateCell(PlantCellType type, ICellGeometry geometry, IVacuole vacuole, ICellWall wall)
         {
             switch (type)
             {
                 case PlantCellType.Xylem:
-                    return new XylemCell(geometry, neighbors, vacuole, wall);
+                    return new XylemCell(geometry, vacuole, wall);
                 case PlantCellType.Phloem:
-                    return new PhloemCell(geometry, neighbors, vacuole, wall);
+                    return new PhloemCell(geometry, vacuole, wall);
                 case PlantCellType.Sclerenchyma:
-                    return new SclerenchymaCell(geometry, neighbors, vacuole, wall);
+                    return new SclerenchymaCell(geometry, vacuole, wall);
                 case PlantCellType.Collenchyma:
-                    return new CollenchymaCell(geometry, neighbors, vacuole, wall);
+                    return new CollenchymaCell(geometry, vacuole, wall);
                 case PlantCellType.Parenchyma:
-                    return new ParenchymaCell(geometry, neighbors, vacuole, wall);
+                    return new ParenchymaCell(geometry, vacuole, wall);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid Plant Cell Type");
             }

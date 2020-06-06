@@ -6,13 +6,14 @@ namespace PlantSimulator.Simulation.Geometry
 {
     public class GeometryHelper : IGeometryHelper
     {
-        private const float Tolerance = 1e-10f;
+        private const float Tolerance = 10e-3f;
 
         public bool IsOnLine(Vector2 point, Vector2[] line)
         {
             float a = Vector2.Distance(line[0], point);
             float b = Vector2.Distance(point, line[1]);
             float c = Vector2.Distance(line[0], line[1]);
+
             return a + b - c < Tolerance;
         }
 

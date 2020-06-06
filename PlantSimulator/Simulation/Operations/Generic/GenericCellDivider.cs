@@ -30,18 +30,16 @@ namespace PlantSimulator.Simulation.Operations
 
             IPlantCell[] cells = new IPlantCell[2];
 
-            cells[0] = CreatePlantCell(cell.CellType, topCellGeometry, cell.Vacuole, cell.CellWall,
-                cell.Neighbors);
-            cells[1] = CreatePlantCell(cell.CellType, bottomCellGeometry, cell.Vacuole, cell.CellWall,
-                cell.Neighbors);
+            cells[0] = CreatePlantCell(cell.CellType, topCellGeometry, cell.Vacuole, cell.CellWall);
+            cells[1] = CreatePlantCell(cell.CellType, bottomCellGeometry, cell.Vacuole, cell.CellWall);
 
             return cells;
         }
 
         private IPlantCell CreatePlantCell(PlantCellType type, ICellGeometry geometry, IVacuole vacuole,
-            ICellWall cellWall, IPlantCell[] neighbors)
+            ICellWall cellWall)
         {
-            return cellFactory.CreateCell(type, geometry, vacuole, cellWall, neighbors);
+            return cellFactory.CreateCell(type, geometry, vacuole, cellWall);
         }
 
         private static Vector3 GetCellHalfWay(ICellGeometry geometry)

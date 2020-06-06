@@ -52,16 +52,46 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Geometry
     {
         public IEnumerator GetEnumerator()
         {
-            yield return new TestCaseData(CellCreationHelper.CreateCell(10, 0, 0, 0, true), CellCreationHelper.CreateCell(10, 2.5F, 0, 2.5F, true), false)
-                .Returns(true).SetDescription("Colliding inside");
-            yield return new TestCaseData(CellCreationHelper.CreateCell(10, 0, 0, 0, true), CellCreationHelper.CreateCell(10, 10, 0, 10, true), false)
-                .Returns(false).SetDescription("Colliding and on line is not allowed");
-            yield return new TestCaseData(CellCreationHelper.CreateCell(10, 0, 0, 0, true), CellCreationHelper.CreateCell(10, 10, 0, 10, true), true)
-                .Returns(true).SetDescription("Colliding and on line is allowed to");
-            yield return new TestCaseData(CellCreationHelper.CreateCell(10, 0, 0, 0, true), CellCreationHelper.CreateCell(10, 11, 0, 11, true), true)
-                .Returns(false).SetDescription("Does not collide and is allowed on line");
-            yield return new TestCaseData(CellCreationHelper.CreateCell(10, 0, 0, 0, true), CellCreationHelper.CreateCell(10, 11, 0, 11, true), false)
-                .Returns(false).SetDescription("Does not collide and is not allowed on line");
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0, true), 
+                CellCreationHelper.CreateCell(10, 2.5f, 0, 0, true), 
+                false,
+                "Colliding inside and is not allowed on line", 
+                true);
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0),
+                CellCreationHelper.CreateCell(10, 0, 0, (float) Math.Sqrt(3) * 10),
+                false,
+                "Colliding on line and is not allowed on line", 
+                true);
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0),
+                CellCreationHelper.CreateCell(10, 0, 0, (float)Math.Sqrt(3) * 10),
+                true,
+                "Colliding on line and is allowed on line",
+                false);
+
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0),
+                CellCreationHelper.CreateCell(10, 0, 0, (float)Math.Sqrt(3) * 10 + 1),
+                true,
+                "Not Colliding and is allowed on line",
+                false);
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0),
+                CellCreationHelper.CreateCell(10, 0, 0, (float)Math.Sqrt(3) * 10 + 1),
+                false,
+                "Not Colliding and is not allowed on line",
+                false);
+        }
+
+        private TestCaseData CreateTestCase(IPlantCell a, IPlantCell b, bool allowed, string name, bool returns)
+        {
+            return new TestCaseData(a, b, allowed).Returns(returns).SetName(name);
         }
     }
 
@@ -73,7 +103,7 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Geometry
             var bottom = new Vector3(x, y, z);
             var face = square ? CreateSquare(top, radius) : CreateFace(top, radius);
 
-            return new XylemCell(new CellGeometry(top, bottom, face), new IPlantCell[0], new Vacuole(), new CellWall());
+            return new XylemCell(new CellGeometry(top, bottom, face), new Vacuole(), new CellWall());
         }
 
         private static IFace CreateFace(Vector3 center, float radius)

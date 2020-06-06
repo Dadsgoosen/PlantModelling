@@ -24,7 +24,7 @@ namespace PlantSimulator.Simulation.Geometry
 
             var inside = IsInsidePolygon(aFace, bFace);
 
-            if (allowOnLine) return inside;
+            if (!allowOnLine) return inside;
 
             var onLine = IsOnPolygonLine(aFace, helper.CreateFacePairs(bFace));
 

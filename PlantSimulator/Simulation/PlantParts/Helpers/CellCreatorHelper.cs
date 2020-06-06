@@ -9,10 +9,19 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 {
     public class CellCreatorHelper : ICellCreatorHelper
     {
+        /// <summary>
+        /// The width of the plant cell
+        /// </summary>
         private float w;
 
+        /// <summary>
+        /// The depth of the plant cell
+        /// </summary>
         private float h;
 
+        /// <summary>
+        /// The radius/size of the cells
+        /// </summary>
         private float r;
 
         public IList<IPlantCell> CreateCell()
@@ -33,37 +42,78 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
         {
             var cells = new List<IPlantCell>();
 
-            for (int c = 1; c < 10; c++)
-            {
+            int columns = 21;
+            int max = 17;
+            int end = 7;
+            int current = max;
 
+            for (int c = 0; c < 11; c++)
+            {
+                cells.AddRange(CreateNewCells(current, c));
+                current--;
+            }
+
+            current = max - 1;
+
+            for (int c = -1; c < -10; c--)
+            {
+                cells.AddRange(CreateNewCells(current, c));
+                current--;
             }
 
             return cells;
         }
 
-        private IPlantCell[] CreateColumn(int count, int column)
+        private IEnumerable<IPlantCell> CreateNewCells(int current, int column)
         {
-            IPlantCell[] cells = new IPlantCell[count];
+            return column % 2 == 0 ? CreateEven(current, column) : CreateOdd(current, column);
+        }
 
-            int half = count / 2;
+        private IEnumerable<IPlantCell> CreateOdd(int total, int column)
+        {
+            return new IPlantCell[0];
+        }
 
-            float x = column * (w * 1.5f);
+        private IEnumerable<IPlantCell> CreateEven(int total, int column)
+        {
+            var cells = new List<IPlantCell>(total);
 
-            float z = 0;
+            int half = (int) Math.Floor(total / 2m);
 
-            cells[0] = CreatePlantCell(GetCellType(0, column), r, x, z);
+            float x = ComputeX(column);
+            float z = ComputeZ(0);
 
-            for (int i = 0; i < half; i++)
+            cells.Add(CreatePlantCell(GetCellType(0, column), 10, x, z));
+
+            for (int i = 1; i <= half; i++)
             {
+                z = ComputeZ(i);
+                cells.Add(CreatePlantCell(GetCellType(i, column), 10, x, z));
+            }
 
+            for (int i = -1; i <= -half; i--)
+            {
+                z = ComputeZ(i);
+                cells.Add(CreatePlantCell(GetCellType(i, column), 10, x, z));
             }
 
             return cells;
         }
+
 
         private PlantCellType GetCellType(int row, int column)
         {
             return PlantCellType.Parenchyma;
+        }
+
+        private float ComputeZ(int row)
+        {
+            return row * h;
+        }
+
+        private float ComputeX(int column)
+        {
+            return column * w;
         }
 
         private IPlantCell CreatePlantCell(PlantCellType type, float radius, float x, float z)

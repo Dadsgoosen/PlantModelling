@@ -48,7 +48,7 @@ namespace PlantSimulator
             var bottom = new Vector3(x, y, z);
             var face = CreateFace(top, radius);
 
-            return new XylemCell(new CellGeometry(top, bottom, face), new IPlantCell[0], new Vacuole(), new CellWall());
+            return new XylemCell(new CellGeometry(top, bottom, face), new Vacuole(), new CellWall());
         }
 
         private static IFace CreateFace(Vector3 center, float radius)
