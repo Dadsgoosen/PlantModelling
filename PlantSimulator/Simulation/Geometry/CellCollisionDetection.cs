@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using PlantSimulator.Simulation.Cells;
 
 namespace PlantSimulator.Simulation.Geometry
@@ -24,11 +25,14 @@ namespace PlantSimulator.Simulation.Geometry
 
             var inside = IsInsidePolygon(aFace, bFace);
 
-            if (!allowOnLine) return inside;
+            if (inside && allowOnLine)
+            {
+                var isOnLine = IsOnPolygonLine(aFace, helper.CreateFacePairs(bFace));
 
-            var onLine = IsOnPolygonLine(aFace, helper.CreateFacePairs(bFace));
+                return !isOnLine;
+            }
 
-            return !onLine && inside;
+            return inside;
         }
 
         public bool Neighbors(IPlantCell a, IPlantCell b, bool allowInside)
@@ -69,6 +73,7 @@ namespace PlantSimulator.Simulation.Geometry
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsOnPolygonLine(Vector2[] aFace, Vector2[][] linePairs)
         {
             for (int i = 0; i < aFace.Length; i++)

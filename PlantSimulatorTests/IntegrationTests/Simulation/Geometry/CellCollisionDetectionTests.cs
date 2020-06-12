@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Numerics;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 
@@ -87,6 +88,20 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Geometry
                 false,
                 "Not Colliding and is not allowed on line",
                 false);
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0, true),
+                CellCreationHelper.CreateCell(10, 10, 0, 0, true),
+                true,
+                "Whole side is on colliding side and is allowed on line",
+                false);
+
+            yield return CreateTestCase(
+                CellCreationHelper.CreateCell(10, 0, 0, 0, true),
+                CellCreationHelper.CreateCell(10, 10, 0, 0, true),
+                false,
+                "Whole side is on colliding side and is not allowed on line",
+                true);
         }
 
         private TestCaseData CreateTestCase(IPlantCell a, IPlantCell b, bool allowed, string name, bool returns)

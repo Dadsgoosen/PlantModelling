@@ -4,6 +4,7 @@ using System.Numerics;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
+using PlantSimulator.Simulation.PlantParts.Corn;
 
 namespace PlantSimulator.Simulation.PlantParts.Helpers
 {
@@ -24,6 +25,9 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
         /// </summary>
         private float r;
 
+
+        private ICellTypeLocator cellTypeLocator;
+
         public IList<IPlantCell> CreateCell()
         {
             return CreateCells(10);
@@ -34,6 +38,7 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
             r = radius;
             w = 2 * r;
             h = (float)Math.Sqrt(3) * r;
+            cellTypeLocator = CornCellTypes.GetCornCellTypeLocator();
 
             return new List<IPlantCell>(CreateRowColumns());
         }
@@ -55,7 +60,7 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
             current = max - 1;
 
-            for (int c = -1; c < -10; c--)
+            for (int c = -1; c >= -10; c--)
             {
                 cells.AddRange(CreateNewCells(current, c));
                 current--;
@@ -71,7 +76,29 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
         private IEnumerable<IPlantCell> CreateOdd(int total, int column)
         {
-            return new IPlantCell[0];
+            var cells = new List<IPlantCell>(total);
+
+            int half = (int)Math.Floor(total / 2m);
+
+            float x = ComputeX(column);
+            float z = r;
+
+            for (int i = 0; i < half; i++)
+            {
+                cells.Add(CreatePlantCell(GetCellType(i, column), r, x, z));
+                z += h;
+            }
+
+            z = -r;
+
+            for (int i = -1; i >= -half; i--)
+            {
+
+                cells.Add(CreatePlantCell(GetCellType(i, column), r, x, z));
+                z -= h;
+            }
+
+            return cells;
         }
 
         private IEnumerable<IPlantCell> CreateEven(int total, int column)
@@ -83,18 +110,18 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
             float x = ComputeX(column);
             float z = ComputeZ(0);
 
-            cells.Add(CreatePlantCell(GetCellType(0, column), 10, x, z));
+            cells.Add(CreatePlantCell(GetCellType(0, column), r, x, z));
 
             for (int i = 1; i <= half; i++)
             {
                 z = ComputeZ(i);
-                cells.Add(CreatePlantCell(GetCellType(i, column), 10, x, z));
+                cells.Add(CreatePlantCell(GetCellType(i, column), r, x, z));
             }
 
-            for (int i = -1; i <= -half; i--)
+            for (int i = -1; i >=-half; i--)
             {
                 z = ComputeZ(i);
-                cells.Add(CreatePlantCell(GetCellType(i, column), 10, x, z));
+                cells.Add(CreatePlantCell(GetCellType(i, column), r, x, z));
             }
 
             return cells;
@@ -103,7 +130,7 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
         private PlantCellType GetCellType(int row, int column)
         {
-            return PlantCellType.Parenchyma;
+            return cellTypeLocator.Get(row, column);
         }
 
         private float ComputeZ(int row)

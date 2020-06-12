@@ -17,7 +17,7 @@ namespace PlantSimulator.Simulation.Options
         /// <summary>
         /// A range defining the length that each internode can be
         /// </summary>
-        public Range<int> InternodeLength { get; }
+        public Range<int> MaxInternodeLength { get; }
 
         /// <summary>
         /// A range defining the length of each petiole

@@ -41,7 +41,7 @@ namespace PlantSimulatorClient.Simulations.Services
             {
                 SubBranches = ConvertRange(options.SubBranches),
                 Axil = options.Axil,
-                InternodeLength = ConvertRange(options.InternodeLength),
+                MaxInternodeLength = ConvertRange(options.InternodeLength),
                 PetioleLength = ConvertRange(options.PetioleLength),
                 Branches = ConvertRange(options.Branches)
             };

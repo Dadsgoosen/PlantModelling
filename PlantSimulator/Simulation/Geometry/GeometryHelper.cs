@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace PlantSimulator.Simulation.Geometry
 {
     public class GeometryHelper : IGeometryHelper
     {
-        private const float Tolerance = 10e-3f;
+        private const float Tolerance = 10e-2f;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsOnLine(Vector2 point, Vector2[] line)
         {
             float a = Vector2.Distance(line[0], point);
@@ -74,24 +76,6 @@ namespace PlantSimulator.Simulation.Geometry
 
             return inside;
         }
-
-        /*public bool LinesIntersect(Vector2[] a, Vector2[] b)
-        {
-            
-             * float denominator = (b.X - a.X) * (d.Y - c.Y) - (b.Y - a.Y) * (d.X - c.X);
-               float numerator1 = (a.Y - c.Y) * (d.X - c.X) - (a.X - c.X) * (d.Y - c.Y);
-               float numerator2 = (a.Y - c.Y) * (b.X - a.X) - (a.X - c.X) * (b.Y - a.Y);
-               
-               // Detect coincident lines
-               if (Math.Abs(denominator) < Tolerance) return Math.Abs(numerator1) < Tolerance && Math.Abs(numerator2) < Tolerance;
-               
-               float r = numerator1 / denominator;
-               float s = numerator2 / denominator;
-               
-               return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
-             
-            return LinesIntersect(a[0], a[1], b[0], b[1]);
-        }*/
 
         public bool LinesIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
         {

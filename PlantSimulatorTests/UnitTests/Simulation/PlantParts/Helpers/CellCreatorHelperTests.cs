@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
@@ -28,11 +29,28 @@ namespace PlantSimulatorTests.UnitTests.Simulation.PlantParts.Helpers
             {
                 foreach (var b in plant)
                 {
-                    if(a == b) continue;
+                    if(a.Equals(b)) continue;
                     var collide = collisionDetection.Colliding(a, b, true);
                     Assert.False(collide);
                 }
             }
+
+            var length = plant.Count;
+            Assert.AreEqual(247, length);
+
+            IPlantCell xylem = null;
+
+            foreach (var c in plant)
+            {
+                if (c.CellType == PlantCellType.Xylem)
+                {
+                    xylem = c;
+                    break;
+                }
+            }
+
+            Assert.NotNull(xylem);
+            Assert.AreEqual(PlantCellType.Xylem, xylem.CellType);
         }
 
     }
