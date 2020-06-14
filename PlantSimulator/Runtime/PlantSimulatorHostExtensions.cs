@@ -9,6 +9,7 @@ using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
+using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Generic;
 using Serilog;
 
@@ -20,7 +21,9 @@ namespace PlantSimulator.Runtime
         {
             service.Configure<PlantSimulationOptions>(configuration.GetSection("Simulation"));
             service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-            service.AddTransient<IPlant>(s => TestPlant.CreatePlant());
+
+            service.AddCornPlant();
+
             service.AddSingleton<SimulationEnvironment>();
             service.AddTransient<IGeometryHelper, GeometryHelper>();
             service.AddTransient<ICellCollisionDetection, CellCollisionDetection>();

@@ -2,8 +2,10 @@
 
 namespace PlantSimulator.Simulation.PlantParts
 {
-    public abstract class Node
+    public abstract class Node : PlantPart
     {
+        public override PlantPartType PartType { get; }
+
         /// <summary>
         /// Get all the connected petioles
         /// </summary>
@@ -20,7 +22,12 @@ namespace PlantSimulator.Simulation.PlantParts
         /// Get the lower connected internode
         /// </summary>
         /// <remarks>Can be null</remarks>
-        public Internode LowerInternode { get; }
+        public Internode LowerInternode { get; protected set; }
+
+        protected Node()
+        {
+            PartType = PlantPartType.Node;
+        }
 
         /// <summary>
         /// Checks whether the Node has a petiole connected

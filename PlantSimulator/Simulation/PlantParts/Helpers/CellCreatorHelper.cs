@@ -28,17 +28,17 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
         private ICellTypeLocator cellTypeLocator;
 
-        public IList<IPlantCell> CreateCell()
+        public IList<IPlantCell> CreateCell(int radius)
         {
-            return CreateCells(10);
+            return CreateCells(radius);
         }
 
-        private IList<IPlantCell> CreateCells(float radius)
+        private IList<IPlantCell> CreateCells(int radius)
         {
             r = radius;
             w = 2 * r;
             h = (float)Math.Sqrt(3) * r;
-            cellTypeLocator = CornCellTypes.GetCornCellTypeLocator();
+            cellTypeLocator = CornCellTypeLocator.GetCornCellTypeLocator();
 
             return new List<IPlantCell>(CreateRowColumns());
         }

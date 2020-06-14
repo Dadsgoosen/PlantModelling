@@ -11,7 +11,16 @@ namespace PlantSimulator.Simulation.PlantParts
     /// </summary>
     public interface IPlantPart
     {
+        /// <summary>
+        /// Synchronizer object used to synchronize access in multi-threaded environments
+        /// </summary>
         public object Synchronizer { get; }
+
+        /// <summary>
+        /// Property describing what this plant part is
+        /// </summary>
+        public PlantPartType PartType { get; }
+
         /// <summary>
         /// Get all the plant cells
         /// </summary>

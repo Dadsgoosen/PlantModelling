@@ -23,7 +23,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation.PlantParts.Helpers
         [Test]
         public void CreateCell_WhenCreatingCornPlant_ShouldHaveCorrectStructure()
         {
-            var plant = creator.CreateCell();
+            var plant = creator.CreateCell(10);
 
             foreach (var a in plant)
             {

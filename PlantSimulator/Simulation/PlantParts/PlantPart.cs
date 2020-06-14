@@ -8,6 +8,8 @@ namespace PlantSimulator.Simulation.PlantParts
     {
         public object Synchronizer { get; } = new object();
 
+        public abstract PlantPartType PartType { get; }
+
         public IEnumerable<IPlantCell> Cells { get; protected set; }
         
         public IEnumerable<IPlantPart> Connections { get; protected set; }

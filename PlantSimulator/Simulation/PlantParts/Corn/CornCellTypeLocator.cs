@@ -3,7 +3,7 @@ using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulator.Simulation.PlantParts.Corn
 {
-    internal static class CornCellTypes
+    internal static class CornCellTypeLocator
     {
         public static ICellTypeLocator GetCornCellTypeLocator()
         {

@@ -6,8 +6,11 @@
 
         public Internode Internode { get; }
 
+        public override PlantPartType PartType { get; }
+
         protected Stem(Internode internode, int branchCount)
         {
+            PartType = PlantPartType.Stem;
             BranchCount = branchCount;
             Internode = internode;
         }
