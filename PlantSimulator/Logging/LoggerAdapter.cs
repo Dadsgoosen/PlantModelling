@@ -37,14 +37,14 @@ namespace PlantSimulator.Logging
             logger.LogWarning(exception, message);
         }
 
-        public void LogError(string message)
+        public void LogError(string message, params object[] args)
         {
-            logger.LogError(message);
+            logger.LogError(message, args);
         }
 
-        public void LogError(Exception exception, string message)
+        public void LogError(Exception exception, string message, params object[] args)
         {
-            logger.LogError(exception, message);
+            logger.LogError(exception, message, args);
         }
 
         public void LogFatal(string message)

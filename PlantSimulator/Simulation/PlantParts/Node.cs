@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PlantSimulator.Simulation.PlantParts
 {
@@ -11,6 +12,12 @@ namespace PlantSimulator.Simulation.PlantParts
         /// </summary>
         /// <remarks>Can be null</remarks>
         public IEnumerable<Petiole> Petioles { get; }
+
+        /// <summary>
+        /// Get all the connected stems
+        /// </summary>
+        /// <remarks>Can be null</remarks>
+        public IEnumerable<Stem> Stems { get; }
 
         /// <summary>
         /// Get the upper connected internode
@@ -30,16 +37,27 @@ namespace PlantSimulator.Simulation.PlantParts
         }
 
         /// <summary>
-        /// Checks whether the Node has a petiole connected
+        /// Checks whether the Node have any petiole connected
         /// </summary>
         /// <returns>True if this node has petiole connected, false if not</returns>
         /// <remarks>
-        /// This implementation checks whether the <see cref="Petioles"/> is null,
-        /// but does not check whether the <see cref="IEnumerable{T}"/> is empty.
+        /// This implementation checks whether the <see cref="Petioles"/> is null.
         /// </remarks>
-        public bool HasPetiole()
+        public bool HaveConnectedPetiole()
         {
-            return Petioles != null;
+            return Petioles != null || Petioles.Any();
+        }
+
+        /// <summary>
+        /// Checks whether the Node have any stems connected
+        /// </summary>
+        /// <returns>True if this node have stems connected, false if not</returns>
+        /// <remarks>
+        /// This implementation checks whether the <see cref="Petioles"/> is null.
+        /// </remarks>
+        public bool HaveConnectedStems()
+        {
+            return Stems != null || Stems.Any();
         }
 
         /// <summary>

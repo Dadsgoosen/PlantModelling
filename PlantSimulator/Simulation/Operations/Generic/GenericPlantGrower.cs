@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Numerics;
 using PlantSimulator.Simulation.Cells;
+using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
+using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulator.Simulation.Operations
 {
@@ -11,17 +13,14 @@ namespace PlantSimulator.Simulation.Operations
     {
         private readonly ICellGrower cellGrower;
 
-        private readonly IPlantSimulatorOptions options;
+        private readonly IPlantPartDeveloper plantPartDeveloper;
 
         private SimulationStateSnapshot currentState;
 
-        private readonly SimulationEnvironment environment;
-
-        public GenericPlantGrower(ICellGrower cellGrower, IPlantSimulatorOptions options, SimulationEnvironment environment)
+        public GenericPlantGrower(ICellGrower cellGrower, IPlantPartDeveloper plantPartDeveloper)
         {
-            this.environment = environment;
             this.cellGrower = cellGrower;
-            this.options = options;
+            this.plantPartDeveloper = plantPartDeveloper;
         }
 
         public void GrowPlant(IPlant plant, SimulationStateSnapshot stateSnapshot)
@@ -72,59 +71,21 @@ namespace PlantSimulator.Simulation.Operations
 
         private void HandleShootPart(IPlantPart part)
         {
-            var po = options.Plant;
+            GrowCells(part, cellGrower.GrowShootCell);
 
-            float topX = float.MinValue;
-            float topY = float.MinValue;
-            float topZ = float.MinValue;
-            float lowestX = float.MaxValue;
-            float lowestY = float.MaxValue;
-            float lowestZ = float.MaxValue;
-
-            foreach (var cell in part.Cells)
-            {
-                cellGrower.GrowShootCell(cell, part, currentState);
-
-                var geo = cell.Geometry;
-
-                topX = Math.Max(geo.TopCenter.X, topX);
-                topY = Math.Max(geo.TopCenter.Y, topY);
-                topZ = Math.Max(geo.TopCenter.Z, topZ);
-                lowestX = Math.Min(geo.BottomCenter.X, lowestX);
-                lowestY = Math.Min(geo.BottomCenter.Y, lowestY);
-                lowestZ = Math.Min(geo.BottomCenter.Z, lowestZ);
-            }
-
-            if (part.PartType == PlantPartType.Internode && part is Internode s && !s.HasUpperNode())
-            {
-                var top = new Vector3(topX, topY, topZ);
-                var bottom = new Vector3(lowestX, lowestY, lowestZ);
-
-                var height = Vector3.Distance(top, bottom);
-
-                
-            }
-
-
+            plantPartDeveloper.Develop(part, currentState);
         }
 
         private void HandleRootPart(IPlantPart part)
-        {r
+        {
+            GrowCells(part, cellGrower.GrowRootCell);
         }
 
-        private void HandleRootCells(IPlantPart plantPart)
+        private void GrowCells(IPlantPart plantPart, Action<IPlantCell, IPlantPart, SimulationStateSnapshot> growAction)
         {
             foreach (var cell in plantPart.Cells)
             {
-                cellGrower.GrowRootCell(cell, plantPart, currentState);
-            }
-        }
-
-        private void HandleShootCells(IPlantPart plantPart)
-        {
-            foreach (var cell in plantPart.Cells)
-            {
-                cellGrower.GrowShootCell(cell, plantPart, currentState);
+                growAction(cell, plantPart, currentState);
             }
         }
     }

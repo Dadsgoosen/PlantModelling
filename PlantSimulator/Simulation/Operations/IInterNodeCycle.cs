@@ -1,4 +1,5 @@
-﻿using PlantSimulator.Simulation.PlantParts;
+﻿using PlantSimulator.Simulation.Options;
+using PlantSimulator.Simulation.PlantParts;
 
 namespace PlantSimulator.Simulation.Operations
 {

@@ -14,9 +14,9 @@ namespace PlantSimulator.Logging
         
         void LogWarning(Exception exception, string message);
         
-        void LogError(string message);
+        void LogError(string message, params object[] args);
         
-        void LogError(Exception exception, string message);
+        void LogError(Exception exception, string message, params object[] args);
         
         void LogFatal(string message);
 

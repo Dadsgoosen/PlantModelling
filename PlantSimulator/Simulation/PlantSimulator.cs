@@ -16,7 +16,7 @@ namespace PlantSimulator.Simulation
 
         private readonly IPlantRunner plantRunner;
 
-        private readonly IPlantSimulatorOptions options;
+        private readonly IPlantSimulatorOptionsService optionsService;
 
         private CancellationTokenSource Stopping { get; set; }
 
@@ -26,10 +26,10 @@ namespace PlantSimulator.Simulation
 
         public event EventHandler<PlantSimulatorTickEvent> OnTick; 
         
-        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IPlantSimulatorOptions options, IPlantRunner plantRunner)
+        public PlantSimulator(ILoggerAdapter<PlantSimulator> logger, IPlantSimulatorOptionsService optionsService, IPlantRunner plantRunner)
         {
             this.logger = logger;
-            this.options = options;
+            this.optionsService = optionsService;
             this.plantRunner = plantRunner;
         }
 
@@ -86,14 +86,14 @@ namespace PlantSimulator.Simulation
 
         private bool ShouldSkip()
         {
-            var tickTime = options.Simulation.TickTime;
+            var tickTime = optionsService.Options.Simulation.TickTime;
             if (tickTime <= 0) return false;
             return DateTime.Now.Subtract(lastExecutionTime).TotalMilliseconds < tickTime;
         }
 
         private bool ShouldSendInvokeTickEvent()
         {
-            return TickCount % options.Simulation.TickEventTime == 0;
+            return TickCount % optionsService.Options.Simulation.TickEventTime == 0;
         }
 
         private void InvokeTickEvent()
@@ -102,7 +102,7 @@ namespace PlantSimulator.Simulation
 
             var handler = OnTick;
 
-            handler?.Invoke(this, new PlantSimulatorTickEvent(options.Id, plantRunner.Plant, TickCount));
+            handler?.Invoke(this, new PlantSimulatorTickEvent(optionsService.Options.Id, plantRunner.Plant, TickCount));
         }
 
         public void Dispose()

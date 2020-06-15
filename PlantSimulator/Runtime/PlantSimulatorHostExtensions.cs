@@ -4,13 +4,11 @@ using Microsoft.Extensions.Hosting;
 using PlantSimulator.Logging;
 using PlantSimulator.Outputs;
 using PlantSimulator.Simulation;
-using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.Options;
-using PlantSimulator.Simulation.PlantParts;
 using PlantSimulator.Simulation.PlantParts.Corn;
-using PlantSimulator.Simulation.PlantParts.Generic;
+using PlantSimulator.Simulation.PlantParts.Helpers;
 using Serilog;
 
 namespace PlantSimulator.Runtime
@@ -21,6 +19,8 @@ namespace PlantSimulator.Runtime
         {
             service.Configure<PlantSimulationOptions>(configuration.GetSection("Simulation"));
             service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
+            service.AddSingleton<IPlantSimulatorOptionsService, PlantSimulatorOptionsService>();
+            service.AddTransient<IPlantDescriptorService, PlantDescriptorService>();
 
             service.AddCornPlant();
 

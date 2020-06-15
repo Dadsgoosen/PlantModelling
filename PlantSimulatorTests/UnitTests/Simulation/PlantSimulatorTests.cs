@@ -15,7 +15,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation
     {
         private Mock<ILoggerAdapter<PlantSim>> logger;
 
-        private Mock<IPlantSimulatorOptions> options;
+        private Mock<IPlantSimulatorOptionsService> options;
         
         private Mock<IPlantRunner> runner;
 
@@ -25,7 +25,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation
         public void Setup()
         {
             logger = new Mock<ILoggerAdapter<PlantSim>>();
-            options = new Mock<IPlantSimulatorOptions>();
+            options = new Mock<IPlantSimulatorOptionsService>();
             runner = new Mock<IPlantRunner>();
             plantSimulator = new PlantSim(logger.Object, options.Object, runner.Object);
 
@@ -34,7 +34,7 @@ namespace PlantSimulatorTests.UnitTests.Simulation
         [Test]
         public async Task StartAsync_StartingStopping_ShouldStartAndStop()
         {
-            options.SetupGet(simulationOptions => simulationOptions.Simulation).Returns(new SimulationOptions{TickTime = 1, TickEventTime = 1});
+            options.SetupGet(simulationOptions => simulationOptions.Options.Simulation).Returns(new SimulationOptions{TickTime = 1, TickEventTime = 1});
 
             Task task = plantSimulator.StartAsync(CancellationToken.None);
 

@@ -1,38 +1,42 @@
-﻿using System.Runtime.CompilerServices;
-using PlantSimulator.Helpers;
+﻿using PlantSimulator.Helpers;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Generic;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
-namespace PlantSimulator.Simulation.Operations
+namespace PlantSimulator.Simulation.Operations.Development
 {
-    public class GenericInterNodeCycle : IInterNodeCycle
+    public class InternodePartDevelopment : IPlantPartDevelopment<Internode>
     {
         private readonly ICellCreatorHelper cellCreator;
 
         private readonly IPlantSimulatorOptionsService optionsService;
 
-        private IPlantSimulatorOptions Options => optionsService.Options;
+        private readonly IPlantDescriptorService plantDescriptorService;
 
-        public GenericInterNodeCycle(ICellCreatorHelper cellCreator, IPlantSimulatorOptionsService optionsService)
+        public InternodePartDevelopment(ICellCreatorHelper cellCreator, IPlantSimulatorOptionsService optionsService, IPlantDescriptorService plantDescriptorService)
         {
             this.cellCreator = cellCreator;
             this.optionsService = optionsService;
+            this.plantDescriptorService = plantDescriptorService;
         }
 
-        public void Cycle(Internode internode, SimulationStateSnapshot stateSnapshot, float height)
+        private IPlantSimulatorOptions Options => optionsService.Options;
+
+        public void Develop(Internode plantPart, SimulationStateSnapshot snapshot)
         {
-            if (ShouldAddNewNode(internode, stateSnapshot, height))
+            var description = plantDescriptorService.Describe(plantPart);
+
+            if (ShouldAddNewNode(plantPart, snapshot, description.Height))
             {
-                internode.UpperNode = CreateNewUpperNode(internode);
+                plantPart.UpperNode = CreateNewUpperNode(plantPart);
             }
         }
 
         private bool ShouldAddNewNode(Internode internode, SimulationStateSnapshot snapshot, float height)
         {
-            if (internode.HasUpperNode()) {
+            if (internode.HasUpperNode())
+            {
                 return false;
             }
 
@@ -43,7 +47,7 @@ namespace PlantSimulator.Simulation.Operations
                 return true;
             }
 
-            uint due = (uint) Options.Plant.NewNodeTickCount.RandomNumberBetween();
+            uint due = (uint)Options.Plant.NewNodeTickCount.RandomNumberBetween();
 
             if (due >= snapshot.CurrentTime)
             {
@@ -56,11 +60,11 @@ namespace PlantSimulator.Simulation.Operations
         private Node CreateNewUpperNode(Internode internode)
         {
             var node = new GenericNode(internode);
-            
+
             var newLower = new GenericInternode(cellCreator.CreateCell(10), node);
 
             node.UpperInternode = newLower;
-            
+
             return node;
         }
     }

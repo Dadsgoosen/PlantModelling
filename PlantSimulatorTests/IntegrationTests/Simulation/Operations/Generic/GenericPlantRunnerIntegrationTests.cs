@@ -7,9 +7,11 @@ using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.Cells.Factories;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
+using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
 using PlantSimulator.Simulation.PlantParts.Generic;
+using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 {
@@ -19,6 +21,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
         private SimulationEnvironment environment;
 
         private IPlant plant;
+
+        private IPlantSimulatorOptionsService optionsService;
 
         private ICellFactory cellFactory;
 
@@ -38,7 +42,7 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private ICellSizer cellSizer;
 
-        private IPlantSimulatorOptions options;
+        private IPlantPartDeveloper developer;
 
         [SetUp]
         public void Setup()
@@ -46,14 +50,15 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             environment = new SimulationEnvironment {LightPosition = new Vertex(0, 10000, 0), Temperature = 22};
             plant = TestPlant.CreatePlant();
             cellFactory = new GenericCellFactory();
-            options = new PlantSimulationOptions();
+            optionsService = new PlantSimulatorOptionsService();
             divider = new GenericCellDivider(cellFactory);
             helper = new GeometryHelper();
             cellSizer = new GenericCellSizer(helper, new LoggerAdapter<GenericCellSizer>(new NullLogger<GenericCellSizer>()));
             cellCollisionDetection = new CellCollisionDetection(helper);
             bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection, cellSizer);
             cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver);
-            plantGrower = new GenericPlantGrower(cellGrower, options,  environment);
+            developer = new PlantPartDeveloper(new InternodePartDevelopment(new CellCreatorHelper(), optionsService, new PlantDescriptorService()));
+            plantGrower = new GenericPlantGrower(cellGrower, developer);
             runner = new GenericPlantRunner(plant, environment, plantGrower);
         }
 

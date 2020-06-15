@@ -22,12 +22,18 @@ namespace PlantSimulator.Runtime
 
         private readonly ISimulatorEventHandler eventHandler;
 
+        private readonly IPlantSimulatorOptionsService optionsService;
+
         private readonly IServiceProvider provider;
 
-        public SimulationRuntimeBroker(ILoggerAdapter<SimulationRuntimeBroker> logger, ISimulatorEventHandler eventHandler, IServiceProvider provider)
+        public SimulationRuntimeBroker(ILoggerAdapter<SimulationRuntimeBroker> logger, 
+            ISimulatorEventHandler eventHandler, 
+            IPlantSimulatorOptionsService optionsService, 
+            IServiceProvider provider)
         {
             this.logger = logger;
             this.eventHandler = eventHandler;
+            this.optionsService = optionsService;
             this.provider = provider;
         }
 
@@ -35,14 +41,22 @@ namespace PlantSimulator.Runtime
         {
             logger.LogInformation("Starting simulator from runtime broker");
 
+            // Set the random seed from the options
             RangeExtensions.Random = new Random(options.Simulation.RandomSeed);
 
+            // Set the options service options to the received options
+            optionsService.Options = options;
+
+            // Linked cancellation token source so that the simulation can be cancelled
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            Simulation = provider.ResolvePlantSimulatorConstructor(options);
+            // Instantiate the simulation instance with the dependency injection service container
+            Simulation = provider.ResolvePlantSimulatorConstructor();
 
+            // Add event subscribers to the OnTick event
             Simulation.OnTick += eventHandler.OnSimulationTick;
 
+            // Start the simulation if it was instantiated correctly through dependency injection
             try
             {
                 runningSimulation = Simulation.StartAsync(cancellationTokenSource.Token);
@@ -51,6 +65,7 @@ namespace PlantSimulator.Runtime
             {
                 throw new NullReferenceException("The simulation could not be constructed by the service provider", e);
             }
+
 
             return Task.CompletedTask;
         }
