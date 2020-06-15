@@ -31,9 +31,38 @@ namespace PlantSimulator.Simulation.PlantParts
         /// <remarks>Can be null</remarks>
         public Internode LowerInternode { get; protected set; }
 
-        protected Node()
+        protected Node() : this(null, new Stem[0], new Petiole[0])
+        {
+        }
+
+        protected Node(Internode lowerInternode, IEnumerable<Petiole> petioles) :  this(lowerInternode, new Stem[0], petioles)
+        {
+        }
+
+        protected Node(Internode lowerInternode, IEnumerable<Stem> stems) : this(lowerInternode, stems, new Petiole[0])
+        {
+        }
+
+        protected Node(Internode lowerInternode, IEnumerable<Stem> stems, IEnumerable<Petiole> petioles)
         {
             PartType = PlantPartType.Node;
+            LowerInternode = lowerInternode;
+            Petioles = petioles;
+            Stems = stems;
+            Connections = CreateConnectionEnumerable(stems, petioles);
+        }
+
+        /// <summary>
+        /// Helper method to union enumerable <see cref="a"/> with enumerable <see cref="b"/>
+        /// </summary>
+        /// <param name="a">First array</param>
+        /// <param name="b">Second array</param>
+        /// <returns>The enumerable union</returns>
+        private static IEnumerable<IPlantPart> CreateConnectionEnumerable(IEnumerable<IPlantPart> a, IEnumerable<IPlantPart> b)
+        {
+            IPlantPart[] aa = (IPlantPart[]) a ?? a.ToArray();
+            IPlantPart[] ba = (IPlantPart[]) b ?? b.ToArray();
+            return aa.Union(ba);
         }
 
         /// <summary>

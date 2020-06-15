@@ -51,6 +51,26 @@ namespace PlantSimulator.Simulation.Options
         public Range<int> PetioleLength { get; set; }
 
         /// <summary>
+        /// The width of newly spawned petioles
+        /// </summary>
+        public Range<int> NewPetioleWidth { get; set; }
+
+        /// <summary>
+        /// How many petioles gets created per new node
+        /// </summary>
+        public Range<int> PetiolesPerNode { get; set; }
+
+        /// <summary>
+        /// How many stems gets created per new node
+        /// </summary>
+        public Range<int> StemsPerNode { get; set; }
+
+        /// <summary>
+        /// The width of newly spawned stems
+        /// </summary>
+        public Range<int> NewStemWidth { get; set; }
+
+        /// <summary>
         /// The angle between a stem and the petiole
         /// </summary>
         public int Axil { get; set; }

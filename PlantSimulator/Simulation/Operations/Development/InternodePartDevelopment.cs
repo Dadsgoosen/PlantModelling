@@ -1,4 +1,5 @@
 ﻿using PlantSimulator.Helpers;
+using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
 using PlantSimulator.Simulation.PlantParts.Generic;
@@ -32,7 +33,7 @@ namespace PlantSimulator.Simulation.Operations.Development
                 plantPart.UpperNode = CreateNewUpperNode(plantPart);
             }
         }
-
+        
         private bool ShouldAddNewNode(Internode internode, SimulationStateSnapshot snapshot, float height)
         {
             if (internode.HasUpperNode())
@@ -57,7 +58,7 @@ namespace PlantSimulator.Simulation.Operations.Development
             return false;
         }
 
-        private Node CreateNewUpperNode(Internode internode)
+        private Node CreateNewUpperNode(Internode internode, IPlantPartDescriptor descriptor)
         {
             var node = new GenericNode(internode);
 
@@ -66,6 +67,49 @@ namespace PlantSimulator.Simulation.Operations.Development
             node.UpperInternode = newLower;
 
             return node;
+        }
+
+        private Node SpawnNode(Internode lowerInternode)
+        {
+            int petioleCount = Options.Plant.PetiolesPerNode.RandomNumberBetween();
+
+            Petiole[] petioles = new Petiole[petioleCount];
+            
+            int stemCount = Options.Plant.StemsPerNode.RandomNumberBetween();
+            Stem[] stems = new Stem[stemCount];
+
+            if (petioleCount > 0)
+            {
+                for (int i = 0; i < petioleCount; i++)
+                {
+                    petioles[i] = CreatePetiole();
+                }
+            }
+
+            if (stemCount > 0)
+            {
+                for (int i = 0; i < petioleCount; i++)
+                {
+                    stems[i] = CreateStem();
+                }
+            }
+
+            var node = new GenericNode(lowerInternode);
+
+
+            return 
+        }
+
+        private Stem CreateStem()
+        {
+
+        }
+
+        private Petiole CreatePetiole()
+        {
+            var petioleWidth = Options.Plant.NewPetioleWidth;
+            var cells = cellCreator.CreateCell(petioleWidth.RandomNumberBetween());
+            return new GenericPetiole(cells);
         }
     }
 }

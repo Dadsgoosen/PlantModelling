@@ -5,6 +5,6 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 {
     public interface ICellCreatorHelper
     {
-        public IList<IPlantCell> CreateCell(int radius);
+        public IList<IPlantCell> CreateCell(int radius, float height, float atHeight);
     }
 }

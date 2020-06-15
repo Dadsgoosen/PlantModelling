@@ -1,13 +1,21 @@
-﻿namespace PlantSimulator.Simulation.PlantParts.Helpers
+﻿using System.Numerics;
+
+namespace PlantSimulator.Simulation.PlantParts.Helpers
 {
     public class PlantPartDescriptor : IPlantPartDescriptor
     {
-        public float Height { get; }
+        public Vector3 Top { get; set; }
 
-        public float Width { get; }
+        public Vector3 Bottom { get; set; }
 
-        public PlantPartDescriptor(float height, float width)
+        public float Height { get; set; }
+
+        public float Width { get; set; }
+
+        public PlantPartDescriptor(Vector3 top, Vector3 bottom, float height, float width)
         {
+            Top = top;
+            Bottom = bottom;
             Height = height;
             Width = width;
         }

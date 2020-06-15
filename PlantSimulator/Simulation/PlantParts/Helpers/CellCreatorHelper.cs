@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
-using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.PlantParts.Corn;
 
 namespace PlantSimulator.Simulation.PlantParts.Helpers
@@ -25,19 +24,31 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
         /// </summary>
         private float r;
 
+        /// <summary>
+        /// The height of the cell creation
+        /// </summary>
+        private float height;
+
+        /// <summary>
+        /// The height at which the cell will be created
+        /// </summary>
+        private float atHeight;
 
         private ICellTypeLocator cellTypeLocator;
 
-        public IList<IPlantCell> CreateCell(int radius)
+        public IList<IPlantCell> CreateCell(int radius, float height, float atHeight)
         {
-            return CreateCells(radius);
+            return CreateCells(radius, height, atHeight);
         }
 
-        private IList<IPlantCell> CreateCells(int radius)
+        private IList<IPlantCell> CreateCells(int radius, float height, float atHeight)
         {
             r = radius;
             w = 2 * r;
             h = (float)Math.Sqrt(3) * r;
+            this.height = height;
+            this.atHeight = atHeight;
+
             cellTypeLocator = CornCellTypeLocator.GetCornCellTypeLocator();
 
             return new List<IPlantCell>(CreateRowColumns());
@@ -52,7 +63,10 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
             int end = 7;
             int current = max;
 
-            for (int c = 0; c < 11; c++)
+            int right = (int) Math.Ceiling(columns / 2f);
+            int left = (int) Math.Floor(columns / 2f);
+
+            for (int c = 0; c < right; c++)
             {
                 cells.AddRange(CreateNewCells(current, c));
                 current--;
@@ -60,7 +74,7 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
             current = max - 1;
 
-            for (int c = -1; c >= -10; c--)
+            for (int c = -1; c >= -left; c--)
             {
                 cells.AddRange(CreateNewCells(current, c));
                 current--;
@@ -145,9 +159,9 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
         private IPlantCell CreatePlantCell(PlantCellType type, float radius, float x, float z)
         {
-            float y = 0;
+            float y = atHeight;
 
-            var top = new Vector3(x, y + 10, z);
+            var top = new Vector3(x, y + height, z);
             var bottom = new Vector3(x, y, z);
             var face = CreateCellFace(radius, top);
 
