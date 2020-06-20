@@ -5,6 +5,11 @@ namespace PlantSimulator.Simulation.Options
     public class SimulationPlantOptions : ISimulationPlantOptions
     {
         /// <summary>
+        /// The initial stem width
+        /// </summary>
+        public int InitialStemWidth { get; set; }
+
+        /// <summary>
         /// The rate of which the plant grows.
         /// </summary>
         public Range<float> GrowthRange { get; set; }
@@ -49,6 +54,11 @@ namespace PlantSimulator.Simulation.Options
         /// A range defining the length of each petiole
         /// </summary>
         public Range<int> PetioleLength { get; set; }
+
+        /// <summary>
+        /// The width of newly spawned petioles
+        /// </summary>
+        public Range<int> NewPetioleWidth { get; set; }
 
         /// <summary>
         /// How many petioles gets created per new node

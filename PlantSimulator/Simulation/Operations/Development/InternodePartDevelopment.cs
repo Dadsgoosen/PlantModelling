@@ -1,39 +1,63 @@
-﻿using PlantSimulator.Helpers;
-using PlantSimulator.Simulation.Cells;
+﻿using System;
+using PlantSimulator.Helpers;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Generic;
+using PlantSimulator.Simulation.PlantParts.Factories;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulator.Simulation.Operations.Development
 {
     public class InternodePartDevelopment : IPlantPartDevelopment<Internode>
     {
-        private readonly ICellCreatorHelper cellCreator;
-
         private readonly IPlantSimulatorOptionsService optionsService;
+
+        private readonly INodePartFactory nodePartFactory;
+
+        private readonly ICellGrower cellGrower;
 
         private readonly IPlantDescriptorService plantDescriptorService;
 
-        public InternodePartDevelopment(ICellCreatorHelper cellCreator, IPlantSimulatorOptionsService optionsService, IPlantDescriptorService plantDescriptorService)
+        public InternodePartDevelopment(IPlantSimulatorOptionsService optionsService,
+            INodePartFactory nodePartFactory,
+            ICellGrower cellGrower,
+            IPlantDescriptorService plantDescriptorService)
         {
-            this.cellCreator = cellCreator;
             this.optionsService = optionsService;
+            this.nodePartFactory = nodePartFactory;
+            this.cellGrower = cellGrower;
             this.plantDescriptorService = plantDescriptorService;
         }
 
         private IPlantSimulatorOptions Options => optionsService.Options;
 
-        public void Develop(Internode plantPart, SimulationStateSnapshot snapshot)
+        public void Develop(Internode internode, SimulationStateSnapshot snapshot)
         {
-            var description = plantDescriptorService.Describe(plantPart);
+            var description = plantDescriptorService.Describe(internode);
 
-            if (ShouldAddNewNode(plantPart, snapshot, description.Height))
+            if (ShouldGrow(internode))
             {
-                plantPart.UpperNode = CreateNewUpperNode(plantPart);
+                GrowInternode(internode, snapshot);
+            }
+
+            if (ShouldAddNewNode(internode, snapshot, description.Height))
+            {
+                internode.UpperNode = CreateNewUpperNode(internode, description);
             }
         }
-        
+
+        private bool ShouldGrow(Internode internode)
+        {
+            return !internode.HasUpperNode();
+        }
+
+        private void GrowInternode(Internode internode, SimulationStateSnapshot snapshot)
+        {
+            foreach (var cell in internode.Cells)
+            {
+                cellGrower.GrowShootCell(cell, internode, snapshot);
+            }
+        }
+
         private bool ShouldAddNewNode(Internode internode, SimulationStateSnapshot snapshot, float height)
         {
             if (internode.HasUpperNode())
@@ -48,9 +72,9 @@ namespace PlantSimulator.Simulation.Operations.Development
                 return true;
             }
 
-            uint due = (uint)Options.Plant.NewNodeTickCount.RandomNumberBetween();
+            uint due = (uint) Options.Plant.NewNodeTickCount.RandomNumberBetween();
 
-            if (due >= snapshot.CurrentTime)
+            if (snapshot.CurrentTime >= due)
             {
                 return true;
             }
@@ -60,56 +84,7 @@ namespace PlantSimulator.Simulation.Operations.Development
 
         private Node CreateNewUpperNode(Internode internode, IPlantPartDescriptor descriptor)
         {
-            var node = new GenericNode(internode);
-
-            var newLower = new GenericInternode(cellCreator.CreateCell(10), node);
-
-            node.UpperInternode = newLower;
-
-            return node;
-        }
-
-        private Node SpawnNode(Internode lowerInternode)
-        {
-            int petioleCount = Options.Plant.PetiolesPerNode.RandomNumberBetween();
-
-            Petiole[] petioles = new Petiole[petioleCount];
-            
-            int stemCount = Options.Plant.StemsPerNode.RandomNumberBetween();
-            Stem[] stems = new Stem[stemCount];
-
-            if (petioleCount > 0)
-            {
-                for (int i = 0; i < petioleCount; i++)
-                {
-                    petioles[i] = CreatePetiole();
-                }
-            }
-
-            if (stemCount > 0)
-            {
-                for (int i = 0; i < petioleCount; i++)
-                {
-                    stems[i] = CreateStem();
-                }
-            }
-
-            var node = new GenericNode(lowerInternode);
-
-
-            return 
-        }
-
-        private Stem CreateStem()
-        {
-
-        }
-
-        private Petiole CreatePetiole()
-        {
-            var petioleWidth = Options.Plant.NewPetioleWidth;
-            var cells = cellCreator.CreateCell(petioleWidth.RandomNumberBetween());
-            return new GenericPetiole(cells);
+            return nodePartFactory.CreateNode(internode, descriptor, true);
         }
     }
 }

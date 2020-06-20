@@ -33,9 +33,9 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
         {
             var state = stateFactory.Create(id, plant, stateData);
             Assert.NotNull(state);
-            Assert.AreEqual(state.Id, id);
-            Assert.AreEqual(state.Plant.ShootSystem.Count(), 1);
-            Assert.AreEqual(state.Plant.RootSystem.Count(), 1);
+            Assert.AreEqual(id, state.Id);
+            Assert.AreEqual(2, state.Plant.ShootSystem.Count());
+            Assert.AreEqual(1, state.Plant.RootSystem.Count());
         }
     }
 }

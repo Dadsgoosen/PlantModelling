@@ -5,6 +5,11 @@ namespace PlantSimulator.Simulation.Options
     public interface ISimulationPlantOptions
     {
         /// <summary>
+        /// The initial stem width
+        /// </summary>
+        public int InitialStemWidth { get; set; }
+
+        /// <summary>
         /// The rate of which the plant grows.
         /// </summary>
         public Range<float> GrowthRange { get; set; }

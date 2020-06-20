@@ -10,14 +10,22 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
         public float Height { get; set; }
 
-        public float Width { get; set; }
+        public float WidthX { get; set; }
 
-        public PlantPartDescriptor(Vector3 top, Vector3 bottom, float height, float width)
-        {
-            Top = top;
-            Bottom = bottom;
-            Height = height;
-            Width = width;
-        }
+        public float WidthZ { get; set; }
+
+        public float MaxX { get; set; }
+
+        public float MaxY { get; set; }
+
+        public float MaxZ { get; set; }
+
+        public float MinX { get; set; }
+
+        public float MinY { get; set; }
+
+        public float MinZ { get; set; }
+
+        public PlantPartDescriptor() { }
     }
 }

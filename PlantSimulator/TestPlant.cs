@@ -12,7 +12,9 @@ namespace PlantSimulator
     {
         public static IPlant CreatePlant()
         {
-            var stem = new GenericStem(CreateStemCells(), 0);
+            var internode = new GenericInternode(CreateStemCells(), 0);
+
+            var stem = new GenericStem(internode, 0);
 
             IShootSystem shoot = new GenericShootSystem(stem);
             IRootSystem root = new GenericRootSystem(new GenericRoot(new List<IPlantCell>(0), new List<Root>(0)));

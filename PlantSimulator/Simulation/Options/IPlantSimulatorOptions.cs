@@ -2,12 +2,29 @@
 {
     public interface IPlantSimulatorOptions
     {
-        public string Id { get; }
+        /// <summary>
+        /// Unique simulation id for which this <see cref="PlantSimulationOptions"/> is for
+        /// </summary>
+        public string Id { get; set; }
 
-        public ISimulationOptions Simulation { get; }
+        /// <summary>
+        /// The options that involve how the simulation runs
+        /// </summary>
+        public ISimulationOptions Simulation { get; set; }
 
-        public ISimulationPlantOptions Plant { get; }
+        /// <summary>
+        /// The options that involve plant behaviour during simulation
+        /// </summary>
+        public ISimulationPlantOptions Plant { get; set; }
 
-        public ISimulationEnvironmentOptions Environment { get; }
+        /// <summary>
+        /// The options that involve the plant cells
+        /// </summary>
+        public ISimulationCellOptions Cell { get; set; }
+
+        /// <summary>
+        /// The options that involve the external environment
+        /// </summary>
+        public ISimulationEnvironmentOptions Environment { get; set; }
     }
 }

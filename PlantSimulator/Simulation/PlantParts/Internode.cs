@@ -21,20 +21,20 @@ namespace PlantSimulator.Simulation.PlantParts
 
         public Node LowerNode { get; set; }
 
-        protected Internode()
-        {
-            PartType = PlantPartType.Internode;
-            Connections = new IPlantPart[0];
-        }
-
-        protected Internode(IEnumerable<IPlantCell> cells) : base(cells, new IPlantPart[0])
+        protected Internode() : base(new IPlantCell[0], new IPlantPart[0], 0)
         {
             PartType = PlantPartType.Internode;
         }
 
-        protected Internode(IEnumerable<IPlantCell> cells, IEnumerable<IPlantPart> connections) : base(cells, connections)
+        protected Internode(IEnumerable<IPlantCell> cells, int branchCount) : base(cells, branchCount)
         {
             PartType = PlantPartType.Internode;
+        }
+
+        protected Internode(IEnumerable<IPlantCell> cells, Node lowerNode, int branchCount) : base(cells, branchCount)
+        {
+            PartType = PlantPartType.Internode;
+            LowerNode = lowerNode;
         }
 
         public bool HasUpperNode()

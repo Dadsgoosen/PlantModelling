@@ -2,7 +2,7 @@
 
 namespace PlantSimulator.Helpers
 {
-    internal static class RangeExtensions
+    public static class RangeExtensions
     {
         public static Random Random;
 

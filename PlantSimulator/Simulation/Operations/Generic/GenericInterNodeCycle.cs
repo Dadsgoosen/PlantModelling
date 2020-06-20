@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using PlantSimulator.Helpers;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
@@ -10,13 +11,13 @@ namespace PlantSimulator.Simulation.Operations
 {
     public class GenericInterNodeCycle : IInterNodeCycle
     {
-        private readonly ICellCreatorHelper cellCreator;
+        private readonly IPlantPartCellCreator cellCreator;
 
         private readonly IPlantSimulatorOptionsService optionsService;
 
         private IPlantSimulatorOptions Options => optionsService.Options;
 
-        public GenericInterNodeCycle(ICellCreatorHelper cellCreator, IPlantSimulatorOptionsService optionsService)
+        public GenericInterNodeCycle(IPlantPartCellCreator cellCreator, IPlantSimulatorOptionsService optionsService)
         {
             this.cellCreator = cellCreator;
             this.optionsService = optionsService;
@@ -55,13 +56,15 @@ namespace PlantSimulator.Simulation.Operations
 
         private Node CreateNewUpperNode(Internode internode)
         {
-            var node = new GenericNode(internode);
+            //var node = new GenericNode(internode);
             
-            var newLower = new GenericInternode(cellCreator.CreateCell(10), node);
+            // var newLower = new GenericInternode(cellCreator.CreateCell(10), node);
 
-            node.UpperInternode = newLower;
+            //node.UpperInternode = newLower;
             
-            return node;
+            //return node;
+
+            throw new NotImplementedException();
         }
     }
 }
