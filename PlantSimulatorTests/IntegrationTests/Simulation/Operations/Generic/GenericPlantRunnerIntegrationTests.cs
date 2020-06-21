@@ -53,19 +53,21 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private IPlantDescriptorService descriptorService;
 
-        private HexagonCellCreator cellCreator;
+        private ISingularCellCreator cellCreator;
 
-        private HexagonalCellGridFactory gridCreator;
+        private ICellGridFactory gridCreator;
 
-        private PlantPartCellCreator plantPartCellCreator;
+        private IPlantPartCellCreator plantPartCellCreator;
 
-        private GenericNodePartFactory nodePartFactory;
+        private INodePartFactory nodePartFactory;
         
-        private GenericInternodePartFactory internodePartFactory;
+        private IInternodePartFactory internodePartFactory;
 
-        private GenericStemPartFactory stemPartFactory;
+        private IStemPartFactory stemPartFactory;
 
-        private GenericPetiolePartFactory petiolePartFactory;
+        private IPetiolePartFactory petiolePartFactory;
+
+        private IPlantPartDevelopment<Root> rootPlantPartDevelopment;
 
         [SetUp]
         public void Setup()
@@ -89,7 +91,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             petiolePartFactory = new GenericPetiolePartFactory(cellFactory, optionsService);
             nodePartFactory = new GenericNodePartFactory(optionsService, plantPartCellCreator, stemPartFactory, petiolePartFactory);
             internodePlantPartDevelopment = new InternodePartDevelopment(optionsService, nodePartFactory, cellGrower, descriptorService);
-            developer = new PlantPartDeveloper(internodePlantPartDevelopment);
+            rootPlantPartDevelopment = new RootPartDevelopment(optionsService, nodePartFactory, cellGrower, descriptorService);
+            developer = new PlantPartDeveloper(internodePlantPartDevelopment, rootPlantPartDevelopment);
             plantGrower = new GenericPlantGrower(cellGrower, developer);
             runner = new GenericPlantRunner(plant, environment, plantGrower);
             RangeExtensions.Random = new Random(optionsService.Options.Simulation.RandomSeed);
