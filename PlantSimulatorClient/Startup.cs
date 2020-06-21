@@ -31,6 +31,7 @@ namespace PlantSimulatorClient
             services.AddPlantSimulator(Configuration);
             services.AddPlantSimulatorRuntimeBroker();
             services.AddTransient<SimulationIpOption>();
+            services.AddSingleton<Context>()
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(provider => GrpcChannel.ForAddress(Configuration["SimulationServer:Address"]));
             services.AddTransient(provider =>

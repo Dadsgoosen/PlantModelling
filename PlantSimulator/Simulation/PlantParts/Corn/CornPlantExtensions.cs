@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using PlantSimulator.Simulation.PlantParts.Factories;
 using PlantSimulator.Simulation.PlantParts.Generic;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
@@ -14,6 +15,8 @@ namespace PlantSimulator.Simulation.PlantParts.Corn
         {
             // Helper classes if they don't exist
             service.TryAddTransient<IPlantPartCellCreator, PlantPartCellCreator>();
+
+            // Part Factories
 
             service.AddTransient(p => CornCellTypeLocator.GetCornCellTypeLocator());
 

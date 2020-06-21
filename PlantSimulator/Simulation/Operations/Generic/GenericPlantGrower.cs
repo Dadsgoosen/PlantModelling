@@ -71,22 +71,12 @@ namespace PlantSimulator.Simulation.Operations
 
         private void HandleShootPart(IPlantPart part)
         {
-            GrowCells(part, cellGrower.GrowShootCell);
-
             plantPartDeveloper.Develop(part, currentState);
         }
 
         private void HandleRootPart(IPlantPart part)
         {
-            GrowCells(part, cellGrower.GrowRootCell);
-        }
-
-        private void GrowCells(IPlantPart plantPart, Action<IPlantCell, IPlantPart, SimulationStateSnapshot> growAction)
-        {
-            foreach (var cell in plantPart.Cells)
-            {
-                growAction(cell, plantPart, currentState);
-            }
+            plantPartDeveloper.Develop(part, currentState);
         }
     }
 }

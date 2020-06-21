@@ -6,9 +6,12 @@ namespace PlantSimulator.Simulation.Operations.Development
     {
         private readonly IPlantPartDevelopment<Internode> internodeDevelopment;
 
-        public PlantPartDeveloper(IPlantPartDevelopment<Internode> internodeDevelopment)
+        private readonly IPlantPartDevelopment<Root> rootDevelopment;
+
+        public PlantPartDeveloper(IPlantPartDevelopment<Internode> internodeDevelopment, IPlantPartDevelopment<Root> rootDevelopment)
         {
             this.internodeDevelopment = internodeDevelopment;
+            this.rootDevelopment = rootDevelopment;
         }
 
         public void Develop(IPlantPart plantPart, SimulationStateSnapshot snapshot)
@@ -17,6 +20,9 @@ namespace PlantSimulator.Simulation.Operations.Development
             {
                 case Internode internode:
                     internodeDevelopment.Develop(internode, snapshot);
+                    break;
+                case Root root:
+                    rootDevelopment.Develop(root, snapshot);
                     break;
             }
         }
