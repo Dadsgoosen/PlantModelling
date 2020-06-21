@@ -4,7 +4,7 @@ using PlantSimulator.Simulation.Geometry;
 
 namespace PlantSimulator.Simulation.Options
 {
-    public class GenericOptions
+    public class CornPlantOptions
     {
         public static IPlantSimulatorOptions CreateOptions()
         {
