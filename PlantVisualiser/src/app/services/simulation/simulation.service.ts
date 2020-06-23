@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpService} from '../http/http.service';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {SimulationReplay, SimulationState} from './simulation-state';
 import {catchError} from 'rxjs/operators';
@@ -27,7 +27,7 @@ export class SimulationService extends HttpService {
     return this.deleteRequest('/simulation/' + id);
   }
 
-  public startSimulation(id: string): Observable<null> {
-    return this.postRequest('/simulation/' + id + '/start');
+  public startSimulation(): Observable<null> {
+    return this.postRequest('/simulation/start', {});
   }
 }

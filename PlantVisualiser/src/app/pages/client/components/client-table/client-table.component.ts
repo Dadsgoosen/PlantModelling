@@ -24,7 +24,7 @@ export class ClientTableComponent implements OnInit, OnDestroy {
 
   public handleClick(client: ConnectedClient): void {
     this._confirm.show().subscribe(shouldStop => {
-      if (shouldStop) { this._clients.stopSimulation(client.id); }
+      if (shouldStop) { this._clients.stopSimulation(client.id).subscribe(); }
     });
   }
 

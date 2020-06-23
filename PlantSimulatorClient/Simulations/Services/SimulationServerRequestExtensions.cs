@@ -16,13 +16,14 @@ namespace PlantSimulatorClient.Simulations.Services
     {
         public static PlantSimulationOptions ToSimulationOptions(this SimulationConfiguration configuration)
         {
-            return new PlantSimulationOptions
+            return new PlantSimulationOptions();
+            /*return new PlantSimulationOptions
             {
                 Id = configuration.Id,
                 Simulation = ToSimulationOptions(configuration.Simulation),
                 Environment = ToSimulationEnvironmentOptions(configuration.Environment),
                 Plant = ToSimulationPlantOptions(configuration.Plant)
-            };
+            };*/
         }
 
         private static SimulationOptions ToSimulationOptions(GrpcSimulationOptions options)
@@ -60,6 +61,10 @@ namespace PlantSimulatorClient.Simulations.Services
         private static Range<int> ConvertRange(IntRange range)
         {
             return new Range<int>(range.Min, range.Max);
+        }
+        private static Range<float> ConvertRange(FloatRange range)
+        {
+            return new Range<float>(range.Min, range.Max);
         }
     }
 }

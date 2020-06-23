@@ -13,11 +13,16 @@ namespace PlantSimulator.Outputs.Models
         /// Coordinates that defines this <see cref="PlantModelState"/>
         /// </summary>
         public Vector2[] Coordinates { get; set; }
+
+        /// <summary>
+        /// Description of this <see cref="PlantNodeModelState"/>
+        /// </summary>
+        public string Description { get; set; }
         
         /// <summary>
         /// Thickness of the plant at the (<see cref="X"/>, <see cref="Y"/>)
         /// </summary>
-        public int Thickness { get; set; }
+        public float Thickness { get; set; }
 
         /// <summary>
         /// Branch connections to this node

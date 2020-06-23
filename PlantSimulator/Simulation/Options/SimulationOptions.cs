@@ -15,5 +15,7 @@ namespace PlantSimulator.Simulation.Options
         }
 
         public int RandomSeed { get; set; } = new Random().Next();
+
+        public uint StopAtTick { get; set; } = uint.MaxValue;
     }
 }

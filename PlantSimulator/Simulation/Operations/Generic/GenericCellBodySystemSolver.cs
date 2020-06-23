@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
+using System.Threading.Tasks;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.PlantParts;
@@ -24,43 +23,76 @@ namespace PlantSimulator.Simulation.Operations
         {
             var cells = part.Cells.ToArray();
 
-            do
+            //do
+            //{
+            DoubleIterateCells(cells, (a, b) =>
             {
-                for (int i = 0; i < cells.Length; i++)
+                if (a.Equals(b) || !collisionDetection.Colliding(a, b, false))
                 {
-                    for (int j = 0; j < cells.Length; j++)
-                    {
-                        if (cells[i].Equals(cells[j]) || !collisionDetection.Colliding(cells[i], cells[j], false))
-                        {
-                            continue;
-                        }
-
-                        SolveCell(cells[i], cells[j]);
-                    }
+                    return;
                 }
-            } while (DoesAnyCollide(cells));
+
+                SolveCell(a, b);
+            });
+            //} while (DoesAnyCollide(cells));
         }
 
         private void SolveCell(IPlantCell a, IPlantCell b)
         {
             cellSizer.ResizeHeight(a, b);
 
-            cellSizer.ResizeWidth(a, b);
+            // cellSizer.ResizeWidth(a, b);
         }
 
         private bool DoesAnyCollide(IPlantCell[] cells)
         {
-            for (int i = 0; i < cells.Length; i++)
-            {
-                for (int j = 0; j < cells.Length; j++)
-                {
-                    if (cells[i].Equals(cells[j])) continue;
-                    if (collisionDetection.Colliding(cells[i], cells[j], false)) return true;
-                }
-            }
-
+            var collides = false;
             return false;
+
+            DoubleIterateCells(cells, (a, b) =>
+            {
+                if (a.Equals(b)) return;
+
+                if (collisionDetection.Colliding(a, b, false))
+                {
+                    collides = true;
+                }
+            });
+
+            return collides;
+        }
+
+        private void DoubleIterateCells(IPlantCell[] cells, Action<IPlantCell, IPlantCell> action)
+        {
+            Parallel.For(0, cells.Length, i =>
+            {
+                Parallel.For(0, cells.Length,
+                    j =>
+                    {
+                        if (i == j) return;
+                        lock (cells[i].Synchronizer)
+                        {
+                            lock (cells[j].Synchronizer)
+                            {
+                                action(cells[i], cells[j]);
+                            }
+                        }
+                    });
+            });
+            /*Parallel.ForEach(cells, a =>
+            {
+                Parallel.ForEach(cells, b =>
+                {
+                    lock (a.Synchronizer)
+                    {
+                        lock (b.Synchronizer)
+                        {
+                            action(a, b);
+                        }
+                    }
+                });
+            });*/
+
         }
     }
-
 }

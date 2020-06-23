@@ -11,13 +11,13 @@ namespace PlantSimulatorService.Converters
     {
         public override Vector2 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            IList<int> values = new List<int>(2);
+            IList<float> values = new List<float>(2);
 
             while (reader.Read() && values.Count < 2)
             {
                 if (reader.TokenType == JsonTokenType.Number)
                 {
-                    values.Add(reader.GetInt32());
+                    values.Add(reader.GetSingle());
                 }
             }
 

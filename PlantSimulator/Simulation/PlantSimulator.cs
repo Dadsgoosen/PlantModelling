@@ -46,7 +46,7 @@ namespace PlantSimulator.Simulation
             
             while (true)
             {
-                if (Stopping.IsCancellationRequested) break;
+                if (ShouldStop()) break;
 
                 if (ShouldSkip()) continue;
 
@@ -103,6 +103,11 @@ namespace PlantSimulator.Simulation
             var handler = OnTick;
 
             handler?.Invoke(this, new PlantSimulatorTickEvent(optionsService.Options.Id, plantRunner.Plant, TickCount));
+        }
+
+        private bool ShouldStop()
+        {
+            return Stopping.IsCancellationRequested || TickCount >= optionsService.Options.Simulation.StopAtTick;
         }
 
         public void Dispose()

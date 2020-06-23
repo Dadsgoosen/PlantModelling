@@ -28,7 +28,7 @@ namespace PlantSimulatorService.Simulations.Clients
         {
             try
             {
-                await Client.StartSimulationAsync(ToGrpcOptions(options));
+                await Client.StartSimulationAsync(new SimulationConfiguration() /*ToGrpcOptions(options)*/);
                 Available = false;
             }
             catch (RpcException)

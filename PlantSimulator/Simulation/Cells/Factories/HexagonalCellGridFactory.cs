@@ -74,7 +74,7 @@ namespace PlantSimulator.Simulation.Cells.Factories
 
             int half = (int)Math.Floor(amount / 2m);
 
-            float x = ComputeX(column, hexagonWidth);
+            float x = ComputeX(center, column, hexagonWidth);
             float z = hexagonRadius;
 
             for (int i = 0; i < half; i++)
@@ -110,8 +110,8 @@ namespace PlantSimulator.Simulation.Cells.Factories
 
             int half = (int)Math.Floor(amount / 2m);
 
-            float x = ComputeX(column, hexagonWidth);
-            float z = ComputeZ(0, hexagonHeight);
+            float x = ComputeX(center, column, hexagonWidth);
+            float z = ComputeZ(center, 0, hexagonHeight);
 
             var newCellType = GetCellType(0, column);
 
@@ -121,7 +121,7 @@ namespace PlantSimulator.Simulation.Cells.Factories
 
             for (int i = 1; i <= half; i++)
             {
-                z = ComputeZ(i, hexagonWidth);
+                z = ComputeZ(center, i, hexagonWidth);
 
                 newCellType = GetCellType(i, column);
 
@@ -132,7 +132,7 @@ namespace PlantSimulator.Simulation.Cells.Factories
 
             for (int i = -1; i >= -half; i--)
             {
-                z = ComputeZ(i, hexagonWidth);
+                z = ComputeZ(center, i, hexagonWidth);
 
                 newCellType = GetCellType(i, column);
 
@@ -149,14 +149,14 @@ namespace PlantSimulator.Simulation.Cells.Factories
             return cellTypeLocator.Get(row, column);
         }
 
-        private static float ComputeZ(int row, float height)
+        private static float ComputeZ(Vector3 center, int row, float height)
         {
-            return row * height;
+            return center.Z + row * height;
         }
 
-        private static float ComputeX(int column, float width)
+        private static float ComputeX(Vector3 center, int column, float width)
         {
-            return column * width;
+            return center.X + column * width;
         }
     }
 }

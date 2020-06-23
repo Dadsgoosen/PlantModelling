@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using PlantSimulator.Helpers;
+using PlantSimulator.Simulation.Cells.Helpers;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
 using PlantSimulator.Simulation.PlantParts.Factories;
@@ -15,26 +17,30 @@ namespace PlantSimulator.Simulation.Operations.Development
 
         private readonly ICellGrower cellGrower;
 
+        private readonly IInternodePartFactory internodeFactory;
+
         private readonly IPlantDescriptorService plantDescriptorService;
+
+        private IPlantSimulatorOptions Options => optionsService.Options;
 
         public InternodePartDevelopment(IPlantSimulatorOptionsService optionsService,
             INodePartFactory nodePartFactory,
             ICellGrower cellGrower,
-            IPlantDescriptorService plantDescriptorService)
+            IPlantDescriptorService plantDescriptorService, 
+            IInternodePartFactory internodeFactory)
         {
             this.optionsService = optionsService;
             this.nodePartFactory = nodePartFactory;
             this.cellGrower = cellGrower;
             this.plantDescriptorService = plantDescriptorService;
+            this.internodeFactory = internodeFactory;
         }
-
-        private IPlantSimulatorOptions Options => optionsService.Options;
 
         public void Develop(Internode internode, SimulationStateSnapshot snapshot)
         {
-            var description = plantDescriptorService.Describe(internode);
+            var description = plantDescriptorService.Describe(internode, true);
 
-            if (ShouldGrow(internode))
+            if (ShouldGrow(internode, description))
             {
                 GrowInternode(internode, snapshot);
             }
@@ -45,17 +51,18 @@ namespace PlantSimulator.Simulation.Operations.Development
             }
         }
 
-        private bool ShouldGrow(Internode internode)
+        private bool ShouldGrow(Internode internode, IPlantPartDescriptor descriptor)
         {
-            return !internode.HasUpperNode();
+            var terminalHeight = Options.Plant.TerminalHeight.RandomNumberBetween();
+
+            var isBelowTerminalHeight = descriptor.Height <= terminalHeight;
+
+            return !internode.HasUpperNode() && isBelowTerminalHeight;
         }
 
         private void GrowInternode(Internode internode, SimulationStateSnapshot snapshot)
         {
-            foreach (var cell in internode.Cells)
-            {
-                cellGrower.GrowShootCell(cell, internode, snapshot);
-            }
+            CellIterator.IterateCells(internode.Cells, cell => cellGrower.GrowShootCell(cell, internode, snapshot));
         }
 
         private bool ShouldAddNewNode(Internode internode, SimulationStateSnapshot snapshot, float height)
@@ -74,7 +81,7 @@ namespace PlantSimulator.Simulation.Operations.Development
 
             uint due = (uint) Options.Plant.NewNodeTickCount.RandomNumberBetween();
 
-            if (snapshot.CurrentTime >= due)
+            if (snapshot.CurrentTime >= due && snapshot.CurrentTime % due == 0)
             {
                 return true;
             }
@@ -84,7 +91,13 @@ namespace PlantSimulator.Simulation.Operations.Development
 
         private Node CreateNewUpperNode(Internode internode, IPlantPartDescriptor descriptor)
         {
-            return nodePartFactory.CreateNode(internode, descriptor, true);
+            var node = nodePartFactory.CreateNode(internode, descriptor, true);
+
+            var upperInternode = internodeFactory.CreateInternode(descriptor.Top, node, 0, internode.BranchCount);
+
+            node.UpperInternode = upperInternode;
+
+            return node;
         }
     }
 }

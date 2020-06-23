@@ -9,3 +9,11 @@
   stroke: url(#linear);
   stroke-linecap: round;
 }
+
+.shoot {
+  z-index:99;
+}
+
+.root {
+  z-index:0;
+}

@@ -17,7 +17,12 @@ namespace PlantSimulatorService.Simulations.Model
         /// <summary>
         /// Thickness of the plant at the (<see cref="X"/>, <see cref="Y"/>)
         /// </summary>
-        public int Thickness { get; set; }
+        public float Thickness { get; set; }
+
+        /// <summary>
+        /// Description describing this <see cref="PlantNodeModel"/>
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
         /// Branch connections to this node

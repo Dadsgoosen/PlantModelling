@@ -46,11 +46,21 @@ namespace PlantSimulator.Simulation.PlantParts
             }
         }
 
+        private Internode upperInternode;
+
         /// <summary>
         /// Get the upper connected internode
         /// </summary>
         /// <remarks>Can be null</remarks>
-        public Internode UpperInternode { get; set; }
+        public Internode UpperInternode
+        {
+            get => upperInternode;
+            set
+            {
+                upperInternode = value;
+                Connections = new []{ value };
+            }
+        }
 
         /// <summary>
         /// Get the lower connected internode

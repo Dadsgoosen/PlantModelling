@@ -31,8 +31,6 @@ namespace PlantSimulatorService
         {
             services.AddCors();
             services.AddSimulation(Configuration);
-            services.AddTransient<IClientContext, ClientContext>();
-            services.AddTransient<ISimulationContext, SimulationContext>();
             services.AddControllers().AddJsonOptions(options =>
             {
                 var converters = options.JsonSerializerOptions.Converters;

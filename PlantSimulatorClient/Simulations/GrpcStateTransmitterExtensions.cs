@@ -31,7 +31,7 @@ namespace PlantSimulatorClient.Simulations
             {
                 Id = state.Id,
                 SimulationTime = state.SimulationTime,
-                Plant = plantModelState
+                Plant = plantModelState,
             };
         }
 
@@ -55,7 +55,8 @@ namespace PlantSimulatorClient.Simulations
             {
                 Coordinates = { ConvertVectorToCoordinates(node.Coordinates) },
                 Thickness = node.Thickness,
-                Connections = { MapNodeSystem(node.Connections) }
+                Connections = { MapNodeSystem(node.Connections) },
+                Description = node.Description
             };
         }
 

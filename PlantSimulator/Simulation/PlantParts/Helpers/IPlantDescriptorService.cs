@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="part">The plant part to describe</param>
         /// <returns>A PlantPartDescriptor object describing the provided plant part</returns>
-        public IPlantPartDescriptor Describe(IPlantPart part);
+        public IPlantPartDescriptor Describe(IPlantPart part, bool centerTop);
     }
 }

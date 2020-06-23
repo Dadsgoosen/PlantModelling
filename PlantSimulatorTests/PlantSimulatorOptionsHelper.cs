@@ -33,7 +33,7 @@ namespace PlantSimulatorTests
                     NewPetioleWidth = new Range<int>(5, 5),
                     InitialStemWidth = 21,
                     SubBranches = new Range<int>(0, 0),
-                    MaxInternodeLength = new Range<int>(50, 60),
+                    MaxInternodeLength = new Range<float>(50, 60),
                     LeafsPerNode = new Range<int>(0, 0),
                     NewNodeTickCount = new Range<int>(50, 50),
                     GrowthRange = new Range<float>(.5f, .5f),

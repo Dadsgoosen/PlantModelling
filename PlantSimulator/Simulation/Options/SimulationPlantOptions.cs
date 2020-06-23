@@ -18,6 +18,15 @@ namespace PlantSimulator.Simulation.Options
         /// The maximum height of a plant
         /// </summary>
         public Range<float> TerminalHeight { get; set; }
+        /// <summary>
+        /// The maximum depth/length of roots
+        /// </summary>
+        public Range<float> TerminalRootLength { get; set; }
+
+        /// <summary>
+        /// The tick count when to stop root growth
+        /// </summary>
+        public Range<int> RootTickStopGrowth { get; set; }
 
         /// <summary>
         /// How many branches can a stem create
@@ -32,7 +41,7 @@ namespace PlantSimulator.Simulation.Options
         /// <summary>
         /// A range defining the length that each internode can be
         /// </summary>
-        public Range<int> MaxInternodeLength { get; set; }
+        public Range<float> MaxInternodeLength { get; set; }
 
         /// <summary>
         /// How long does an internode need to be before there
@@ -74,6 +83,16 @@ namespace PlantSimulator.Simulation.Options
         /// The width of newly spawned stems
         /// </summary>
         public Range<int> NewStemWidth { get; set; }
+
+        /// <summary>
+        /// The length of a root, be it primary or lateral, before it creates new roots
+        /// </summary>
+        public Range<float> NewRootLength { get; set; }
+
+        /// <summary>
+        /// The tick count of the simulation, before it creates new roots
+        /// </summary>
+        public Range<int> NewRootTick { get; set; }
 
         /// <summary>
         /// The angle between a stem and the petiole

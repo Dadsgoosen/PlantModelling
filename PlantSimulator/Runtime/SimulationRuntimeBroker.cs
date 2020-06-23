@@ -41,7 +41,7 @@ namespace PlantSimulator.Runtime
         {
             logger.LogInformation("Starting simulator from runtime broker");
 
-            options = (PlantSimulationOptions) GenericOptions.CreateOptions();
+            options = (PlantSimulationOptions) CornPlantOptions.CreateOptions();
 
             // Set the random seed from the options
             RangeExtensions.Random = new Random(options.Simulation.RandomSeed);

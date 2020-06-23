@@ -1,4 +1,4 @@
-import {Gradient, Svg, TransformData} from '@svgdotjs/svg.js';
+import {Svg, TransformData} from '@svgdotjs/svg.js';
 import {Drawer} from './drawer';
 import {PlantModel, PlantNodeModel, SimulationState} from '../simulation/simulation-state';
 import {getRootGradient, getShootGradient} from "../../pages/simulation/components/plant-drawer/plant-drawer-gradients";
@@ -10,7 +10,7 @@ export class SvgDrawer implements Drawer {
 
   constructor(svg: Svg) {
     this.svg = svg;
-    this.svg.transform({rotate: 180} as TransformData).viewbox(-250, -250, 500, 500).size('100%', '500');
+    this.svg.transform({rotate: 180} as TransformData).viewbox(-175, -175, 350, 350).size('100%', '500');
   }
 
   public draw(state: SimulationState): void {
@@ -19,8 +19,8 @@ export class SvgDrawer implements Drawer {
   }
 
   private drawPlant(plant: PlantModel): void {
-    this.drawSystem(plant.shootSystem, true);
     this.drawSystem(plant.rootSystem, false);
+    this.drawSystem(plant.shootSystem, true);
   }
 
   private drawSystem(nodeModels: PlantNodeModel[], isShoot: boolean): void {
@@ -30,14 +30,14 @@ export class SvgDrawer implements Drawer {
   }
 
   private drawPlantNodeModel(nodeModel: PlantNodeModel, isShoot: boolean): void {
-    this.drawCoordinates(nodeModel.coordinates, nodeModel.thickness, isShoot);
+    this.drawCoordinates(nodeModel.coordinates, nodeModel.thickness, nodeModel.description, isShoot);
   }
 
-  private drawCoordinates(coordinates: [number, number][], thickness: number, isShoot: boolean): void {
+  private drawCoordinates(coordinates: [number, number][], thickness: number, description:string, isShoot: boolean): void {
     const gradient: string = this.getGradient(isShoot).id();
-    this.svg.line(coordinates).stroke({width: 8, color: `url(#${gradient})`, linecap: 'round'});
+    const c: string = isShoot ? 'shoot' : 'root';
+    this.svg.line(coordinates).addClass(c).stroke({width: thickness, color: `url(#${gradient})`, linecap: 'round'}).node.setAttribute('title', description);
   }
-
 
   private getGradient(isShoot: boolean) {
     return isShoot ? getShootGradient(this.svg) : getRootGradient(this.svg);
@@ -46,5 +46,14 @@ export class SvgDrawer implements Drawer {
   private clear(): void {
     this.svg.clear();
   }
+/*
+  private static constrain(x: number): number {
+    if (x > 0) {
+      return 10;
+    } else if (x < 0) {
+      return -10;
+    }
+    return x;
+  }*/
 
 }

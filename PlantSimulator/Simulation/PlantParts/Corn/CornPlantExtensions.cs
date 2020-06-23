@@ -43,7 +43,7 @@ namespace PlantSimulator.Simulation.PlantParts.Corn
 
             var cells = creator.CreateCells(11, 9, new Vector3(0), 0f);
 
-            return new GenericRoot(cells);
+            return new GenericRoot(cells, 0);
         }
     }
 }

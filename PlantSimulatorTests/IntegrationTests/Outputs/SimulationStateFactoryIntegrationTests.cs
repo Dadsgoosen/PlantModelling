@@ -5,6 +5,7 @@ using PlantSimulator;
 using PlantSimulator.Outputs;
 using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.PlantParts;
+using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulatorTests.IntegrationTests.Outputs
 {
@@ -23,7 +24,7 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
         public void Setup()
         {
             id = Guid.NewGuid().ToString();
-            stateFactory = new SimulationStateFactory();
+            stateFactory = new SimulationStateFactory(new PlantDescriptorService());
             plant = TestPlant.CreatePlant();
             stateData = new SimulationStateSnapshot(100);
         }
@@ -34,7 +35,7 @@ namespace PlantSimulatorTests.IntegrationTests.Outputs
             var state = stateFactory.Create(id, plant, stateData);
             Assert.NotNull(state);
             Assert.AreEqual(id, state.Id);
-            Assert.AreEqual(2, state.Plant.ShootSystem.Count());
+            Assert.AreEqual(1, state.Plant.ShootSystem.Count());
             Assert.AreEqual(1, state.Plant.RootSystem.Count());
         }
     }

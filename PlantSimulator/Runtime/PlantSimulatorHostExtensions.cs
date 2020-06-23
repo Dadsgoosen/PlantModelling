@@ -15,6 +15,7 @@ using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Factories;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 using Serilog;
+using RootPartDevelopment = PlantSimulator.Simulation.Operations.Development.RootPartDevelopment;
 
 namespace PlantSimulator.Runtime
 {
@@ -25,17 +26,17 @@ namespace PlantSimulator.Runtime
             service.Configure<PlantSimulationOptions>(configuration.GetSection("Simulation"));
             service.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
             service.AddSingleton<IPlantSimulatorOptionsService, PlantSimulatorOptionsService>();
-            service.AddTransient<IPlantDescriptorService, PlantDescriptorService>();
+            service.AddSingleton<IPlantDescriptorService, PlantDescriptorService>();
             service.AddSingleton<ISingularCellCreator, HexagonCellCreator>();
             service.AddSingleton<IPlantPartCellCreator, PlantPartCellCreator>();
 
             service.AddCornPlant();
 
             // Collision, geometry and Body System
-            service.AddTransient<IGeometryHelper, GeometryHelper>();
-            service.AddTransient<ICellSizer, GenericCellSizer>();
-            service.AddTransient<ICellCollisionDetection, CellCollisionDetection>();
-            service.AddTransient<ICellBodySystemSolver, GenericCellBodySystemSolver>();
+            service.AddSingleton<IGeometryHelper, GeometryHelper>();
+            service.AddSingleton<ICellSizer, GenericCellSizer>();
+            service.AddSingleton<ICellCollisionDetection, CellCollisionDetection>();
+            service.AddSingleton<ICellBodySystemSolver, GenericCellBodySystemSolver>();
 
             // Plant part and cell factories
             service.AddSingleton<ICellFactory, GenericCellFactory>();
@@ -44,20 +45,21 @@ namespace PlantSimulator.Runtime
             service.TryAddSingleton<IStemPartFactory, GenericStemPartFactory>();
             service.TryAddSingleton<INodePartFactory, GenericNodePartFactory>();
             service.TryAddSingleton<IPetiolePartFactory, GenericPetiolePartFactory>();
-            service.TryAddTransient<IPlantPartCellCreator, PlantPartCellCreator>();
+            service.TryAddSingleton<IPlantPartCellCreator, PlantPartCellCreator>();
+            service.TryAddSingleton<IRootPartFactory, GenericRootPartFactory>();
 
             // Development
+            service.AddSingleton<IPlantPartDevelopment<Internode>, InternodePartDevelopment>();
             service.AddSingleton<IPlantPartDevelopment<Root>, RootPartDevelopment>();
             service.AddSingleton<IPlantPartDeveloper, PlantPartDeveloper>();
-            service.AddSingleton<IPlantPartDevelopment<Internode>, InternodePartDevelopment>();
 
             // Growth
             service.AddSingleton<SimulationEnvironment>();
-            service.AddTransient<ICellDivider, GenericCellDivider>();
-            service.AddTransient<IPlantRunner, GenericPlantRunner>();
-            service.AddTransient<IPlantGrower, GenericPlantGrower>();
-            service.AddTransient<ICellGrower, GenericCellGrower>();
-            service.AddTransient<ISimulationStateFactory, SimulationStateFactory>();
+            service.AddSingleton<ICellDivider, GenericCellDivider>();
+            service.AddSingleton<IPlantRunner, GenericPlantRunner>();
+            service.AddSingleton<IPlantGrower, GenericPlantGrower>();
+            service.AddSingleton<ICellGrower, GenericCellGrower>();
+            service.AddSingleton<ISimulationStateFactory, SimulationStateFactory>();
             service.AddSingleton<IRuntimeBroker<Simulation.PlantSimulator>, SimulationRuntimeBroker>();
             service.AddSingleton<IRuntime, Runtime>();
 

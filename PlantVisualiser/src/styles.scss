@@ -70,3 +70,7 @@ body {
   margin: 0;
   font-family: "ProductSans", "Helvetica Neue", sans-serif;
 }
+
+button:focus {
+  outline:none;
+}

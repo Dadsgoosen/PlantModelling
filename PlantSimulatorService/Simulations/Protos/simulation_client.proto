@@ -41,8 +41,9 @@ message PlantModelState {
 
 message PlantNodeModelState {
 	repeated .simulation_configuration.Coordinate coordinates = 1;
-	int32 thickness = 2;
+	float thickness = 2;
 	repeated PlantNodeModelState connections = 3;
+	string description = 4;
 }
 
 message SimulationStateResponse {	

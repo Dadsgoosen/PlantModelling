@@ -20,7 +20,7 @@ message SimulationOptions {
 message SimulationPlantOptions {
 	IntRange branches = 1;
 	IntRange sub_branches = 2;
-	IntRange internode_length = 3;
+	FloatRange internode_length = 3;
 	IntRange petiole_length = 4;
 	int32 Axil = 5;
 }
@@ -38,4 +38,9 @@ message Coordinate {
 message IntRange {
 	int32 min = 1;
 	int32 max = 2;
+}
+
+message FloatRange {
+	float min = 1;
+	float max = 2;
 }

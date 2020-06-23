@@ -2,6 +2,7 @@ export interface PlantNodeModel {
   coordinates: [number, number][];
   thickness: number;
   connections: PlantNodeModel[];
+  description: string;
 }
 
 export interface PlantModel {

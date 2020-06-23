@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Grpc.Core;
 using PlantSimulatorService.Context;
-using PlantSimulatorService.Simulations.Clients;
 using PlantSimulatorService.Simulations.Model;
 using PlantSimulatorService.Simulations.Protos;
 using SimulationState = PlantSimulatorService.Simulations.Protos.SimulationState;

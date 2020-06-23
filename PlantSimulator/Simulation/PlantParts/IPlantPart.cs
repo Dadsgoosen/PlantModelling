@@ -16,6 +16,12 @@ namespace PlantSimulator.Simulation.PlantParts
         /// </summary>
         public object Synchronizer { get; }
 
+
+        /// <summary>
+        /// Get the branch counter for which this plant part is part of
+        /// </summary>
+        public int BranchCount { get; }
+
         /// <summary>
         /// Property describing what this plant part is
         /// </summary>

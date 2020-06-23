@@ -17,7 +17,7 @@ namespace PlantSimulator
             var stem = new GenericStem(internode, 0);
 
             IShootSystem shoot = new GenericShootSystem(stem);
-            IRootSystem root = new GenericRootSystem(new GenericRoot(new List<IPlantCell>(0), new List<Root>(0)));
+            IRootSystem root = new GenericRootSystem(new GenericRoot(new List<IPlantCell>(0), new List<Root>(0), 0));
 
             return new GenericPlant(shoot, root);
         }

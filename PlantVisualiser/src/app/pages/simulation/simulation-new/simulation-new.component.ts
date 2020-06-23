@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {SimulationService} from "../../../services/simulation/simulation.service";
+import {HttpClient} from "@angular/common/http";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-simulation-new',
@@ -7,9 +10,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SimulationNewComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _simulationService: SimulationService, private _snackBar: MatSnackBar) {
+  }
 
   ngOnInit(): void {
+  }
+
+  public startSimulation() {
+    console.log("Starting simulation")
+    this._simulationService.startSimulation().subscribe(
+      value => {
+        console.log("Simulation started", value);
+        this.snackbar("Simulation started")
+      },
+      err => {
+        console.log("Error starting simulation", err)
+        this.snackbar("Error starting simulation");
+      });
+  }
+
+  private snackbar(message: string): void {
+    this._snackBar.open(message, "Ok", {duration: 3000})
   }
 
 }

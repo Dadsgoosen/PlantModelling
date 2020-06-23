@@ -5,11 +5,22 @@ using System.Numerics;
 using PlantSimulator.Outputs.Models;
 using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.PlantParts;
+ using PlantSimulator.Simulation.PlantParts.Helpers;
 
-namespace PlantSimulator.Outputs
+ namespace PlantSimulator.Outputs
 {
     public class SimulationStateFactory : ISimulationStateFactory
     {
+        private readonly HashSet<PlantPartType> SkipTypes;
+
+        private readonly IPlantDescriptorService descriptorService;
+
+        public SimulationStateFactory(IPlantDescriptorService descriptorService)
+        {
+            this.descriptorService = descriptorService;
+            SkipTypes = new HashSet<PlantPartType>(new []{PlantPartType.Stem, PlantPartType.Node});
+        }
+
         public SimulationState Create(string id, IPlant plant, SimulationStateSnapshot data)
         {
             return new SimulationState
@@ -20,7 +31,7 @@ namespace PlantSimulator.Outputs
             };
         }
 
-        private static PlantModelState CreatePlantState(IPlant plant)
+        private PlantModelState CreatePlantState(IPlant plant)
         {
             return new PlantModelState
             {
@@ -29,17 +40,17 @@ namespace PlantSimulator.Outputs
             };
         }
 
-        private static IEnumerable<PlantNodeModelState> CreateShootState(IShootSystem shootSystem)
+        private IEnumerable<PlantNodeModelState> CreateShootState(IShootSystem shootSystem)
         {
-            return IterateSystem((IPlantPart) shootSystem.Stem);
+            return IterateSystem(shootSystem.Stem);
         }
 
-        private static IEnumerable<PlantNodeModelState> CreateRootState(IRootSystem rootSystem)
+        private IEnumerable<PlantNodeModelState> CreateRootState(IRootSystem rootSystem)
         {
-            return IterateSystem((IPlantPart) rootSystem.PrimaryRoot);
+            return IterateSystem(rootSystem.PrimaryRoot);
         }
 
-        private static IEnumerable<PlantNodeModelState> IterateSystem(IPlantPart startPart)
+        private IEnumerable<PlantNodeModelState> IterateSystem(IPlantPart startPart)
         {
             IList<PlantNodeModelState> states = new List<PlantNodeModelState>();
 
@@ -49,7 +60,10 @@ namespace PlantSimulator.Outputs
             {
                 var part = stack.Pop();
 
-                states.Add(CreateStateFromPlantPart(part));
+                if (!SkipTypes.Contains(part.PartType))
+                {
+                    states.Add(CreateStateFromPlantPart(part));
+                }
 
                 foreach (var connection in part.Connections)
                 {
@@ -60,51 +74,45 @@ namespace PlantSimulator.Outputs
             return states;
         }
 
-        private static PlantNodeModelState CreateStateFromPlantPart(IPlantPart part)
+        private PlantNodeModelState CreateStateFromPlantPart(IPlantPart part)
         {
-            var highest = Vector2.Zero;
-            var lowest = Vector2.Zero;
-            var widest = new[] {Vector2.Zero, Vector2.Zero};
+            var asTop = part.PartType == PlantPartType.Root;
+            var descriptor = descriptorService.Describe(part, asTop);
 
-            foreach (var cell in part.Cells)
-            {
-                var top = cell.Geometry.TopCenter;
-                var bottom = cell.Geometry.BottomCenter;
+            var top3 = descriptor.Top;
+            var bot3 = descriptor.Bottom;
 
-                if (top.Y > highest.Y)
-                {
-                    highest = new Vector2(top.X, top.Y);
-                }
-
-                if (bottom.Y < lowest.Y)
-                {
-                    lowest = new Vector2(bottom.X, bottom.Y);
-                }
-
-                if (top.X > widest[1].X)
-                {
-                    widest[1] = new Vector2(top.X, top.Y);
-                }
-
-                if (bottom.X < widest[0].X)
-                {
-                    widest[0] = new Vector2(bottom.X, bottom.Y);
-                }
-            }
-
-            IList<PlantNodeModelState> connections = new List<PlantNodeModelState>(part.Connections.Count());
-
-            foreach (var connection in part.Connections)
-            {
-                connections.Add(CreateStateFromPlantPart(connection));
-            }
+            var top = new Vector2(top3.X, top3.Y);
+            var bot = new Vector2(bot3.X, bot3.Y);
 
             return new PlantNodeModelState
             {
-                Thickness = (int) Vector2.Distance(widest[0], widest[1]),
-                Connections = connections,
-                Coordinates = new[] {lowest, highest}
+                Thickness = ComputeThickness(descriptor),
+                Description = $"{part.PartType} ({part.BranchCount})",
+                Connections = new PlantNodeModelState[0],
+                Coordinates = new[] {bot, top}
             };
+        }
+
+        private float ComputeThickness(IPlantPartDescriptor descriptor)
+        {
+            var top = descriptor.Top;
+            return Vector2.Distance(new Vector2(top.X, top.Y), new Vector2(descriptor.MaxX, top.Y));
+        }
+
+        private int GetThickness(IPlantPart part)
+        {
+            switch (part.PartType)
+            {
+                case PlantPartType.Stem when part.BranchCount > 0:
+                    return 7;
+                case PlantPartType.Petiole:
+                    return 5;
+                case PlantPartType.Root:
+                    return 7;
+                default:
+                    return 10;
+            }
         }
     }
 }

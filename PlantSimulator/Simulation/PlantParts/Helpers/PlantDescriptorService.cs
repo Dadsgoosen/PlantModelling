@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using PlantSimulator.Simulation.Geometry;
 
 namespace PlantSimulator.Simulation.PlantParts.Helpers
 {
@@ -13,9 +12,10 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
         /// Describe the physical properties of a plant part
         /// </summary>
         /// <param name="part">The plant part to describe</param>
+        /// <param name="centerTop">Whether to compute the center as the sum of top- or bottom max</param>
         /// <returns>A PlantPartDescriptor object describing the provided plant part</returns>
         /// <remarks>Involves looping over all cells in the plant part</remarks>
-        public IPlantPartDescriptor Describe(IPlantPart part)
+        public IPlantPartDescriptor Describe(IPlantPart part, bool centerTop)
         {
             // Sum coordinates for computing averages
             float sumX = 0;
@@ -46,9 +46,18 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
                 yMin = Math.Min(yMin, bottom.Y);
                 zMin = Math.Min(zMin, bottom.Z);
 
-                sumX += top.X;
-                sumY += top.Y;
-                sumZ += top.Z;
+                if (centerTop)
+                {
+                    sumX += top.X;
+                    sumY += top.Y;
+                    sumZ += top.Z;
+                }
+                else
+                {
+                    sumX += bottom.X;
+                    sumY += bottom.Y;
+                    sumZ += bottom.Z;
+                }
 
                 cellCount++;
             }
@@ -64,9 +73,9 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
             var height = Vector3.Distance(highest, lowest);
 
             var widestX = new Vector2(xMax, center.Y);
-            var minX = new Vector2(xMax, center.Y);
+            var minX = new Vector2(xMin, center.Y);
             var widestZ = new Vector2(center.X, zMax);
-            var minZ = new Vector2(center.X, zMax);
+            var minZ = new Vector2(center.X, zMin);
 
             // Thickness is computed by the euclidean distance between the center and widest coordinate
             var thicknessX = Vector2.Distance(center, widestX);
@@ -74,6 +83,7 @@ namespace PlantSimulator.Simulation.PlantParts.Helpers
 
             return new PlantPartDescriptor
             {
+                Top = highest,
                 Bottom = lowest,
                 Height = height,
                 MaxX = xMax,

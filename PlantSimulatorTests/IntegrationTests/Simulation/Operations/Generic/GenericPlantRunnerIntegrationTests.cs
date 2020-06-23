@@ -69,6 +69,8 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private IPlantPartDevelopment<Root> rootPlantPartDevelopment;
 
+        private IRootPartFactory rootFactory;
+
         [SetUp]
         public void Setup()
         {
@@ -81,7 +83,7 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             cellSizer = new GenericCellSizer(helper, new LoggerAdapter<GenericCellSizer>(new NullLogger<GenericCellSizer>()));
             cellCollisionDetection = new CellCollisionDetection(helper);
             bodySystemSolver = new GenericCellBodySystemSolver(cellCollisionDetection, cellSizer);
-            cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver);
+            cellGrower = new GenericCellGrower(plant, environment, bodySystemSolver, optionsService);
             descriptorService = new PlantDescriptorService();
             cellCreator = new HexagonCellCreator(cellFactory);
             gridCreator = new HexagonalCellGridFactory(cellCreator, CornCellTypeLocator.GetCornCellTypeLocator(), optionsService);
@@ -89,11 +91,12 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             internodePartFactory = new GenericInternodePartFactory(optionsService, gridCreator);
             stemPartFactory = new GenericStemPartFactory(optionsService, internodePartFactory);
             petiolePartFactory = new GenericPetiolePartFactory(cellFactory, optionsService);
-            nodePartFactory = new GenericNodePartFactory(optionsService, plantPartCellCreator, stemPartFactory, petiolePartFactory);
-            internodePlantPartDevelopment = new InternodePartDevelopment(optionsService, nodePartFactory, cellGrower, descriptorService);
-            rootPlantPartDevelopment = new RootPartDevelopment(optionsService, nodePartFactory, cellGrower, descriptorService);
+            nodePartFactory = new GenericNodePartFactory(optionsService, cellFactory, stemPartFactory, petiolePartFactory);
+            internodePlantPartDevelopment = new InternodePartDevelopment(optionsService, nodePartFactory, cellGrower, descriptorService, internodePartFactory);
+            rootFactory = new GenericRootPartFactory(optionsService, plantPartCellCreator);
+            rootPlantPartDevelopment = new RootPartDevelopment(optionsService, nodePartFactory, rootFactory, cellGrower, descriptorService);
             developer = new PlantPartDeveloper(internodePlantPartDevelopment, rootPlantPartDevelopment);
-            plantGrower = new GenericPlantGrower(cellGrower, developer);
+            plantGrower = new GenericPlantGrower(bodySystemSolver, developer);
             runner = new GenericPlantRunner(plant, environment, plantGrower);
             RangeExtensions.Random = new Random(optionsService.Options.Simulation.RandomSeed);
         }

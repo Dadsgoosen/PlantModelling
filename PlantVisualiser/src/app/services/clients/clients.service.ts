@@ -26,8 +26,7 @@ export class ClientsService extends HttpService {
   }
 
   public stopSimulation(id: string): Observable<null> {
-    console.log('Stopping simulation for id ' + id);
-    return of(null);
+    return this.postRequest(`/client/${id}/stop`, {});
   }
 
   public dipose() {

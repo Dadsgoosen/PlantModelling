@@ -16,9 +16,9 @@ namespace PlantSimulator.Simulation.PlantParts.Factories
     {
         private readonly Random random;
 
-        private readonly IPlantPartCellCreator cellCreator;
-
         private readonly IPlantSimulatorOptionsService optionsService;
+
+        private readonly ICellFactory cellFactory;
 
         private readonly IStemPartFactory stemFactory;
 
@@ -26,11 +26,13 @@ namespace PlantSimulator.Simulation.PlantParts.Factories
 
         private IPlantSimulatorOptions Options => optionsService.Options;
 
-        public GenericNodePartFactory(IPlantSimulatorOptionsService optionsService, IPlantPartCellCreator cellCreator, 
-            IStemPartFactory stemFactory, IPetiolePartFactory petioleFactory)
+        public GenericNodePartFactory(IPlantSimulatorOptionsService optionsService, 
+            ICellFactory cellFactory, 
+            IStemPartFactory stemFactory, 
+            IPetiolePartFactory petioleFactory)
         {
-            this.cellCreator = cellCreator;
             this.optionsService = optionsService;
+            this.cellFactory = cellFactory;
             this.stemFactory = stemFactory;
             this.petioleFactory = petioleFactory;
             random = new Random(Options.Simulation.RandomSeed);
@@ -56,11 +58,13 @@ namespace PlantSimulator.Simulation.PlantParts.Factories
 
         private IEnumerable<IPlantCell> CreateNodeCells(IPlantPartDescriptor descriptor)
         {
-            var width = descriptor.WidthX;
-            var depth = descriptor.WidthZ;
-            var center = descriptor.Top;
-
-            return cellCreator.CreateCells(width, depth, center, 0);
+            var top = descriptor.Top;
+            var bottom = new Vector3(top.X, top.Y, top.Z);
+            var polygon = new Vector2[0];
+            var face = new Face(polygon);
+            var geo = new CellGeometry(top, bottom, face);
+            var cell = cellFactory.CreateCell(PlantCellType.Parenchyma, geo, new Vacuole(), new CellWall());
+            return new [] {cell};
         }
 
         private IEnumerable<Petiole> CreatePetioles(IPlantPartDescriptor descriptor)
@@ -115,7 +119,7 @@ namespace PlantSimulator.Simulation.PlantParts.Factories
 
             var length = Options.Plant.PetioleLength.RandomNumberBetween();
 
-            Vector3 direction = center + new Vector3(length, length, 0);
+            Vector3 direction = new Vector3(length, length, 0);
 
             return petioleFactory.CreatePetiole(center, direction);
         }
@@ -124,18 +128,11 @@ namespace PlantSimulator.Simulation.PlantParts.Factories
         {
             bool spawnOnLeft = ShouldSpawnOnLeftSide();
 
-            Vector3 center;
+            float x = spawnOnLeft ? descriptor.MinX : descriptor.MaxX;
+            float y = descriptor.Top.Y;
+            float z = descriptor.Top.Z;
 
-            if (spawnOnLeft)
-            {
-                center = new Vector3(descriptor.MinX, descriptor.Top.Y, descriptor.Top.Z);
-            }
-            else
-            {
-                center = new Vector3(descriptor.MaxX, descriptor.Top.Y, descriptor.Top.Z);
-            }
-
-            return center;
+            return new Vector3(x, y, z);
         }
 
         private bool ShouldSpawnOnLeftSide()

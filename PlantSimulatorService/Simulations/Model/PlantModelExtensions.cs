@@ -42,6 +42,7 @@ namespace PlantSimulatorService.Simulations.Model
                 models[i] = new PlantNodeModel
                 {
                     Thickness = nodeState.Thickness,
+                    Description = nodeState.Description,
                     Coordinates = ConvertToVectors(nodeState.Coordinates),
                     Connections = nodeState.Connections.ToPlantNodeModels()
                 };

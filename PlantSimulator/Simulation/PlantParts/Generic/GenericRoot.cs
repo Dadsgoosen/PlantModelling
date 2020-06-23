@@ -6,26 +6,13 @@ namespace PlantSimulator.Simulation.PlantParts.Generic
 {
     public class GenericRoot : Root
     {
-        private readonly IList<Root> connectedRoots;
-
-        public new IEnumerable<Root> ConnectedRoots => connectedRoots;
-        
-        public GenericRoot(IEnumerable<IPlantCell> cells, IEnumerable<Root> connections)
+        public GenericRoot(IEnumerable<IPlantCell> cells, IEnumerable<Root> connections, int branchCount) : base(cells, connections, branchCount)
         {
-            Cells = new List<IPlantCell>(cells);
-            connectedRoots = new List<Root>(connections);
-            Connections = connectedRoots;
-        }
-        public GenericRoot(IEnumerable<IPlantCell> cells)
-        {
-            Cells = new List<IPlantCell>(cells);
-            connectedRoots = new List<Root>();
-            Connections = connectedRoots;
         }
 
-        public override void ConnectRoot(Root root)
+        public GenericRoot(IEnumerable<IPlantCell> cells, int branchCount) : this(cells, new Root[0],  branchCount)
         {
-            connectedRoots.Add(root);
         }
+
     }
 }

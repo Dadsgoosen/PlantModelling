@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Options;
@@ -11,15 +12,15 @@ namespace PlantSimulator.Simulation.Operations
 {
     public class GenericPlantGrower : IPlantGrower
     {
-        private readonly ICellGrower cellGrower;
+        private readonly ICellBodySystemSolver cellBodySystem;
 
         private readonly IPlantPartDeveloper plantPartDeveloper;
 
         private SimulationStateSnapshot currentState;
 
-        public GenericPlantGrower(ICellGrower cellGrower, IPlantPartDeveloper plantPartDeveloper)
+        public GenericPlantGrower(ICellBodySystemSolver cellBodySystem, IPlantPartDeveloper plantPartDeveloper)
         {
-            this.cellGrower = cellGrower;
+            this.cellBodySystem = cellBodySystem;
             this.plantPartDeveloper = plantPartDeveloper;
         }
 
@@ -48,12 +49,11 @@ namespace PlantSimulator.Simulation.Operations
             {
                 IPlantPart part = postponedParts.Pop();
 
+                PushConnections(part.Connections, postponedParts);
+
                 HandlePlantPart(part, isShoot);
 
-                foreach (var connection in part.Connections)
-                {
-                    postponedParts.Push(connection);
-                }
+                // cellBodySystem.Solve(part);
             }
         }
 
@@ -68,6 +68,14 @@ namespace PlantSimulator.Simulation.Operations
                 HandleRootPart(plantPart);
             }
         }
+
+        private void PushConnections(IEnumerable<IPlantPart> connections, Stack<IPlantPart> partStack)
+        {
+            foreach (var connection in connections)
+            {
+                partStack.Push(connection);
+            }
+        } 
 
         private void HandleShootPart(IPlantPart part)
         {
