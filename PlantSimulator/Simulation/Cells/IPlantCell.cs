@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PlantSimulator.Simulation.Cells.Storage;
 using PlantSimulator.Simulation.Geometry;
 
 namespace PlantSimulator.Simulation.Cells
@@ -17,6 +18,8 @@ namespace PlantSimulator.Simulation.Cells
         public IVacuole Vacuole { get; }
 
         public float Turgidity { get; }
+
+        public StarchStorage StarchStorage { get; }
 
         public bool IsDead { get; }
 

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
-using PlantSimulator.Helpers;
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Cells.Factories;
 using PlantSimulator.Simulation.Geometry;
-using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Generic;
 using PlantSimulator.Simulation.PlantParts.Helpers;
+using PlantSimulator.Simulation.Plants.Corn;
 
 namespace PlantSimulatorTests.UnitTests.Simulation.PlantParts.Helpers
 {

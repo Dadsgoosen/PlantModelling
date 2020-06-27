@@ -1,6 +1,7 @@
-﻿using PlantSimulator.Simulation.PlantParts.Generic;
+﻿using PlantSimulator.Simulation.PlantParts;
+using PlantSimulator.Simulation.PlantParts.Generic;
 
-namespace PlantSimulator.Simulation.PlantParts.Corn
+namespace PlantSimulator.Simulation.Plants.Corn
 {
     public class CornPlant : IPlant
     {

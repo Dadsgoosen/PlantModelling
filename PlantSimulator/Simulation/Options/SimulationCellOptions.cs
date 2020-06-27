@@ -26,5 +26,21 @@
         /// Size of the sclerenchyma cell
         /// </summary>
         public float SclerenchymaCellSize { get; set; }
+
+        /// <summary>
+        /// The minimum vacuole capacity before a cell begins
+        /// to request more water
+        /// </summary>
+        public float MinimumVacuoleBeforeRequest { get; set; }
+
+        /// <summary>
+        /// The speed of which water moves
+        /// </summary>
+        public uint WaterSpeed { get; set; }
+
+        /// <summary>
+        /// The speed of which sucrose moves
+        /// </summary>
+        public uint SucroseSpeed { get; set; }
     }
 }

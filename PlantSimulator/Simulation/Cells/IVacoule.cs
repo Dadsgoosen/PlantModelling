@@ -1,11 +1,12 @@
 ﻿using System;
+using PlantSimulator.Simulation.Cells.Storage;
 
 namespace PlantSimulator.Simulation.Cells
 {
     public interface IVacuole
     {
-        public float Volume { get; set; }
+        public IStorage<Water> Volume { get; }
 
-        public float TurgorPressure { get; set; }
+        public float TurgorPressure { get; }
     }
 }

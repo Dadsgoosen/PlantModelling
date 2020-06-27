@@ -3,8 +3,6 @@ using System.Runtime.CompilerServices;
 using PlantSimulator.Helpers;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Corn;
-using PlantSimulator.Simulation.PlantParts.Generic;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulator.Simulation.Operations

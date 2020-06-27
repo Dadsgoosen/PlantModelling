@@ -17,6 +17,11 @@ namespace PlantSimulator.Logging
             logger.LogDebug(message);
         }
 
+        public void LogDebug(string message, params object[] args)
+        {
+            logger.LogDebug(message, args);
+        }
+
         public void LogInformation(string message)
         {
             logger.LogInformation(message);
@@ -37,6 +42,11 @@ namespace PlantSimulator.Logging
             logger.LogWarning(exception, message);
         }
 
+        public void LogWarning(string message, params object[] args)
+        {
+            logger.LogWarning(message, args);
+        }
+
         public void LogError(string message, params object[] args)
         {
             logger.LogError(message, args);
@@ -50,6 +60,11 @@ namespace PlantSimulator.Logging
         public void LogFatal(string message)
         {
             logger.LogCritical(message);
+        }
+
+        public void LogFatal(string message, params object[] args)
+        {
+            logger.LogCritical(message, args);
         }
 
         public void LogFatal(Exception exception, string message)

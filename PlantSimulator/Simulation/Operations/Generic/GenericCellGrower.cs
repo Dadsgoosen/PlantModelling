@@ -8,15 +8,15 @@ namespace PlantSimulator.Simulation.Operations
 {
     public class GenericCellGrower : ICellGrower
     {
-        private readonly IPlant plant;
+        protected readonly IPlant plant;
 
-        private readonly SimulationEnvironment environment;
+        protected readonly SimulationEnvironment environment;
 
-        private readonly ICellBodySystemSolver systemSolver;
+        protected readonly ICellBodySystemSolver systemSolver;
 
-        private readonly IPlantSimulatorOptionsService optionsService;
+        protected readonly IPlantSimulatorOptionsService optionsService;
 
-        private IPlantSimulatorOptions Options => optionsService.Options;
+        protected IPlantSimulatorOptions Options => optionsService.Options;
 
         public GenericCellGrower(IPlant plant, SimulationEnvironment environment, ICellBodySystemSolver systemSolver, IPlantSimulatorOptionsService optionsService)
         {
@@ -50,14 +50,14 @@ namespace PlantSimulator.Simulation.Operations
             geo.BottomCenter -= DetermineGrowth(cell, part, state);
         }
         
-        private Vector3 DetermineGrowth(IPlantCell cell, IPlantPart part, SimulationStateSnapshot state)
+        protected virtual Vector3 DetermineGrowth(IPlantCell cell, IPlantPart part, SimulationStateSnapshot state)
         {
-            var growth = DetermineGrowthDirection(cell, part) * DetermineGrowthFactor(state);
+            var growth = DetermineGrowthDirection(cell, part) * DetermineGrowthFactor(cell, state);
 
             return growth;
         }
 
-        private Vector3 DetermineGrowthDirection(IPlantCell cell, IPlantPart part)
+        protected virtual Vector3 DetermineGrowthDirection(IPlantCell cell, IPlantPart part)
         {
             var geo = cell.Geometry;
 
@@ -80,7 +80,7 @@ namespace PlantSimulator.Simulation.Operations
             return direction + outwards;
         }
 
-        private Vector3 DetermineGrowthFactor(SimulationStateSnapshot snapshot)
+        protected virtual Vector3 DetermineGrowthFactor(IPlantCell cell, SimulationStateSnapshot snapshot)
         {
             float y = Options.Plant.GrowthRange.RandomNumberBetween();
 

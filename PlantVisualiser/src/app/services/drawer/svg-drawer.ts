@@ -30,7 +30,11 @@ export class SvgDrawer implements Drawer {
   }
 
   private drawPlantNodeModel(nodeModel: PlantNodeModel, isShoot: boolean): void {
-    this.drawCoordinates(nodeModel.coordinates, nodeModel.thickness, nodeModel.description, isShoot);
+    /*for(let i = 0; i < nodeModel.coordinates.length; i++) {
+        nodeModel.coordinates[i][0] = SvgDrawer.constrain(nodeModel.coordinates[i][0]);
+    }
+
+    */this.drawCoordinates(nodeModel.coordinates, nodeModel.thickness, nodeModel.description, isShoot);
   }
 
   private drawCoordinates(coordinates: [number, number][], thickness: number, description:string, isShoot: boolean): void {
@@ -46,8 +50,8 @@ export class SvgDrawer implements Drawer {
   private clear(): void {
     this.svg.clear();
   }
-/*
-  private static constrain(x: number): number {
+
+  /*private static constrain(x: number): number {
     if (x > 0) {
       return 10;
     } else if (x < 0) {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Threading.Tasks;
-using PlantSimulator.Simulation.Cells;
+﻿using System.Collections.Generic;
+using PlantSimulator.Simulation.Cells.Storage;
 using PlantSimulator.Simulation.Operations.Development;
-using PlantSimulator.Simulation.Options;
+using PlantSimulator.Simulation.Operations.Transporters;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Helpers;
 
 namespace PlantSimulator.Simulation.Operations
 {
@@ -16,12 +12,15 @@ namespace PlantSimulator.Simulation.Operations
 
         private readonly IPlantPartDeveloper plantPartDeveloper;
 
+        private readonly FluidTransporter<Sucrose> sucroseTransporter;
+
         private SimulationStateSnapshot currentState;
 
-        public GenericPlantGrower(ICellBodySystemSolver cellBodySystem, IPlantPartDeveloper plantPartDeveloper)
+        public GenericPlantGrower(ICellBodySystemSolver cellBodySystem, IPlantPartDeveloper plantPartDeveloper, FluidTransporter<Sucrose> sucroseTransporter)
         {
             this.cellBodySystem = cellBodySystem;
             this.plantPartDeveloper = plantPartDeveloper;
+            this.sucroseTransporter = sucroseTransporter;
         }
 
         public void GrowPlant(IPlant plant, SimulationStateSnapshot stateSnapshot)
@@ -50,6 +49,8 @@ namespace PlantSimulator.Simulation.Operations
                 IPlantPart part = postponedParts.Pop();
 
                 PushConnections(part.Connections, postponedParts);
+
+                sucroseTransporter.Transport(part);
 
                 HandlePlantPart(part, isShoot);
 

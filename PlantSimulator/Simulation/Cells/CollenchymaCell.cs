@@ -10,11 +10,8 @@ namespace PlantSimulator.Simulation.Cells
         {
         }
 
-        public CollenchymaCell(ICellGeometry geometry, IVacuole vacuole, ICellWall cellWall)
+        public CollenchymaCell(ICellGeometry geometry, IVacuole vacuole, ICellWall cellWall) : base(geometry, cellWall, vacuole)
         {
-            Geometry = geometry;
-            Vacuole = vacuole;
-            CellWall = cellWall;
         }
     }
 }

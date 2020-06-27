@@ -49,10 +49,10 @@ namespace PlantSimulator.Simulation.Geometry
         public bool IsInsidePolygon(Vector2 p, Vector2[] polygon)
         {
             // Get the max X and Z
-            float minX = polygon[0].X;
-            float maxX = polygon[0].X;
-            float minZ = polygon[0].Y;
-            float maxZ = polygon[0].Y;
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minZ = float.MaxValue;
+            float maxZ = float.MinValue;
 
             for (int i = 1; i < polygon.Length; i++)
             {

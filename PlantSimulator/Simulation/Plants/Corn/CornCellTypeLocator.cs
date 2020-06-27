@@ -1,7 +1,7 @@
 ﻿using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 
-namespace PlantSimulator.Simulation.PlantParts.Corn
+namespace PlantSimulator.Simulation.Plants.Corn
 {
     public static class CornCellTypeLocator
     {

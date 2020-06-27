@@ -1,4 +1,5 @@
-﻿using PlantSimulator.Simulation.Geometry;
+﻿using PlantSimulator.Simulation.Cells.Storage;
+using PlantSimulator.Simulation.Geometry;
 
 namespace PlantSimulator.Simulation.Cells
 {
@@ -23,7 +24,16 @@ namespace PlantSimulator.Simulation.Cells
             }
         }
 
+        public StarchStorage StarchStorage { get; }
+
         public bool IsDead { get; private set; }
+
+        protected PlantCell() { }
+
+        protected PlantCell(ICellGeometry geometry, ICellWall cellWall, IVacuole vacuole)
+        {
+            StarchStorage = new StarchStorage(0);
+        }
 
         public void Kill()
         {

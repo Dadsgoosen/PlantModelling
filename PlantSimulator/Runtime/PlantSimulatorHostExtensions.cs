@@ -11,9 +11,10 @@ using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Factories;
 using PlantSimulator.Simulation.PlantParts.Helpers;
+using PlantSimulator.Simulation.Plants.Corn;
+using PlantSimulator.Simulation.Plants.Fluids;
 using Serilog;
 using RootPartDevelopment = PlantSimulator.Simulation.Operations.Development.RootPartDevelopment;
 
@@ -30,7 +31,7 @@ namespace PlantSimulator.Runtime
             service.AddSingleton<ISingularCellCreator, HexagonCellCreator>();
             service.AddSingleton<IPlantPartCellCreator, PlantPartCellCreator>();
 
-            service.AddCornPlant();
+            service.AddFluidsPlant();
 
             // Collision, geometry and Body System
             service.AddSingleton<IGeometryHelper, GeometryHelper>();
@@ -58,7 +59,7 @@ namespace PlantSimulator.Runtime
             service.AddSingleton<ICellDivider, GenericCellDivider>();
             service.AddSingleton<IPlantRunner, GenericPlantRunner>();
             service.AddSingleton<IPlantGrower, GenericPlantGrower>();
-            service.AddSingleton<ICellGrower, GenericCellGrower>();
+            service.AddSingleton<ICellGrower, FluidsGenericCellGrower>();
             service.AddSingleton<ISimulationStateFactory, SimulationStateFactory>();
             service.AddSingleton<IRuntimeBroker<Simulation.PlantSimulator>, SimulationRuntimeBroker>();
             service.AddSingleton<IRuntime, Runtime>();

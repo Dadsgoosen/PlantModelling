@@ -8,13 +8,10 @@ namespace PlantSimulator.Simulation.Cells.Helpers
     {
         public static void IterateCells(IEnumerable<IPlantCell> cells, Action<IPlantCell> action)
         {
-            Parallel.ForEach(cells, cell =>
+            foreach (var cell in cells)
             {
-                lock (cell.Synchronizer)
-                {
-                    action(cell);
-                }
-            });
+                action(cell);
+            }
         }
 
     }

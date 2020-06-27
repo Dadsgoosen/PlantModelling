@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 using PlantSimulator.Simulation.Cells;
 

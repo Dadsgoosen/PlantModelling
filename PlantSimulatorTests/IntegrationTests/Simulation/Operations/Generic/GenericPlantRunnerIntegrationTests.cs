@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using PlantSimulator;
@@ -12,11 +11,9 @@ using PlantSimulator.Simulation.Operations;
 using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
-using PlantSimulator.Simulation.PlantParts.Corn;
 using PlantSimulator.Simulation.PlantParts.Factories;
-using PlantSimulator.Simulation.PlantParts.Generic;
 using PlantSimulator.Simulation.PlantParts.Helpers;
-using PlantSimulatorTests.UnitTests.Simulation.PlantParts.Helpers;
+using PlantSimulator.Simulation.Plants.Corn;
 
 namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 {

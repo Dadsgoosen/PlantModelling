@@ -5,6 +5,7 @@ using PlantSimulator.Helpers;
 using PlantSimulator.Logging;
 using PlantSimulator.Runtime.Helpers;
 using PlantSimulator.Simulation.Options;
+using PlantSimulator.Simulation.Plants.Fluids;
 
 namespace PlantSimulator.Runtime
 {
@@ -41,7 +42,7 @@ namespace PlantSimulator.Runtime
         {
             logger.LogInformation("Starting simulator from runtime broker");
 
-            options = (PlantSimulationOptions) CornPlantOptions.CreateOptions();
+            options = (PlantSimulationOptions) FluidsPlantOptions.CreateOptions();
 
             // Set the random seed from the options
             RangeExtensions.Random = new Random(options.Simulation.RandomSeed);
