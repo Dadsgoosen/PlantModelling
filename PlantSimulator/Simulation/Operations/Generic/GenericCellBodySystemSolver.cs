@@ -23,18 +23,18 @@ namespace PlantSimulator.Simulation.Operations
         {
             var cells = part.Cells.ToArray();
 
-            //do
-            //{
-            DoubleIterateCells(cells, (a, b) =>
+            do
             {
-                if (a.Equals(b) || !collisionDetection.Colliding(a, b, false))
+                DoubleIterateCells(cells, (a, b) =>
                 {
-                    return;
-                }
+                    if (a.Equals(b) || !collisionDetection.Colliding(a, b, false))
+                    {
+                        return;
+                    }
 
-                SolveCell(a, b);
-            });
-            //} while (DoesAnyCollide(cells));
+                    SolveCell(a, b);
+                });
+            } while (DoesAnyCollide(cells));
         }
 
         private void SolveCell(IPlantCell a, IPlantCell b)
@@ -47,13 +47,12 @@ namespace PlantSimulator.Simulation.Operations
         private bool DoesAnyCollide(IPlantCell[] cells)
         {
             var collides = false;
-            return false;
 
             DoubleIterateCells(cells, (a, b) =>
             {
                 if (a.Equals(b)) return;
 
-                if (collisionDetection.Colliding(a, b, false))
+                if (collisionDetection.Colliding(a, b, true))
                 {
                     collides = true;
                 }
@@ -67,31 +66,11 @@ namespace PlantSimulator.Simulation.Operations
             Parallel.For(0, cells.Length, i =>
             {
                 Parallel.For(0, cells.Length,
-                    j =>
-                    {
+                    j => {
                         if (i == j) return;
-                        lock (cells[i].Synchronizer)
-                        {
-                            lock (cells[j].Synchronizer)
-                            {
-                                action(cells[i], cells[j]);
-                            }
-                        }
+                        action(cells[i], cells[j]);
                     });
             });
-            /*Parallel.ForEach(cells, a =>
-            {
-                Parallel.ForEach(cells, b =>
-                {
-                    lock (a.Synchronizer)
-                    {
-                        lock (b.Synchronizer)
-                        {
-                            action(a, b);
-                        }
-                    }
-                });
-            });*/
 
         }
     }

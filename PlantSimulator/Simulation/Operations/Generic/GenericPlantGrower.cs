@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using PlantSimulator.Logging;
 using PlantSimulator.Simulation.Cells.Storage;
 using PlantSimulator.Simulation.Operations.Development;
 using PlantSimulator.Simulation.Operations.Transporters;
@@ -8,6 +12,8 @@ namespace PlantSimulator.Simulation.Operations
 {
     public class GenericPlantGrower : IPlantGrower
     {
+        private readonly ILoggerAdapter<GenericPlantRunner> logger;
+
         private readonly ICellBodySystemSolver cellBodySystem;
 
         private readonly IPlantPartDeveloper plantPartDeveloper;
@@ -16,11 +22,15 @@ namespace PlantSimulator.Simulation.Operations
 
         private SimulationStateSnapshot currentState;
 
-        public GenericPlantGrower(ICellBodySystemSolver cellBodySystem, IPlantPartDeveloper plantPartDeveloper, FluidTransporter<Sucrose> sucroseTransporter)
+        public GenericPlantGrower(ICellBodySystemSolver cellBodySystem, 
+            IPlantPartDeveloper plantPartDeveloper, 
+            FluidTransporter<Sucrose> sucroseTransporter, 
+            ILoggerAdapter<GenericPlantRunner> logger)
         {
             this.cellBodySystem = cellBodySystem;
             this.plantPartDeveloper = plantPartDeveloper;
             this.sucroseTransporter = sucroseTransporter;
+            this.logger = logger;
         }
 
         public void GrowPlant(IPlant plant, SimulationStateSnapshot stateSnapshot)
@@ -42,6 +52,10 @@ namespace PlantSimulator.Simulation.Operations
 
         private void IteratePlantParts(IPlantPart start, bool isShoot)
         {
+            var watch = new Stopwatch();
+
+            watch.Start();
+            
             var postponedParts = new Stack<IPlantPart>(new[] { start });
 
             while (postponedParts.Count > 0)
@@ -54,8 +68,16 @@ namespace PlantSimulator.Simulation.Operations
 
                 HandlePlantPart(part, isShoot);
 
-                // cellBodySystem.Solve(part);
+                cellBodySystem.Solve(part);
             }
+
+            watch.Stop();
+
+            string elapsed = watch.ElapsedMilliseconds.ToString();
+
+            File.AppendAllText("C:\\Users\\david\\Desktop\\Simulations\\performance\\multi_threaded.txt", $"{elapsed}\n");
+
+            logger.LogInformation("Time taking to iterate {Elapsed}", watch.ElapsedMilliseconds);
         }
 
         private void HandlePlantPart(IPlantPart plantPart, bool isShoot)

@@ -6,14 +6,18 @@ using PlantSimulator.Helpers;
 using PlantSimulator.Logging;
 using PlantSimulator.Simulation;
 using PlantSimulator.Simulation.Cells.Factories;
+using PlantSimulator.Simulation.Cells.Storage;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations;
+using PlantSimulator.Simulation.Operations.Carriers;
 using PlantSimulator.Simulation.Operations.Development;
+using PlantSimulator.Simulation.Operations.Transporters;
 using PlantSimulator.Simulation.Options;
 using PlantSimulator.Simulation.PlantParts;
 using PlantSimulator.Simulation.PlantParts.Factories;
 using PlantSimulator.Simulation.PlantParts.Helpers;
 using PlantSimulator.Simulation.Plants.Corn;
+using PlantSimulator.Simulation.Plants.Fluids;
 
 namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 {
@@ -68,6 +72,10 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
 
         private IRootPartFactory rootFactory;
 
+        private FluidTransporter<Sucrose> sucroseTransporter;
+
+        private CarrierCollection<Sucrose> sucroseCarrierCollection;
+
         [SetUp]
         public void Setup()
         {
@@ -93,8 +101,12 @@ namespace PlantSimulatorTests.IntegrationTests.Simulation.Operations.Generic
             rootFactory = new GenericRootPartFactory(optionsService, plantPartCellCreator);
             rootPlantPartDevelopment = new RootPartDevelopment(optionsService, nodePartFactory, rootFactory, cellGrower, descriptorService);
             developer = new PlantPartDeveloper(internodePlantPartDevelopment, rootPlantPartDevelopment);
-            plantGrower = new GenericPlantGrower(bodySystemSolver, developer);
-            runner = new GenericPlantRunner(plant, environment, plantGrower);
+            sucroseCarrierCollection =
+                new SucroseCarrierCollection(
+                    new LoggerAdapter<SucroseCarrierCollection>(new NullLogger<SucroseCarrierCollection>()));
+            sucroseTransporter = new SucroseTransporter(cellCollisionDetection, helper, sucroseCarrierCollection, new LoggerAdapter<FluidTransporter<Sucrose>>(new NullLogger<FluidTransporter<Sucrose>>()));
+            plantGrower = new GenericPlantGrower(bodySystemSolver, developer, sucroseTransporter);
+            runner = new GenericPlantRunner(plant, environment, plantGrower, new FluidsPlantCycle(plant, optionsService, sucroseCarrierCollection, new LoggerAdapter<FluidsPlantCycle>(new NullLogger<FluidsPlantCycle>())));
             RangeExtensions.Random = new Random(optionsService.Options.Simulation.RandomSeed);
         }
 

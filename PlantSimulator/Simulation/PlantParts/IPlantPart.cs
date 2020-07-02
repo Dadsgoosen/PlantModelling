@@ -12,12 +12,6 @@ namespace PlantSimulator.Simulation.PlantParts
     public interface IPlantPart
     {
         /// <summary>
-        /// Synchronizer object used to synchronize access in multi-threaded environments
-        /// </summary>
-        public object Synchronizer { get; }
-
-
-        /// <summary>
         /// Get the branch counter for which this plant part is part of
         /// </summary>
         public int BranchCount { get; }

@@ -2,6 +2,7 @@
 using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Cells.Factories;
 using PlantSimulator.Simulation.Geometry;
+using PlantSimulator.Simulation.PlantParts;
 
 namespace PlantSimulator.Simulation.Operations
 {
@@ -14,12 +15,12 @@ namespace PlantSimulator.Simulation.Operations
             this.cellFactory = cellFactory;
         }
 
-        public bool ShouldDivide(IPlantCell cell)
+        public bool ShouldDivide(IPlantCell cell, IPlantPart plantPart, SimulationStateSnapshot state)
         {
             return false;
         }
 
-        public IPlantCell[] Divide(IPlantCell cell)
+        public IPlantCell[] Divide(IPlantCell cell, IPlantPart plantPart)
         {
             ICellGeometry geo = cell.Geometry;
 

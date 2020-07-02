@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using PlantSimulator.Logging;
-using PlantSimulator.Simulation.Cells;
 using PlantSimulator.Simulation.Cells.Storage;
 using PlantSimulator.Simulation.Geometry;
 using PlantSimulator.Simulation.Operations.Carriers;
@@ -28,7 +26,7 @@ namespace PlantSimulator.Simulation.Operations.Transporters
                 {
                     Logger.LogDebug("{Transit} reached goal", transit.Destination.Geometry.TopCenter);
 
-                    transit.Current.StarchStorage.Amount += transit.Fluid.Amount;
+                    // transit.Current.StarchStorage.Amount += transit.Fluid.Amount;
 
                     CarrierCollection.Delete(transit.Destination);
                 }

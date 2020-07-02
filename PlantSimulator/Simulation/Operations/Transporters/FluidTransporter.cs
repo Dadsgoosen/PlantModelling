@@ -87,24 +87,31 @@ namespace PlantSimulator.Simulation.Operations.Transporters
 
         protected bool MoveCarrier(IFluidCarrier<TFluid> carrier, IPlantPart part)
         {
+            // Get all the cells in the current plant part
             var cells = part.Cells;
 
+            // The current carrier placement
             var current = carrier.Current;
 
+            // Get the neighbors for the current carrier placement
             var neighbors = GetNeighboringCells(current, cells);
 
             IPlantCell next;
 
+            // If the carrier is at the destination
             if (carrier.Current.Geometry.TopCenter.Equals(carrier.Destination.Geometry.TopCenter))
             {
                 return true;
             }
 
+            // If the carrier is in a transport cell, it must move up or down
             if (carrier.IsInTransportCell)
             {
                 next = MoveUpOrDown(carrier, part);
             }
-            else
+            // If the carrier is not in a transport cell then it must move towards a transport cell
+            // or the destination based on the height of the current placement
+            else 
             {
                 next = GetClosestCellTowards(carrier, neighbors);
             }

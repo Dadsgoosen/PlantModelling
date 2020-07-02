@@ -48,8 +48,6 @@ namespace PlantSimulator.Simulation.Plants.Fluids
 
             int amount = topCells.Count;
 
-            float energy = Math.Min(10 * leafCount, 100);
-
             for (int i = 0; i < amount; i++)
             {
                 logger.LogDebug("Add sucrose from @{From} to @{To}", bottomCells[i].Geometry.BottomCenter,

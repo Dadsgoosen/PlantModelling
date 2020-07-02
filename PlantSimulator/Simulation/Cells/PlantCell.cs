@@ -28,7 +28,10 @@ namespace PlantSimulator.Simulation.Cells
 
         public bool IsDead { get; private set; }
 
-        protected PlantCell() { }
+        protected PlantCell()
+        {
+            StarchStorage = new StarchStorage(0);
+        }
 
         protected PlantCell(ICellGeometry geometry, ICellWall cellWall, IVacuole vacuole)
         {

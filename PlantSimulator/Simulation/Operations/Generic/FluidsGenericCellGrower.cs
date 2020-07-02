@@ -24,6 +24,7 @@ namespace PlantSimulator.Simulation.Operations
 
             float energy = cell.StarchStorage.Amount;
 
+            // We use all the energy so reduce it to 0 so that it does not accumulate
             cell.StarchStorage.Amount = 0;
 
             float y = range * energy;

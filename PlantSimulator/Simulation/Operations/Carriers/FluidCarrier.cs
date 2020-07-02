@@ -13,7 +13,7 @@ namespace PlantSimulator.Simulation.Operations.Carriers
 
         private readonly PlantCellType transportType;
 
-        public bool IsInTransportCell => ClosestTransportCell.CellType == transportType;
+        public bool IsInTransportCell => Current.CellType == transportType;
 
         public TFluid Fluid { get; }
 

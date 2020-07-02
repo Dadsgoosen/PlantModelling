@@ -1,4 +1,5 @@
 ﻿using PlantSimulator.Simulation.Cells;
+using PlantSimulator.Simulation.PlantParts;
 
 namespace PlantSimulator.Simulation.Operations
 {
@@ -15,13 +16,13 @@ namespace PlantSimulator.Simulation.Operations
         /// Boolean value representing whether the cell should divide. <br/>
         /// True means the cell should divide, false means it should not.
         /// </returns>
-        bool ShouldDivide(IPlantCell cell);
+        public bool ShouldDivide(IPlantCell cell, IPlantPart plantPart, SimulationStateSnapshot state);
 
         /// <summary>
         /// Divide the cell into two new daughter cells
         /// </summary>
         /// <param name="cell">The cell to divide</param>
         /// <returns>An array containing the new daughter cells</returns>
-        IPlantCell[] Divide(IPlantCell cell);
+        public IPlantCell[] Divide(IPlantCell cell, IPlantPart plantPart);
     }
 }
