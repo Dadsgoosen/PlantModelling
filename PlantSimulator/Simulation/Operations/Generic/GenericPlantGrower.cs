@@ -52,10 +52,6 @@ namespace PlantSimulator.Simulation.Operations
 
         private void IteratePlantParts(IPlantPart start, bool isShoot)
         {
-            var watch = new Stopwatch();
-
-            watch.Start();
-            
             var postponedParts = new Stack<IPlantPart>(new[] { start });
 
             while (postponedParts.Count > 0)
@@ -70,14 +66,6 @@ namespace PlantSimulator.Simulation.Operations
 
                 cellBodySystem.Solve(part);
             }
-
-            watch.Stop();
-
-            string elapsed = watch.ElapsedMilliseconds.ToString();
-
-            File.AppendAllText("C:\\Users\\david\\Desktop\\Simulations\\performance\\multi_threaded.txt", $"{elapsed}\n");
-
-            logger.LogInformation("Time taking to iterate {Elapsed}", watch.ElapsedMilliseconds);
         }
 
         private void HandlePlantPart(IPlantPart plantPart, bool isShoot)

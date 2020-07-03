@@ -41,7 +41,7 @@ namespace PlantSimulator.Simulation.Operations
         {
             cellSizer.ResizeHeight(a, b);
 
-            // cellSizer.ResizeWidth(a, b);
+            cellSizer.ResizeWidth(a, b);
         }
 
         private bool DoesAnyCollide(IPlantCell[] cells)
